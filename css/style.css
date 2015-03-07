@@ -36,20 +36,6 @@ a:visited {
    z-index: 20;
 }
 
-#editor { 
-   width: 40%;
-   top: 27px;
-   bottom: 0px;
-   /* height: 100%;    note: newer ace expects height */
-   left: calc(100% - 20px);
-   z-index: 6;
-   background: rgba(255,255,255,0.15);
-}
-
-#editor:hover {
-    left: 60%;
-}
-
 #viewerContext {
    margin: 0px;             /* not inherited */
    border: 0px none black;  /* not inherited */
@@ -74,37 +60,6 @@ canvas {
    width: 100%;
 
    cursor: move;        /* show that we can change orientation of view */
-}
-
-#about {
-   position: absolute;
-    box-sizing: border-box;
-   width: 400px;
-   left: calc(50% - 200px);
-   top: 25%;
-   font-size: 0.75em;
-   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-   color: #404040;
-   border-radius: 0px;
-   background: white;
-   display: none;
-   padding: 2.5em;
-   text-align: center;
-   z-index: 100;
-}
-
-.okButton {
-   border: 2px solid #808080;
-   border-radius: 4px;
-   padding: 0.5em; 
-   padding-left: 2em;
-   padding-right: 2em;
-   margin-top: 3em;
-   background: #eee;
-}
-
-.okButton:hover {
-   background: #ccc;
 }
 
 #footer {
@@ -134,127 +89,11 @@ canvas {
    vertical-align: bottom;
 }
 
-#menu, #menu nav a, #menu #menuHandle, #editor {
+#editor {
    transition: all 0.4s;
    -o-transition: all 0.4s;
    -moz-transition: all 0.4s;
    -webkit-transition: all 0.4s;
-}
-
-#menu {
-   background: white;
-
-   opacity: 0.8;    
-   -moz-opacity: 0.8;
-
-/*   border-right: 1px solid rgba(0, 0, 0, 0.23);*/
-   width: 280px;
-    top: 27px;
-    bottom: 0;
-    box-sizing: border-box;
-   padding-left: 20px;
-   padding-right: 20px;
-   position: fixed;
-   z-index: 5;
-
-   font-size: 0.9em;
-   
-   box-shadow: 2px 0 6px rgba(0,0,0,0.1);
-   -moz-box-shadow: 2px 0 6px rgba(0,0,0,0.1);
-   -webkit-box-shadow: 2px 0 6px rgba(0,0,0,0.1);
-}
- 
-#menu {
-   left: -280px; 
-}
-
-#menu:hover, #menu:focus ~ #menuHandle:hover, #menuHandle:focus {
-   left: 0 !important;  /* slide out */
-}
-
-#logo {
-    width: 100%;
-}
-
-#menuHandle {
-    opacity: 1;
-    width: 50px;
-    height: 50px;
-    right: -25px;
-    top: calc(50% - 45px);
-    position: absolute;
-    z-index: -3;
-    background-color: white;
-    border-top-right-radius: 25px;
-    border-bottom-right-radius: 25px;
-    border-radius: 25px;
-    box-shadow: 0px 0 6px rgba(0,0,0,0.1);
-/*
-    border: 1px solid rgba(0, 0, 0, 0.19);
-    border-color: rgba(0, 0, 0, 0.23);
-    border-width: 1px 1px 1px 0px;
-*/
-/*    box-shadow: 0px 0px 3px black;*/
-}
-#menu:hover #menuHandle {
-    right: calc(250px + 50px);
-}
-
-#menu nav {
-   position: relative;
-   top: 20px;
-}
-
-#menu nav .navlink {
-}
-
-#menu nav .navlink:hover {
-}
-
-#menu #examples {
-   font-size: 0.6em;
-}
-
-#menu #examples .newExample {
-   border-radius: 5px;
-   background: yellow;
-   padding-left: 4px;
-   padding-right: 4px;
-}
-
-#menu #examples, #menu #examples a {
-   margin-top: 0px;
-}
-
-#menu .info {
-   border-spacing: 0;
-   border-collapse: collapse;
-   margin-bottom: 0.5em;
-}
-
-#menu .info td {
-   margin: 0px;
-   padding-left: 2px;
-   padding-right: 2px;
-   padding-top: 0px;
-   padding-bottom: 0px;
-   font-size: 0.6em;
-}
-
-.info .infoOperation {
-   font-weight: bold;
-   color: #602080;
-}
-
-.info .infoKey {
-   font-weight: bold;
-   color: #808080;
-}
-
-#menuVersion {
-   text-align: center; 
-   font-size: 0.6em;
-   color: #666;
 }
 
 .menuSubInfo {

@@ -1,0 +1,17 @@
+/*
+ * editor.css for index.html of http://OpenJSCAD.org/
+ */
+
+#editor {
+   width: 40%;
+   top: 27px;
+   bottom: 0px;
+   /* height: 100%;    note: newer ace expects height */
+   left: calc(100% - 20px);
+   z-index: 6;
+   background: rgba(255,255,255,0.15);
+}
+
+#editor:hover {
+    left: 60%;
+}

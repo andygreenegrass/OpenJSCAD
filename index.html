@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 <!-- 
 == OpenJSCAD.org, Copyright (c) 2013-2015 by Rene K. Mueller <spiritdude@gmail.com>, Licensed under MIT License ==
    with some code from OpenJsCad processfile.html by Joost Nieuwenhuijse 
@@ -32,15 +33,18 @@ Todo:
 - saving source code edited in ACE locally, perhaps 'SaveAs' (.JSCAD, .STL, .AMF)
 - DONE: include(); support of multiple files, see http://jsfiddle.net/yybRu/
 -->
-<title>OpenJSCAD.org</title>
-<link rel="shortcut icon" href="imgs/favicon.png" type="image/x-png">
-<link rel="stylesheet" href="jquery/themes/base/jquery-ui.css" />
-<script src="jquery/jquery-1.9.1.js"></script>
-<script src="jquery/jquery-ui.js"></script>
-<script src="jquery/jquery.hammer.js"></script>
-<link rel="stylesheet" href="css/style.css" type="text/css">
-<link rel="stylesheet" href="css/openjscad.css" type="text/css">
-<link rel="stylesheet" href="css/top-menu.css" type="text/css">
+    <title>OpenJSCAD.org</title>
+    <link rel="shortcut icon" href="imgs/favicon.png" type="image/x-png">
+    <link rel="stylesheet" href="jquery/themes/base/jquery-ui.css" />
+    <script src="jquery/jquery-1.9.1.js"></script>
+    <script src="jquery/jquery-ui.js"></script>
+    <script src="jquery/jquery.hammer.js"></script>
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <link rel="stylesheet" href="css/about.css" type="text/css">
+    <link rel="stylesheet" href="css/openjscad.css" type="text/css">
+    <link rel="stylesheet" href="css/menu.css" type="text/css">
+    <link rel="stylesheet" href="css/toolbar.css" type="text/css">
+    <link rel="stylesheet" href="css/editor.css" type="text/css">
 </head>
 <body onload="onload()">
 <style>
@@ -128,7 +132,7 @@ $(document).ready(function() {
         var menu = {};
         menu.openjscad = {};
         menu.openjscad.about = function() {
-            $('#about').show();
+            $('#about').attr('visible', 'true');
             return false;
         };
         menu.openjscad.recentUpdates = function() {
@@ -145,12 +149,12 @@ $(document).ready(function() {
             window.open(url, '_blank');
         };
     </script>
-    <div id=top-menu>
+    <div id=menu>
         <span>
             <div class=title>OpenJSCAD</div>
             <div class=sub-menu>
                 <div class=button onclick="menu.openjscad.about()">About OpenJSCAD...</div>
-                <div class=button onclick="menu.openjscad.recentUpdates()">Recent Updates</div>
+                <div class=button onclick="menu.openjscad.recentUpdates()"><img src="imgs/link.svg"/>Recent Updates</div>
                 <div class=divider></div>
                 <div class=button enabled=false>Preferences...</div>
             </div>
@@ -170,12 +174,16 @@ $(document).ready(function() {
             <div class=title>Design</div>
             <div class=sub-menu>
                 <div class=checkbox enabled=false><img src="imgs/check.svg"/>Automatic Compile &amp; Render</div>
-                <div class=button enabled=false>Compile &amp; Render</div>
+                <div class=button enabled=true>Compile &amp; Render</div>
             </div>
         </span
         ><span>
             <div class=title>View</div>
             <div class=sub-menu>
+                <div class=button enabled=false><img src="imgs/check.svg"/>Show Axes</div>
+                <div class=button enabled=false><img src="imgs/check.svg"/>Show Grid</div>
+                <div class=button enabled=false>Grid Options...</div>
+                <div class=divider></div>
                 <div class=button enabled=false>Top</div>
                 <div class=button enabled=false>Bottom</div>
                 <div class=button enabled=false>Left</div>
@@ -194,78 +202,53 @@ $(document).ready(function() {
         ><span>
             <div class=title>Help</div>
             <div class=sub-menu>
-                <div onclick="menu.help.documentation()">Documentation</div>
-                <div onclick="menu.help.community()">Google+ Community</div>
+                <div onclick="menu.help.documentation()"><img src="imgs/link.svg"/>Documentation</div>
+                <div onclick="menu.help.community()"><img src="imgs/link.svg"/>Google+ Community</div>
             </div>
         </span>
     </div>
 
-<div id=menu>
-<!--<img id=menuHandle src="imgs/menuHandleVL.png">-->
-<div id=menuHandle></div>
-<nav>
-<img id=logo src="imgs/title2.svg"/>
-<div id=menuVersion>Version <script>document.write(version);</script></div>
-<p/>
-<table class=info>
-<tr><td align=right class=infoOperation>Render Code</td><td class=infoKey>SHIFT + RETURN</td></tr>
-<tr><td align=right class=infoOperation>Rotate XZ</td><td class=infoKey>Left Mouse</td></tr>
-<tr><td align=right class=infoOperation>Pan</td><td class=infoKey>Middle Mouse or SHIFT + Left Mouse</td></tr>
-<tr><td align=right class=infoOperation>Rotate XY</td><td class=infoKey>Right Mouse or ALT + Left Mouse</td></tr>
-<tr><td align=right class=infoOperation>Zoom In/Out</td><td class=infoKey>Wheel Mouse or CTRL + Left Mouse</td></tr>
-</table>
-<p><a class=navlink href="https://github.com/Spiritdude/OpenJSCAD.org/wiki/User-Guide" target=_blank>User Guide / Documentation <img src="imgs/externalLink.png" style=externalLink></a>
-<br/><span class=menuSubInfo>How to program with OpenJSCAD: online, offline & CLI</span></p>
-<p><a class=navlink href="https://plus.google.com/115007999023701819645" rel="publisher" target=_blank>Recent Updates <img src="imgs/externalLink.png" style=externalLink></a>
-<br/><span class=menuSubInfo>Announcements of recent developments</span></p>
-<p><a class=navlink href="https://plus.google.com/communities/114958480887231067224" target=_blank>Google+ Community <img src="imgs/externalLink.png" style=externalLink></a>
-<br/><span class=menuSubInfo>Discuss with other users &amp; developers</span></p>
-<div id=examplesTitle class=navlink><a href='#' onclick='return false'>Examples</a></div>
-<div id=examples></div>
-<span class=menuSubInfo>Dozens of examples to learn from</span></p>
-<p/>
-<!--<div id=optionsTitle class=navlink><a href='#' onclick='return false'>Options</a></div>
-<div id=options>...</div>
-<span class=menuSubInfo>Your personal settings</span></p>
-<p/>-->
-<b>Supported Formats</b>
-<table class=info>
-<tr><td align=right><b>jscad</b></td><td><a target=_blank href="https://github.com/Spiritdude/OpenJSCAD.org/wiki/User-Guide">OpenJSCAD</a> (native, import/export)</td></tr>
-<tr><td align=right><b>scad</b></td><td><a target=_blank href="http://openscad.org">OpenSCAD</a> (<a target=_blank href="https://github.com/Spiritdude/OpenJSCAD.org/wiki/User-Guide#direct-openscad-scad-import">experimental</a>, import)</td></tr>
-<tr><td align=right><b>stl</b></td><td><a target=_blank href="http://en.wikipedia.org/wiki/STL_(file_format)">STL format</a> (experimental, import/export)</td></tr>
-<tr><td align=right><b>amf</b></td><td><a target=_blank href="http://en.wikipedia.org/wiki/Additive_Manufacturing_File_Format">AMF format</a> (experimental, import/export)</td></tr>
-</table>
-<p><a class=navlink href="#" onclick="$('#about').show(); return false;">About</a></p>
-</nav>
-</div> <!-- /menu -->
+<div id=toolbar>
+    <div id=toolbarHandle></div>
+</div>
 
 <div id=about>
-<img src="imgs/title2.svg" style='width: 75%'><br>
-Version <script>document.write(version);</script>
-<br/><br/>
-<p>
-by Ren&eacute; K. M&uuml;ller (UI & CLI),
-Joost Nieuwenhuijse (core), 
-Eduard Bespalov (core),
-Gary Hogdson (OpenSCAD translator)
-<p>csg.js core &amp; improvements by 
-Evan Wallace, 
-Eduard Bespalov, 
-Joost Nieuwenhuijse, 
-Alexandre Girard
-<p>
-License: MIT License<br>
-Get your copy/clone/fork from <a href="https://github.com/Spiritdude/OpenJSCAD.org" target=_blank>GitHub: OpenJSCAD</a>
-<p><br>
-<a class=okButton href='#' onclick="$('#about').hide(); return false;"> OK </a>
+    <div><img src="imgs/title2.svg" style='width: 75%'><div>Version <script>document.write(version);</script></div></div>
+    <div>
+        <table>
+            <tr><th>Render Code</th><td>SHIFT + RETURN</td></tr>
+            <tr><th>Rotate XZ</th><td>Left Mouse</td></tr>
+            <tr><th>Pan</th><td>Middle Mouse or SHIFT + Left Mouse</td></tr>
+            <tr><th>Rotate XY</th><td>Right Mouse or ALT + Left Mouse</td></tr>
+            <tr><th>Zoom In/Out</th><td>Wheel Mouse or CTRL + Left Mouse</td></tr>
+        </table>
+    </div>
+    <div>
+        <div class=title>Supported Formats</div>
+        <table>
+            <tr><th>jscad</th><td><a target=_blank href="https://github.com/Spiritdude/OpenJSCAD.org/wiki/User-Guide">OpenJSCAD</a> (native, import/export)</td></tr>
+            <tr><th>scad</th><td><a target=_blank href="http://openscad.org">OpenSCAD</a> (<a target=_blank href="https://github.com/Spiritdude/OpenJSCAD.org/wiki/User-Guide#direct-openscad-scad-import">experimental</a>, import)</td></tr>
+            <tr><th>stl</th><td><a target=_blank href="http://en.wikipedia.org/wiki/STL_(file_format)">STL format</a> (experimental, import/export)</td></tr>
+            <tr><th>amf</th><td><a target=_blank href="http://en.wikipedia.org/wiki/Additive_Manufacturing_File_Format">AMF format</a> (experimental, import/export)</td></tr>
+        </table>
+    </div>
+    <div>
+        by Ren&eacute; K. M&uuml;ller (UI & CLI), Joost Nieuwenhuijse (core), Eduard Bespalov (core), Gary Hogdson (OpenSCAD translator)
+        <p>csg.js core &amp; improvements by
+        Evan Wallace,
+        Eduard Bespalov,
+        Joost Nieuwenhuijse,
+        Alexandre Girard
+        <p>
+        License: MIT License<br>
+        Get your copy/clone/fork from <a href="https://github.com/Spiritdude/OpenJSCAD.org" target=_blank>GitHub: OpenJSCAD</a>
+    </div>
+    <div style='text-align: right;'>
+        <a class=okButton href='#' onclick="$('#about').attr('visible', 'false'); return false;">Close</a>
+    </div>
 </div>
 
-<div id="editor">// -- OpenJSCAD.org logo
-
-function main() {
-   return cube(20).center(true);
-}
-</div>
+<div id="editor"></div>
 
 <script>
 var ex = [ 
