@@ -40,6 +40,7 @@ Todo:
     <script src="js/jquery/jquery-ui.js"></script>
     <script src="js/jquery/jquery.hammer.js"></script>
     <link rel="stylesheet" href="css/style.css" type="text/css"/>
+    <link rel="stylesheet" href="css/pin.css" type="text/css"/>
     <link rel="stylesheet" href="css/about.css" type="text/css"/>
     <link rel="stylesheet" href="css/openjscad.css" type="text/css"/>
     <link rel="stylesheet" href="css/menu.css" type="text/css"/>
@@ -225,9 +226,27 @@ $(document).ready(function() {
         </span>
     </div>
 
-<div id=toolbar>
+<script>
+    $(document).ready(function() {
+        //alert('test');
+        $('.pin').click(function() {
+            $(this).toggleClass('pinned');
+        });
+        $('.pinnable').mouseenter(function() {
+            $(this).addClass('shown');
+        });
+        $('.pinnable').mouseleave(function() {
+            var pinned = $(this).find('.pin').hasClass('pinned');
+            if (!pinned) {
+                $(this).removeClass('shown');
+            }
+        });
+    });
+</script>
+    
+<div id=toolbar class=pinnable>
 <!--    <div id=toolbarHandle></div>-->
-    <div class=pin><img src="imgs/pin.svg"/></div>
+    <div class=pin><div><img src="imgs/pin.svg"/></div></div>
     <div><img src="imgs/view-box-front.svg"/></div
     ><div><img src="imgs/view-box-back.svg"/></div
     ><div><img src="imgs/view-box-left.svg"/></div
@@ -272,8 +291,8 @@ $(document).ready(function() {
     </div>
 </div>
 
-<div id=editor-wrapper>
-    <div class=pin><img src="imgs/pin.svg"/></div>
+<div id=editor-wrapper class=pinnable>
+    <div class=pin><div><img src="imgs/pin.svg"/></div></div>
     <div id=editor></div>
 </div>
 
