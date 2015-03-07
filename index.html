@@ -34,17 +34,19 @@ Todo:
 - DONE: include(); support of multiple files, see http://jsfiddle.net/yybRu/
 -->
     <title>OpenJSCAD.org</title>
-    <link rel="shortcut icon" href="imgs/favicon.png" type="image/x-png">
-    <link rel="stylesheet" href="jquery/themes/base/jquery-ui.css" />
-    <script src="jquery/jquery-1.9.1.js"></script>
-    <script src="jquery/jquery-ui.js"></script>
-    <script src="jquery/jquery.hammer.js"></script>
-    <link rel="stylesheet" href="css/style.css" type="text/css">
-    <link rel="stylesheet" href="css/about.css" type="text/css">
-    <link rel="stylesheet" href="css/openjscad.css" type="text/css">
-    <link rel="stylesheet" href="css/menu.css" type="text/css">
-    <link rel="stylesheet" href="css/toolbar.css" type="text/css">
-    <link rel="stylesheet" href="css/editor.css" type="text/css">
+    <link rel="shortcut icon" href="imgs/favicon.png" type="image/x-png"/>
+    <link rel="stylesheet" href="js/jquery/themes/base/jquery-ui.css" />
+    <script src="js/jquery/jquery-1.9.1.js"></script>
+    <script src="js/jquery/jquery-ui.js"></script>
+    <script src="js/jquery/jquery.hammer.js"></script>
+    <link rel="stylesheet" href="css/style.css" type="text/css"/>
+    <link rel="stylesheet" href="css/about.css" type="text/css"/>
+    <link rel="stylesheet" href="css/openjscad.css" type="text/css"/>
+    <link rel="stylesheet" href="css/menu.css" type="text/css"/>
+    <link rel="stylesheet" href="css/toolbar.css" type="text/css"/>
+    <link rel="stylesheet" href="css/editor.css" type="text/css"/>
+    <link rel="stylesheet" href="css/status.css" type="text/css"/>
+    <link rel="stylesheet" href="css/error.css" type="text/css"/>
 </head>
 <body onload="onload()">
 <style>
@@ -58,12 +60,12 @@ Todo:
    font-size: 10pt;     // -- not 'px', but 'pt' for high dpi screens
 }
 </style>
-<script src="lightgl.js"></script>
-<script src="csg.js"></script>
-<script src="openjscad.js"></script>
-<script src="openscad.js"></script>
-<script src="underscore.js"></script>
-<script src="openscad-openjscad-translator.js"></script>
+<script src="js/lightgl.js"></script>
+<script src="js/csg.js"></script>
+<script src="js/openjscad.js"></script>
+<script src="js/openscad.js"></script>
+<script src="js/underscore.js"></script>
+<script src="js/openscad-openjscad-translator.js"></script>
 <script lang=JavaScript>
 var version = '0.023 (2015/02/14)';
 //$(function() { $("#parametersdiv").draggable(); }); // doesn't work well, disabled
@@ -124,8 +126,7 @@ $(document).ready(function() {
 });   
 </script>
 <div id="header">
-<!--<img src="imgs/title.png">-->
-<div id="errordiv"></div>
+    <div id="errordiv"></div>
 </div>
     
     <script>
@@ -150,7 +151,7 @@ $(document).ready(function() {
         };
     </script>
     <div id=menu>
-        <span>
+        <span class=parent>
             <div class=title>OpenJSCAD</div>
             <div class=sub-menu>
                 <div class=button onclick="menu.openjscad.about()">About OpenJSCAD...</div>
@@ -159,30 +160,49 @@ $(document).ready(function() {
                 <div class=button enabled=false>Preferences...</div>
             </div>
         </span
-        ><span>
+        ><span class=parent>
             <div class=title>File</div>
             <div class=sub-menu>
                 <div class=button enabled=false>New</div>
                 <div class=button enabled=false>Open...</div>
-                <div class=button enabled=false>Examples...</div>
+                <div class='additional parent'>
+                    <div>Examples</div>
+                    <div class=sub-menu>
+                        <div class=button enabled=false>Example 1</div>
+                        <div class=button enabled=false>Example 2</div>
+                        <div class=button enabled=false>Example 3</div>
+                        <div class=button enabled=false>Example 4</div>
+                    </div>
+                </div>
                 <div class=button enabled=false>Reload</div>
                 <div class=divider></div>
-                <div enabled=false>Export</div>
+                <div  class='additional parent'>
+                    <div>Export</div>
+                    <div class=sub-menu>
+                        <div class=button enabled=false>STL (Binary)</div>
+                        <div class=button enabled=false>STL (ASCII)</div>
+                        <div class=button enabled=false>AMF (experimental)</div>
+                        <div class=button enabled=false>X3D</div>
+                    </div>
+                </div>
             </div>
         </span
-        ><span>
+        ><span class=parent>
             <div class=title>Design</div>
             <div class=sub-menu>
                 <div class=checkbox enabled=false><img src="imgs/check.svg"/>Automatic Compile &amp; Render</div>
                 <div class=button enabled=true>Compile &amp; Render</div>
             </div>
         </span
-        ><span>
+        ><span class=parent>
             <div class=title>View</div>
             <div class=sub-menu>
                 <div class=button enabled=false><img src="imgs/check.svg"/>Show Axes</div>
                 <div class=button enabled=false><img src="imgs/check.svg"/>Show Grid</div>
                 <div class=button enabled=false>Grid Options...</div>
+                <div class=divider></div>
+                <div class=radio enabled=false><img src="imgs/check.svg"/>Perspective</div>
+                <div class=radio enabled=false>Orthogonal</div>
                 <div class=divider></div>
                 <div class=button enabled=false>Top</div>
                 <div class=button enabled=false>Bottom</div>
@@ -194,12 +214,9 @@ $(document).ready(function() {
                 <div class=button enabled=false>Center</div>
                 <div class=divider></div>
                 <div class=button enabled=false>Reset View</div>
-                <div class=divider></div>
-                <div class=radio enabled=false><img src="imgs/check.svg"/>Perspective</div>
-                <div class=radio enabled=false>Orthogonal</div>
             </div>
         </span
-        ><span>
+        ><span class=parent>
             <div class=title>Help</div>
             <div class=sub-menu>
                 <div onclick="menu.help.documentation()"><img src="imgs/link.svg"/>Documentation</div>
@@ -209,11 +226,17 @@ $(document).ready(function() {
     </div>
 
 <div id=toolbar>
-    <div id=toolbarHandle></div>
+<!--    <div id=toolbarHandle></div>-->
+    <div><img src="imgs/view-box-front.svg"/></div
+    ><div><img src="imgs/view-box-back.svg"/></div
+    ><div><img src="imgs/view-box-left.svg"/></div
+    ><div><img src="imgs/view-box-right.svg"/></div
+    ><div><img src="imgs/view-box-top.svg"/></div
+    ><div><img src="imgs/view-box-bottom.svg"/></div>
 </div>
 
 <div id=about>
-    <div><img src="imgs/title2.svg" style='width: 75%'><div>Version <script>document.write(version);</script></div></div>
+    <div><img src="imgs/title.svg" style='width: 75%'><div>Version <script>document.write(version);</script></div></div>
     <div>
         <table>
             <tr><th>Render Code</th><td>SHIFT + RETURN</td></tr>
@@ -434,30 +457,35 @@ if(me=='web-online') {
 
 <div id="parametersdiv"></div>
 <div id="tail">
-<div id="statusdiv"></div>
-<div id="filedropzone">
-  <div id="filedropzone_empty">
-  <script>document.write("Drop your jscad, scad, amf, stl file or multiple jscad files "+
-     (browser=='chrome'&&me=='web-online'?"or folder with jscad files ":"")+
-     " here (see <a style='font-weight: normal' href='https://github.com/Spiritdude/OpenJSCAD.org/wiki/User-Guide#support-of-include' target=_blank>details</a>) "+
-     "<br>or edit OpenJSCAD or OpenSCAD source-code in built-in editor direct.");
-  </script></div>
-  <div id="filedropzone_filled">
-    <span id="currentfile">...</span>
-    <div id="filebuttons">
-      <button id="getstlbutton" style="display:none" onclick="getStl();">Get STL</button>
-      <button onclick="superviseAllFiles({forceReload:true});">Reload</button>
-      <!--button onclick="parseFile(gCurrentFile,true,false);">Debug (see below)</button-->
-	   <label for="autoreload">Auto Reload</label><input type="checkbox" name="autoreload" value="" checked="true" id="autoreload" onclick="toggleAutoReload();">
+    <div id="statusdiv"></div>
+    <div id="filedropzone">
+        <div id="filedropzone_empty">
+<!--
+            <script>
+                document.write(
+                    "Drop your jscad, scad, amf, stl file or multiple jscad files " +
+                    (browser=='chrome'&&me=='web-online'?"or folder with jscad files ":"") +
+                    " here (see <a style='font-weight: normal' href='https://github.com/Spiritdude/OpenJSCAD.org/wiki/User-Guide#support-of-include' target=_blank>details</a>) " +
+                    "<br>or edit OpenJSCAD or OpenSCAD source-code in built-in editor direct.");
+            </script>
+-->
+        </div>
+        <div id="filedropzone_filled">
+            <span id="currentfile">...</span>
+            <div id="filebuttons">
+                <button id="getstlbutton" style="display:none" onclick="getStl();">Get STL</button>
+                <button onclick="superviseAllFiles({forceReload:true});">Reload</button>
+                <!--button onclick="parseFile(gCurrentFile,true,false);">Debug (see below)</button-->
+                <label for="autoreload">Auto Reload</label><input type="checkbox" name="autoreload" value="" checked="true" id="autoreload" onclick="toggleAutoReload();">
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 </div>
 <div id=footer>
 </div>
 
 <!--script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script-->
-<script src="ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
 
 <script id=conversionWorker type="javascript/worker">
 // adapted from http://www.html5rocks.com/en/tutorials/workers/basics/
@@ -475,7 +503,7 @@ self.onmessage = function(e) {      // Worker to import STL/OBJ as it can take q
       if(index!=-1) {
          url = url.substring(0,index);
       }
-      importScripts(url+'csg.js',url+'openjscad.js',url+'openscad.js');
+      importScripts(url+'js/csg.js',url+'js/openjscad.js',url+'js/openscad.js');
       var src, type;
       data.filename.match(/\.(stl|obj|amf|gcode)$/i);
       type = RegExp.$1;
@@ -505,7 +533,7 @@ var gMemFsTotal = 0;          // async reading: total files to read (Count==Tota
 var gMemFsChanged = 0;        // how many files have changed
 var gRootFs = [];             // root(s) of folders 
 
-var _includePath = './';
+var _includePath = './js/';
 
 function onload() {
    // -- http://ace.ajax.org/#nav=howto

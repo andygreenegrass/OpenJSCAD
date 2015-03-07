@@ -1,0 +1,16 @@
+/*
+ * status.css for index.html of http://OpenJSCAD.org/
+ */
+
+#errordiv {
+    display: none;
+    background-color: rgba(252, 129, 129, 0.8);
+    color: #900000;
+    box-sizing: border-box;
+    padding: 20px;
+    width: 70%;
+    position: fixed;
+    left: 15%;
+    top: 20%;
+    border-radius: 5px;
+}

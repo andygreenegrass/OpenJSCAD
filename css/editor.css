@@ -4,8 +4,8 @@
 
 #editor {
    width: 40%;
-   top: 27px;
-   bottom: 0px;
+   top: 27px;       /* don't invade the menu */
+   bottom: 32px;    /* don't invade the status bar */
    /* height: 100%;    note: newer ace expects height */
    left: calc(100% - 20px);
    z-index: 6;

@@ -678,11 +678,11 @@ OpenJsCad.parseJsCadScriptSync = function(script, mainParameters, debugging) {
 // callback: should be function(error, csg)
 OpenJsCad.parseJsCadScriptASync = function(script, mainParameters, options, callback) {
   var baselibraries = [
-    "csg.js",
-    "openjscad.js",
-    "openscad.js"
-    //"jquery/jquery-1.9.1.js",
-    //"jquery/jquery-ui.js"
+    "js/csg.js",
+    "js/openjscad.js",
+    "js/openscad.js"
+    //"js/jquery/jquery-1.9.1.js",
+    //"js/jquery/jquery-ui.js"
   ];
 
   var baseurl = document.location.href.replace(/\?.*$/, '');
@@ -1026,8 +1026,8 @@ OpenJsCad.Processor.prototype = {
     }
     //this.errordiv = document.createElement("div");
     this.errordiv = document.getElementById("errordiv");
-    this.errorpre = document.createElement("pre"); 
-    this.errordiv.appendChild(this.errorpre);
+    this.errorpre = this.errordiv; 
+    //this.errordiv.appendChild(this.errorpre);
     //this.statusdiv = document.createElement("div");
     this.statusdiv = document.getElementById("statusdiv");
     this.statusdiv.className = "statusdiv";
@@ -1035,30 +1035,30 @@ OpenJsCad.Processor.prototype = {
     this.statusspan = document.createElement("span");
     this.statusspan.id = 'statusspan';
     this.statusspan.style.marginRight = '2em';
-    this.statusbuttons = document.createElement("span");
-    this.statusbuttons.style.float = "right";
+    //this.statusbuttons = document.createElement("span");
+    //this.statusbuttons.style.float = "right";
     this.statusdiv.appendChild(this.statusspan);
-    this.statusdiv.appendChild(this.statusbuttons);
+    //this.statusdiv.appendChild(this.statusbuttons);
     this.abortbutton = document.createElement("button");
     this.abortbutton.innerHTML = "Abort";
     this.abortbutton.onclick = function(e) {
       that.abort();
     };
-    this.statusbuttons.appendChild(this.abortbutton);
+    //this.statusbuttons.appendChild(this.abortbutton);
     this.formatDropdown = document.createElement("select");
     this.formatDropdown.onchange = function(e) {
       that.currentFormat = that.formatDropdown.options[that.formatDropdown.selectedIndex].value;
       that.updateDownloadLink();
     };
-    this.statusbuttons.appendChild(this.formatDropdown);
+    //this.statusbuttons.appendChild(this.formatDropdown);
     this.generateOutputFileButton = document.createElement("button");
     this.generateOutputFileButton.onclick = function(e) {
       that.generateOutputFile();
     };
-    this.statusbuttons.appendChild(this.generateOutputFileButton);
+    //this.statusbuttons.appendChild(this.generateOutputFileButton);
     this.downloadOutputFileLink = document.createElement("a");
     this.downloadOutputFileLink.className = "downloadOutputFileLink"; // so we can css it
-    this.statusbuttons.appendChild(this.downloadOutputFileLink);
+    //this.statusbuttons.appendChild(this.downloadOutputFileLink);
 
     //this.parametersdiv = document.createElement("div");            // already created
     this.parametersdiv = document.getElementById("parametersdiv");   // get the info

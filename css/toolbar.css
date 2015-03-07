@@ -2,7 +2,6 @@
  * toolbar.css for index.html of http://OpenJSCAD.org/
  */
 
-
 #toolbar, #toolbar nav a, #toolbar #toolbarHandle {
    transition: all 0.3s;
    -o-transition: all 0.3s;
@@ -12,17 +11,14 @@
 
 #toolbar {
     position: fixed;
-    top: 27px;
-    bottom: 0;
-    left: -130px;
-    width: 150px;
+    top: 27px;      /* don't invade the menu */
+    bottom: 32px;   /* don't invade the status bar */
+    left: -70px;
+    width: 90px;
 
-    background: white;
-    opacity: 0.5;
-    -moz-opacity: 0.8;
+    background: rgba(255, 255, 255, 0.5);
     box-sizing: border-box;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 20px;
     z-index: 5;
     font-size: 0.9em;
     box-shadow: 2px 0 6px rgba(0,0,0,0.1);
@@ -57,4 +53,17 @@
 
 #toolbar:hover #toolbarHandle {
     right: calc(250px + 50px);
+}
+
+#toolbar > div {
+    margin-bottom: 10px;
+}
+
+#toolbar img {
+    width: 100%;
+    opacity: 0.8;
+}
+
+#toolbar img:hover {
+    opacity: 1;
 }
