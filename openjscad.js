@@ -59,7 +59,7 @@ OpenJsCad.Viewer = function(containerelement, initialdepth) {
   this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
   this.gl.matrixMode(this.gl.PROJECTION);
   this.gl.loadIdentity();
-  this.gl.perspective(45, this.gl.canvas.width / this.gl.canvas.height, 0.5, 1000);
+  this.gl.perspective(50, this.gl.canvas.width / this.gl.canvas.height, 0.5, 1000);
   this.gl.matrixMode(this.gl.MODELVIEW);
 
   // Set up WebGL state
@@ -387,24 +387,33 @@ OpenJsCad.Viewer.prototype = {
       gl.enable(gl.BLEND);
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
       gl.begin(gl.LINES);
-      var plate = 200;
+      var plate = 2000;
       if(this.plate) {
-         gl.color(.8,.8,.8,.5); // -- minor grid
-         for(var x=-plate/2; x<=plate/2; x++) {
-            if(x%10) {
-               gl.vertex(-plate/2, x, 0);
-               gl.vertex(plate/2, x, 0);
-               gl.vertex(x, -plate/2, 0);
-               gl.vertex(x, plate/2, 0);
-            }
-         }
-         gl.color(.5,.5,.5,.5); // -- major grid
-         for(var x=-plate/2; x<=plate/2; x+=10) {
-            gl.vertex(-plate/2, x, 0);
-            gl.vertex(plate/2, x, 0);
-            gl.vertex(x, -plate/2, 0);
-            gl.vertex(x, plate/2, 0);
-         }
+          
+//         gl.color(.8,.8,.8,.5); // -- minor grid
+//         for(var x=-plate/2; x<=plate/2; x++) {
+//            if(x%10) {
+//               gl.vertex(-plate/2, x, 0);
+//               gl.vertex(plate/2, x, 0);
+//               gl.vertex(x, -plate/2, 0);
+//               gl.vertex(x, plate/2, 0);
+//            }
+//         }
+         gl.color(.5,.5,.5,1); // -- major grid
+         gl.vertex(-plate/2, 0, 0);
+         gl.vertex(plate/2, 0, 0);
+         gl.vertex(0, -plate/2, 0);
+         gl.vertex(0, plate/2, 0);
+         gl.vertex(0, 0, -plate/2);
+         gl.vertex(0, 0, plate/2);
+          
+//         gl.color(.5,.5,.5,.5); // -- major grid
+//         for(var x=-plate/2; x<=plate/2; x+=10) {
+//            gl.vertex(-plate/2, x, 0);
+//            gl.vertex(plate/2, x, 0);
+//            gl.vertex(x, -plate/2, 0);
+//            gl.vertex(x, plate/2, 0);
+//         }
       }
       if(0) {
          //X - red

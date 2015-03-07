@@ -38,8 +38,9 @@ Todo:
 <script src="jquery/jquery-1.9.1.js"></script>
 <script src="jquery/jquery-ui.js"></script>
 <script src="jquery/jquery.hammer.js"></script>
-<link rel="stylesheet" href="style.css" type="text/css">
-<link rel="stylesheet" href="openjscad.css" type="text/css">
+<link rel="stylesheet" href="css/style.css" type="text/css">
+<link rel="stylesheet" href="css/openjscad.css" type="text/css">
+<link rel="stylesheet" href="css/top-menu.css" type="text/css">
 </head>
 <body onload="onload()">
 <style>
@@ -68,14 +69,12 @@ if(navigator.userAgent.match(/(opera|chrome|safari|firefox|msie)/i))
    browser = RegExp.$1.toLowerCase();
 
 $(document).ready(function() {
-   $("#menu").height($(window).height());       // initial height
+   //$("#menu").height($(window).height());       // initial height
 
    $(window).resize(function() {                // adjust the relevant divs
-      $("#menu").height($(window).height());
-      $("#menuHandle").css({top: '45%'});
+      //$("#menu").height($(window).height());
    });
-   setTimeout( function(){$('#menu').css('left','-280px');},3000); // -- hide slide-menu after 3secs
-
+   
    $('#menu').mouseleave(function() {
       $('#examples').css('height',0); $('#examples').hide(); 
       $('#options').css('height',0); $('#options').hide(); 
@@ -121,13 +120,87 @@ $(document).ready(function() {
 });   
 </script>
 <div id="header">
-<img src="imgs/title.png">
+<!--<img src="imgs/title.png">-->
 <div id="errordiv"></div>
 </div>
+    
+    <script>
+        var topmenu = {};
+        topmenu.openjscad = {};
+        topmenu.openjscad.about = function() {
+            $('#about').show();
+            return false;
+        };
+        topmenu.openjscad.recentUpdates = function() {
+            var url = https://plus.google.com/115007999023701819645
+            window.open(url, '_blank');
+        };
+        topmenu.help = {};
+        topmenu.help.documentation = function() {
+            //https://github.com/Spiritdude/OpenJSCAD.org/wiki/User-Guide
+        };
+    </script>
+    <div id=top-menu>
+        <span>
+            <div class=title>OpenJSCAD</div>
+            <div class=sub-menu>
+                <div class=button onclick="topmenu.openjscad.about()">About OpenJSCAD...</div>
+                <div class=button onclick="topmenu.openjscad.recentUpdates()">Recent Updates</div>
+                <div class=divider></div>
+                <div class=button>Preferences...</div>
+            </div>
+        </span
+        ><span>
+            <div class=title>File</div>
+            <div class=sub-menu>
+                <div class=button>New</div>
+                <div class=button>Open...</div>
+                <div class=button>Examples...</div>
+                <div class=button>Reload</div>
+                <div class=button>Close</div>
+                <div class=divider></div>
+                <div>Export</div>
+            </div>
+        </span
+        ><span>
+            <div class=title>Design</div>
+            <div class=sub-menu>
+                <div class=checkbox>Automatic Compile &amp; Render</div>
+                <div class=button>Compile &amp; Render</div>
+            </div>
+        </span
+        ><span>
+            <div class=title>View</div>
+            <div class=sub-menu>
+                <div class=button>Top</div>
+                <div class=button>Bottom</div>
+                <div class=button>Left</div>
+                <div class=button>Right</div>
+                <div class=button>Front</div>
+                <div class=button>Back</div>
+                <div class=button>Diagonal</div>
+                <div class=button>Center</div>
+                <div class=divider></div>
+                <div class=button>Reset View</div>
+                <div class=divider></div>
+                <div class=radio>Perspective</div>
+                <div class=radio>Orthogonal</div>
+            </div>
+        </span
+        ><span>
+            <div class=title>Help</div>
+            <div class=sub-menu>
+                <div>Documentation</div>
+                <div>Google+ Community</div>
+            </div>
+        </span>
+    </div>
 
 <div id=menu>
-<img id=menuHandle src="imgs/menuHandleVL.png">
+<!--<img id=menuHandle src="imgs/menuHandleVL.png">-->
+<div id=menuHandle></div>
 <nav>
+<img id=logo src="imgs/title2.svg"/>
 <div id=menuVersion>Version <script>document.write(version);</script></div>
 <p/>
 <table class=info>
@@ -185,21 +258,13 @@ Get your copy/clone/fork from <a href="https://github.com/Spiritdude/OpenJSCAD.o
 <div id="editor">// -- OpenJSCAD.org logo
 
 function main() {
-   return union(
-      difference(
-         cube({size: 3, center: true}),
-         sphere({r:2, center: true})
-      ),
-      intersection(
-          sphere({r: 1.3, center: true}),
-          cube({size: 2.1, center: true})
-      )
-   ).translate([0,0,1.5]).scale(10);
+   return cube(20).center(true);
 }
 </div>
 
 <script>
 var ex = [ 
+{ file:'box.jscad', title: 'Just a box' },
 { file:'logo.jscad', title: 'OpenJSCAD.org Logo' },
 { file:'logo.amf', title: 'OpenJSCAD.org Logo', type: 'AMF', new: true },
 
@@ -395,14 +460,12 @@ if(me=='web-online') {
       <button id="getstlbutton" style="display:none" onclick="getStl();">Get STL</button>
       <button onclick="superviseAllFiles({forceReload:true});">Reload</button>
       <!--button onclick="parseFile(gCurrentFile,true,false);">Debug (see below)</button-->
-	   <label for="autoreload">Auto Reload</label><input type="checkbox" name="autoreload" value="" id="autoreload" onclick="toggleAutoReload();">
+	   <label for="autoreload">Auto Reload</label><input type="checkbox" name="autoreload" value="" checked="true" id="autoreload" onclick="toggleAutoReload();">
     </div>
   </div>
 </div>
 </div>
 <div id=footer>
-OpenJSCAD.org 
-<script>document.write(version);</script>, MIT License, get your own copy/clone/fork from <a target=_blank href="https://github.com/Spiritdude/OpenJSCAD.org">GitHub: OpenJSCAD</a>
 </div>
 
 <!--script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script-->

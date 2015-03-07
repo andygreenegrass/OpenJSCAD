@@ -21,12 +21,12 @@ html, body {
 
 a {
    text-decoration: none;
-   color: #6020a0;
+   color: #5ab9ff;
    font-weight: bold;
 }
 
 a:visited {
-   color: #6020a0;
+   color: #5ab9ff;
 }
 
 #header {
@@ -38,12 +38,16 @@ a:visited {
 
 #editor { 
    width: 40%;
-   top: 0px;
+   top: 27px;
    bottom: 0px;
    /* height: 100%;    note: newer ace expects height */
-   right: 0px;
+   left: calc(100% - 20px);
    z-index: 6;
    background: rgba(255,255,255,0.15);
+}
+
+#editor:hover {
+    left: 60%;
 }
 
 #viewerContext {
@@ -74,16 +78,17 @@ canvas {
 
 #about {
    position: absolute;
-   width: 30%;
-   left: 30%;
-   top: 30%;
+    box-sizing: border-box;
+   width: 400px;
+   left: calc(50% - 200px);
+   top: 25%;
    font-size: 0.75em;
-   box-shadow: 0px 0px 20px black;
+   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
    color: #404040;
-   border-radius: 20px;
+   border-radius: 0px;
    background: white;
    display: none;
-   padding: 1.5em;
+   padding: 2.5em;
    text-align: center;
    z-index: 100;
 }
@@ -129,7 +134,7 @@ canvas {
    vertical-align: bottom;
 }
 
-#menu, #menu nav a {
+#menu, #menu nav a, #menu #menuHandle, #editor {
    transition: all 0.4s;
    -o-transition: all 0.4s;
    -moz-transition: all 0.4s;
@@ -142,38 +147,62 @@ canvas {
    opacity: 0.8;    
    -moz-opacity: 0.8;
 
-   border-right: 1px solid black;
-   width: 250px;
+/*   border-right: 1px solid rgba(0, 0, 0, 0.23);*/
+   width: 280px;
+    top: 27px;
+    bottom: 0;
+    box-sizing: border-box;
    padding-left: 20px;
-   padding-right: 10px;
+   padding-right: 20px;
    position: fixed;
    z-index: 5;
 
    font-size: 0.9em;
    
-   box-shadow: 4px 0 10px rgba(0,0,0,0.25);
-   -moz-box-shadow: 4px 0 10px rgba(0,0,0,0.25);
-   -webkit-box-shadow: 4px 0 10px rgba(0,0,0,0.25);
+   box-shadow: 2px 0 6px rgba(0,0,0,0.1);
+   -moz-box-shadow: 2px 0 6px rgba(0,0,0,0.1);
+   -webkit-box-shadow: 2px 0 6px rgba(0,0,0,0.1);
 }
  
 #menu {
-   left: 0; 
+   left: -280px; 
 }
 
 #menu:hover, #menu:focus ~ #menuHandle:hover, #menuHandle:focus {
    left: 0 !important;  /* slide out */
 }
 
+#logo {
+    width: 100%;
+}
+
 #menuHandle {
-   right: -25px;
-   top: 45%;
-   position: absolute;
-   z-index: 6;
+    opacity: 1;
+    width: 50px;
+    height: 50px;
+    right: -25px;
+    top: calc(50% - 45px);
+    position: absolute;
+    z-index: -3;
+    background-color: white;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    border-radius: 25px;
+    box-shadow: 0px 0 6px rgba(0,0,0,0.1);
+/*
+    border: 1px solid rgba(0, 0, 0, 0.19);
+    border-color: rgba(0, 0, 0, 0.23);
+    border-width: 1px 1px 1px 0px;
+*/
+/*    box-shadow: 0px 0px 3px black;*/
+}
+#menu:hover #menuHandle {
+    right: calc(250px + 50px);
 }
 
 #menu nav {
    position: relative;
-   top: 50px;
+   top: 20px;
 }
 
 #menu nav .navlink {
