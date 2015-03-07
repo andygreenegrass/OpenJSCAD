@@ -125,73 +125,77 @@ $(document).ready(function() {
 </div>
     
     <script>
-        var topmenu = {};
-        topmenu.openjscad = {};
-        topmenu.openjscad.about = function() {
+        var menu = {};
+        menu.openjscad = {};
+        menu.openjscad.about = function() {
             $('#about').show();
             return false;
         };
-        topmenu.openjscad.recentUpdates = function() {
-            //var url = https://plus.google.com/115007999023701819645
-            //window.open(url, '_blank');
+        menu.openjscad.recentUpdates = function() {
+            var url = "https://plus.google.com/115007999023701819645";
+            window.open(url, '_blank');
         };
-        topmenu.help = {};
-        topmenu.help.documentation = function() {
-            //https://github.com/Spiritdude/OpenJSCAD.org/wiki/User-Guide
+        menu.help = {};
+        menu.help.documentation = function() {
+            var url = "https://github.com/Spiritdude/OpenJSCAD.org/wiki/User-Guide";
+            window.open(url, '_blank');
+        };
+        menu.help.community = function() {
+            var url = "https://plus.google.com/communities/114958480887231067224";
+            window.open(url, '_blank');
         };
     </script>
     <div id=top-menu>
         <span>
             <div class=title>OpenJSCAD</div>
             <div class=sub-menu>
-                <div class=button onclick="topmenu.openjscad.about()">About OpenJSCAD...</div>
-                <div class=button onclick="topmenu.openjscad.recentUpdates()">Recent Updates</div>
+                <div class=button onclick="menu.openjscad.about()">About OpenJSCAD...</div>
+                <div class=button onclick="menu.openjscad.recentUpdates()">Recent Updates</div>
                 <div class=divider></div>
-                <div class=button>Preferences...</div>
+                <div class=button enabled=false>Preferences...</div>
             </div>
         </span
         ><span>
             <div class=title>File</div>
             <div class=sub-menu>
-                <div class=button>New</div>
-                <div class=button>Open...</div>
-                <div class=button>Examples...</div>
-                <div class=button>Reload</div>
-                <div class=button>Close</div>
+                <div class=button enabled=false>New</div>
+                <div class=button enabled=false>Open...</div>
+                <div class=button enabled=false>Examples...</div>
+                <div class=button enabled=false>Reload</div>
                 <div class=divider></div>
-                <div>Export</div>
+                <div enabled=false>Export</div>
             </div>
         </span
         ><span>
             <div class=title>Design</div>
             <div class=sub-menu>
-                <div class=checkbox><img src="imgs/check.svg"/>Automatic Compile &amp; Render</div>
-                <div class=button>Compile &amp; Render</div>
+                <div class=checkbox enabled=false><img src="imgs/check.svg"/>Automatic Compile &amp; Render</div>
+                <div class=button enabled=false>Compile &amp; Render</div>
             </div>
         </span
         ><span>
             <div class=title>View</div>
             <div class=sub-menu>
-                <div class=button>Top</div>
-                <div class=button>Bottom</div>
-                <div class=button>Left</div>
-                <div class=button>Right</div>
-                <div class=button>Front</div>
-                <div class=button>Back</div>
-                <div class=button>Diagonal</div>
-                <div class=button>Center</div>
+                <div class=button enabled=false>Top</div>
+                <div class=button enabled=false>Bottom</div>
+                <div class=button enabled=false>Left</div>
+                <div class=button enabled=false>Right</div>
+                <div class=button enabled=false>Front</div>
+                <div class=button enabled=false>Back</div>
+                <div class=button enabled=false>Diagonal</div>
+                <div class=button enabled=false>Center</div>
                 <div class=divider></div>
-                <div class=button>Reset View</div>
+                <div class=button enabled=false>Reset View</div>
                 <div class=divider></div>
-                <div class=radio><img src="imgs/check.svg"/>Perspective</div>
-                <div class=radio>Orthogonal</div>
+                <div class=radio enabled=false><img src="imgs/check.svg"/>Perspective</div>
+                <div class=radio enabled=false>Orthogonal</div>
             </div>
         </span
         ><span>
             <div class=title>Help</div>
             <div class=sub-menu>
-                <div>Documentation</div>
-                <div>Google+ Community</div>
+                <div onclick="menu.help.documentation()">Documentation</div>
+                <div onclick="menu.help.community()">Google+ Community</div>
             </div>
         </span>
     </div>

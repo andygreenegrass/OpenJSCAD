@@ -43,9 +43,28 @@
     position: relative;
 /*    height: 27px;*/
 }
+#top-menu .sub-menu > div:not(.divider) img {
+    height: 12px;
+    width: 12px;
+    position: absolute;
+    left: 0px;
+    top: calc(50% - 8px);
+    left: 7px;
+    vertical-align: middle;
+}
 #top-menu .sub-menu > div:not(.divider):hover {
     background-color: #cff2ff;
 }
+
+#top-menu .sub-menu > div:not(.divider)[enabled=false] {
+    color: rgba(0, 0, 0, 0.3);
+    background-color: transparent;
+}
+
+#top-menu .sub-menu > div:not(.divider)[enabled=false] img {
+    opacity: 0.3;
+}
+
 #top-menu > span:hover > .sub-menu {
     display: block;
 }
@@ -55,14 +74,4 @@
     height: 1px;
     margin: 5px 0 5px 0;
     background-color: rgba(0, 0, 0, 0.12);
-}
-
-#top-menu .sub-menu > div:not(.divider) img {
-    height: 12px;
-    width: 12px;
-    position: absolute;
-    left: 0px;
-    top: calc(50% - 8px);
-    left: 7px;
-    vertical-align: middle;
 }
