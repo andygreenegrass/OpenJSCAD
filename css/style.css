@@ -89,13 +89,6 @@ canvas {
    vertical-align: bottom;
 }
 
-#editor {
-   transition: all 0.4s;
-   -o-transition: all 0.4s;
-   -moz-transition: all 0.4s;
-   -webkit-transition: all 0.4s;
-}
-
 .menuSubInfo {
    font-size: 0.6em;
    color: #666;
