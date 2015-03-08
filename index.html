@@ -39,6 +39,7 @@ Todo:
     <script src="js/jquery/jquery-1.9.1.js"></script>
     <script src="js/jquery/jquery-ui.js"></script>
     <script src="js/jquery/jquery.hammer.js"></script>
+    <script src="js/angular/angular.min.js"></script>
     <link rel="stylesheet" href="css/style.css" type="text/css"/>
     <link rel="stylesheet" href="css/pin.css" type="text/css"/>
     <link rel="stylesheet" href="css/about.css" type="text/css"/>
@@ -55,12 +56,12 @@ Todo:
 <style>
 /* we choose chrome theme for ace, and make sure line number is transparent too */
 /* this has to stay in the body (not head) otherwise does not take effect */
-.ace-chrome .ace_gutter { 
-   border-left: 2px dashed rgba(200,200,200,0.2);
-   background: none;
+.ace-chrome .ace_gutter {
+/*    border-left: 2px dashed rgba(200,200,200,0.2);*/
+    background: none;
 }
 .ace-chrome {
-   font-size: 10pt;     // -- not 'px', but 'pt' for high dpi screens
+    font-size: 10pt;     // -- not 'px', but 'pt' for high dpi screens
 }
 </style>
 <script src="js/lightgl.js"></script>
@@ -68,6 +69,7 @@ Todo:
 <script src="js/user-prefs.js"></script>
 <script src="js/openjscad.js"></script>
 <script src="js/openscad.js"></script>
+<script src="js/menu.js"></script>
 <script src="js/underscore.js"></script>
 <script src="js/openscad-openjscad-translator.js"></script>
 <script lang=JavaScript>
@@ -75,7 +77,7 @@ var version = '0.023 (2015/02/14)';
 //$(function() { $("#parametersdiv").draggable(); }); // doesn't work well, disabled
 var me = document.location.toString().match(/^file:/)?'web-offline':'web-online'; // me: {cli, web-offline, web-online}
 var browser = 'unknown';
-if(navigator.userAgent.match(/(opera|chrome|safari|firefox|msie)/i))
+if (navigator.userAgent.match(/(opera|chrome|safari|firefox|msie)/i))
    browser = RegExp.$1.toLowerCase();
 
 $(document).ready(function() {
@@ -128,126 +130,13 @@ $(document).ready(function() {
     <div id="errordiv"></div>
 </div>
     
-<div id=drop-view></div>
+<div id=drop-view class=>
+    <div>Thanks for all the files.</div>
+</div>
     
 <!-- Menu -------------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
-    
-<script>
-    function redraw() {
-        gProcessor.viewer.onDraw();
-    }
-    
-    var menu = {};
 
-    // OpenJSCAD
-    // -------------
-    menu.openjscad = {};
-    menu.openjscad.about = function() {
-        $('#about').attr('visible', 'true');
-        return false;
-    };
-    menu.openjscad.recentUpdates = function() {
-        var url = "https://plus.google.com/115007999023701819645";
-        window.open(url, '_blank');
-    };
-
-    // File
-    // -------------
-    menu.file = {};
-    menu.file.open = function() {
-        //f = Folder.selectDialog("wot");  
-        //alert (f);
-    };
-    
-    // View
-    // -------------
-    menu.view = {};
-    menu.view.showAxes = function(el) {
-        userPrefs.view.axes.show = !userPrefs.view.axes.show;
-        redraw();
-        if (userPrefs.view.axes.show)
-            $(el).addClass('checked');
-        else 
-            $(el).removeClass('checked');
-    };
-    menu.view.showGrid = function(el) {
-        userPrefs.view.grid.major.show = !userPrefs.view.grid.major.show;
-        redraw();
-        if (userPrefs.view.grid.major.show)
-            $(el).addClass('checked');
-        else 
-            $(el).removeClass('checked');
-    };
-    menu.view.top = function() {
-        gProcessor.viewer.angleX = 0;
-        gProcessor.viewer.angleY = 0;
-        gProcessor.viewer.angleZ = 0;
-        redraw();
-    }
-    menu.view.bottom = function() {
-        gProcessor.viewer.angleX = -180;
-        gProcessor.viewer.angleY = 0;
-        gProcessor.viewer.angleZ = 0;
-        redraw();
-    }
-    menu.view.front = function() {
-        gProcessor.viewer.angleX = -90;
-        gProcessor.viewer.angleY = 0;
-        gProcessor.viewer.angleZ = 0;
-        redraw();
-    }
-    menu.view.back = function() {
-        gProcessor.viewer.angleX = -90;
-        gProcessor.viewer.angleY = 0;
-        gProcessor.viewer.angleZ = -180;
-        redraw();
-    }
-    menu.view.right = function() {
-        gProcessor.viewer.angleX = -90;
-        gProcessor.viewer.angleY = 0;
-        gProcessor.viewer.angleZ = -90;
-        redraw();
-    }
-    menu.view.left = function() {
-        gProcessor.viewer.angleX = -90;
-        gProcessor.viewer.angleY = 0;
-        gProcessor.viewer.angleZ = 90;
-        redraw();
-    }
-    menu.view.diagonal = function() {
-        gProcessor.viewer.angleX = -60;
-        gProcessor.viewer.angleY = 0;
-        gProcessor.viewer.angleZ = -45;
-        redraw();
-    }
-    menu.view.center = function() {
-        gProcessor.viewer.viewpointX = 0;
-        gProcessor.viewer.viewpointY = 0;
-        redraw();
-    }
-    menu.view.resetView = function() {
-        gProcessor.viewer.angleX = -60;
-        gProcessor.viewer.angleY = 0;
-        gProcessor.viewer.angleZ = -45;
-        gProcessor.viewer.viewpointX = 0;
-        gProcessor.viewer.viewpointY = -5;
-        gProcessor.viewer.viewpointZ = gProcessor.initialViewerDistance;
-        redraw();
-    }
-
-    // Help
-    // -------------
-    menu.help = {};
-    menu.help.documentation = function() {
-        var url = "https://github.com/Spiritdude/OpenJSCAD.org/wiki/User-Guide";
-        window.open(url, '_blank');
-    };
-    menu.help.community = function() {
-        var url = "https://plus.google.com/communities/114958480887231067224";
-        window.open(url, '_blank');
-    };
-</script>
 <div id=menu>
     <span class=parent>
         <div class=title>OpenJSCAD</div>
@@ -327,8 +216,6 @@ $(document).ready(function() {
     var userPrefs = new UserPrefs();
     
     $(document).ready(function() {
-        
-        //alert('test');
         $('.pin').click(function() {
             $(this).toggleClass('pinned');
         });
@@ -350,13 +237,13 @@ $(document).ready(function() {
 <div id=editor-wrapper class=pinnable>
     <div class=pin><div><img src="imgs/pin.svg"/></div></div>
     <div id=editor></div>
+    <div id=parametersdiv></div>
 </div>
 
 <!-- Toolbar ----------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
     
 <div id=toolbar class=pinnable>
-<!--    <div id=toolbarHandle></div>-->
     <div class=pin><div><img src="imgs/pin.svg"/></div></div>
     <div onclick='menu.view.front()'><img src="imgs/view-box-front.svg"/></div
     ><div onclick='menu.view.back()'><img src="imgs/view-box-back.svg"/></div
@@ -610,7 +497,7 @@ if(me=='web-online') {
 
 <div oncontextmenu="return false;" id="viewerContext"></div> <!-- avoiding popup when right mouse is clicked -->
     
-<div id="parametersdiv"></div>
+<!--<div id="parametersdiv"></div>-->
 <div id="tail">
     
 </div>
@@ -694,7 +581,7 @@ function onload() {
             },
         });
     });
-    if(0) {     // for reload when drag'n'dropped file(s) ([Reload] equivalent)
+    if (0) {     // for reload when drag'n'dropped file(s) ([Reload] equivalent)
         viewer.onkeypress = function(evt) {
             if(evt.shiftKey&&evt.keyCode=='13') {   // Shift + Return
                 superviseFiles({forceReload:true});
@@ -705,7 +592,7 @@ function onload() {
     gProcessor = new OpenJsCad.Processor(document.getElementById("viewerContext"), userPrefs);
     setupDragDrop();
     //gProcessor.setDebugging(debugging); 
-    if(me=='web-online') {    // we are online, fetch first example
+    if (me=='web-online') {    // we are online, fetch first example
         //    gProcessor.setJsCad(editor.getValue());
 
         if (document.URL.match(/#(http:\/\/\S+)$/)||
@@ -755,7 +642,7 @@ function fetchExample(fn,url) {
     //if(gMemFs[fn]) {
     //   console.log("found locally:",gMemFs[i].name);
     //}
-   if(1) {     // doesn't work off-line yet
+   if (1) {     // doesn't work off-line yet
       var xhr = new XMLHttpRequest();
       xhr.open("GET", fn, true);
       if(fn.match(/\.(stl|gcode)$/i)) {
@@ -864,85 +751,92 @@ function putSourceInEditor(src,fn) {
 OpenJsCad.AlertUserOfUncaughtExceptions();
 
 function setupDragDrop() {
-  // Check for the various File API support.
-  if (window.File && window.FileReader && window.FileList) {
-    // Great success! All the File APIs are supported.
-  } else {
-    throw new Error("Error: Your browser does not fully support the HTML File API");
-  }
+    // Check for the various File API support.
+    if (window.File && window.FileReader && window.FileList) {
+        // Great success! All the File APIs are supported.
+    } else {
+        throw new Error("Error: Your browser does not fully support the HTML File API");
+    }
     var dropZone = window;
-  dropZone.addEventListener('dragover', function(evt) {
-      $('#drop-view').addClass('shown');
-    evt.stopPropagation();
-    evt.preventDefault();
-    evt.dataTransfer.dropEffect = 'copy';
-  }, false);
-  dropZone.addEventListener('drop', handleFileSelect, false);
+    dropZone.addEventListener('dragover', function(evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        $('#drop-view').addClass('shown');
+        evt.dataTransfer.dropEffect = 'copy';
+    }, false);
+    dropZone.addEventListener('drop', handleFileSelect, false);
+    dropZone.addEventListener('dragleave', function(evt) {
+        $('#drop-view').removeClass('shown');
+        evt.stopPropagation();
+        evt.preventDefault();
+    }, false);
 }
 
 function handleFileSelect(evt) {
     $('#drop-view').removeClass('shown');
-  evt.stopPropagation();
-  evt.preventDefault();
-  gMemFs = []; gMainFile = null;
-  if(!evt.dataTransfer) throw new Error("Not a datatransfer (1)");
-  if(!evt.dataTransfer.files) throw new Error("Not a datatransfer (2)");
+    evt.stopPropagation();
+    evt.preventDefault();
+    gMemFs = []; gMainFile = null;
+    if (!evt.dataTransfer) throw new Error("Not a datatransfer (1)");
+    if (!evt.dataTransfer.files) throw new Error("Not a datatransfer (2)");
 
-  if(evt.dataTransfer.items&&evt.dataTransfer.items.length) {     // full directories, let's try
-    var items = evt.dataTransfer.items;
-    gCurrentFiles = [];
-    gMemFsCount = 0;
-    gMemFsTotal = 0;
-    gMemFsChanged = 0;
-    gRootFs = [];
-    for(var i=0; i<items.length; i++) {
-       //var item = items[i];//.webkitGetAsEntry();
-       //walkFileTree({file:items[i]});
-       walkFileTree(items[i].webkitGetAsEntry());
-       gRootFs.push(items[i].webkitGetAsEntry());
+    if (evt.dataTransfer.items&&evt.dataTransfer.items.length) {     // full directories, let's try
+        var items = evt.dataTransfer.items;
+        gCurrentFiles = [];
+        gMemFsCount = 0;
+        gMemFsTotal = 0;
+        gMemFsChanged = 0;
+        gRootFs = [];
+        for(var i=0; i<items.length; i++) {
+            //var item = items[i];//.webkitGetAsEntry();
+            //walkFileTree({file:items[i]});
+            walkFileTree(items[i].webkitGetAsEntry());
+            gRootFs.push(items[i].webkitGetAsEntry());
+        }
     }
-  }
-  if(browser=='firefox'||me=='web-offline') {     // -- fallback, walkFileTree won't work with file://
-     if(evt.dataTransfer.files.length>0) {
-       gCurrentFiles = [];                              // -- be aware: gCurrentFiles = evt.dataTransfer.files won't work, as rewriting file will mess up the array
-       for(var i=0; i<evt.dataTransfer.files.length; i++) {
-         gCurrentFiles.push(evt.dataTransfer.files[i]);  // -- need to transfer the single elements
-       }
-       loadLocalFiles();
-     } else {
-       throw new Error("Please drop a single jscad, scad, stl file, or multiple jscad files");
-     }
-  }
+    if (browser=='firefox'||me=='web-offline') {     // -- fallback, walkFileTree won't work with file://
+        if (evt.dataTransfer.files.length>0) {
+            gCurrentFiles = [];                              // -- be aware: gCurrentFiles = evt.dataTransfer.files won't work, as rewriting file will mess up the array
+            for (var i=0; i<evt.dataTransfer.files.length; i++) {
+                gCurrentFiles.push(evt.dataTransfer.files[i]);  // -- need to transfer the single elements
+            }
+            loadLocalFiles();
+        } else {
+            throw new Error("Please drop a single jscad, scad, stl file, or multiple jscad files");
+        }
+    }
 }
 
-function walkFileTree(item,path) {              // this is the core of the drag'n'drop:
-                                                //    1) walk the tree
-                                                //    2) read the files (readFileAsync)
-                                                //    3) re-render if there was a change (via readFileAsync)
-   path = path||"";
-   //console.log("item=",item);
-   if(item.isFile) {
-      item.file(function(file) {                // this is also asynchronous ... (making everything complicate)
-         if(file.name.match(/\.(jscad|js|scad|obj|stl|amf|gcode)$/)) {   // for now all files OpenJSCAD can handle
-            console.log("walkFileTree File: "+path+item.name);
-            gMemFsTotal++;
-            gCurrentFiles.push(file);
-            readFileAsync(file);
-         }
-      });
+function walkFileTree(item,path) {
+    // this is the core of the drag'n'drop:
+    //    1) walk the tree
+    //    2) read the files (readFileAsync)
+    //    3) re-render if there was a change (via readFileAsync)
 
-   } else if(item.isDirectory) {
-      var dirReader = item.createReader();
-      console.log("walkFileTree Folder: "+item.name);
-      dirReader.readEntries(function(entries) {
-        // console.log("===",entries,entries.length);
-         for(var i=0; i<entries.length; i++) {
-            //console.log(i,entries[i]);
-            //walkFileTree({item:entries[i], path: path+item.name+"/"});
-            walkFileTree(entries[i],path+item.name+"/");
-         }
-      });
-   }
+    path = path||"";
+    //console.log("item=",item);
+    if (item.isFile) {
+        item.file(function(file) {                // this is also asynchronous ... (making everything complicate)
+            if (file.name.match(/\.(jscad|js|scad|obj|stl|amf|gcode)$/)) {   // for now all files OpenJSCAD can handle
+                console.log("walkFileTree File: "+path+item.name);
+                gMemFsTotal++;
+                gCurrentFiles.push(file);
+                readFileAsync(file);
+            }
+        });
+
+    } else if (item.isDirectory) {
+        var dirReader = item.createReader();
+        console.log("walkFileTree Folder: "+item.name);
+        dirReader.readEntries(function(entries) {
+            // console.log("===",entries,entries.length);
+            for (var i=0; i<entries.length; i++) {
+                //console.log(i,entries[i]);
+                //walkFileTree({item:entries[i], path: path+item.name+"/"});
+                walkFileTree(entries[i],path+item.name+"/");
+            }
+        });
+    }
 }
 
 function loadLocalFiles() {               // this is the linear drag'n'drop, a list of files to read (when folders aren't supported)
@@ -952,7 +846,7 @@ function loadLocalFiles() {               // this is the linear drag'n'drop, a l
     gMemFsTotal = items.length;      
     gMemFsChanged = 0;
 
-    for(var i=0; i<items.length; i++) {
+    for (var i=0; i<items.length; i++) {
         var f = items[i];
         console.log(f);
         readFileAsync(f);
@@ -961,101 +855,101 @@ function loadLocalFiles() {               // this is the linear drag'n'drop, a l
 }
 
 function setCurrentFile(file) {              // set one file (the one dragged) or main.jscad
-  gCurrentFile = file;
-  gPreviousModificationTime = "";
+    gCurrentFile = file;
+    gPreviousModificationTime = "";
 
-  console.log("execute: "+file.name);
-  if(file.name.match(/\.(jscad|js|scad|stl|obj|amf|gcode)$/i)) {
-    gCurrentFile.lang = RegExp.$1;
-  } else {
-    throw new Error("Please drop a file with .jscad, .scad or .stl extension");
-  }
-  if(file.size == 0) {
-    throw new Error("You have dropped an empty file");
-  }              
-  fileChanged(file);
-}     
+    console.log("execute: "+file.name);
+    if (file.name.match(/\.(jscad|js|scad|stl|obj|amf|gcode)$/i)) {
+        gCurrentFile.lang = RegExp.$1;
+    } else {
+        throw new Error("Please drop a file with .jscad, .scad or .stl extension");
+    }
+    if (file.size == 0) {
+        throw new Error("You have dropped an empty file");
+    }
+    fileChanged(file);
+}
 
 function readFileAsync(f) {                // RANT: JavaScript at its finest: 50 lines code to read a SINGLE file 
-  var reader = new FileReader();           //       this code looks complicate and it is complicate.
+    var reader = new FileReader();           //       this code looks complicate and it is complicate.
 
-  console.log("request: "+f.name+" ("+f.fullPath+")");
-  reader.onloadend = function(evt) {
-     if(evt.target.readyState == FileReader.DONE) {
-        var source = evt.target.result;
+    console.log("request: "+f.name+" ("+f.fullPath+")");
+    reader.onloadend = function(evt) {
+        if (evt.target.readyState == FileReader.DONE) {
+            var source = evt.target.result;
 
-        console.log("done reading: "+f.name,source?source.length:0);   // it could have been vanished while fetching (race condition)
-        gMemFsCount++;
-        
-        if(!gMemFs[f.name]||gMemFs[f.name].source!=source)     // note: assigning f.source = source too make gMemFs[].source the same, therefore as next
-          gMemFsChanged++;
+            console.log("done reading: "+f.name,source?source.length:0);   // it could have been vanished while fetching (race condition)
+            gMemFsCount++;
 
-        f.source = source;                 // -- do it after comparing
-         
-        gMemFs[f.name] = f;                // -- we cache the file (and its actual content)
+            if(!gMemFs[f.name]||gMemFs[f.name].source!=source)     // note: assigning f.source = source too make gMemFs[].source the same, therefore as next
+                gMemFsChanged++;
 
-        if(gMemFsCount==gMemFsTotal) {                // -- are we done reading all?
-           console.log("all "+gMemFsTotal+" files read.");
-           if(gMemFsTotal>1||gMemFsCount>1) {         // we deal with multiple files, so we hide the editor to avoid confusion
-             $('#editor').hide();
-           } else {
-             $('#editor').show();
-           }
-           
-           if(gMemFsTotal>1) {
-              if(gMemFs['main.jscad']) {
-                 gMainFile = gMemFs['main.jscad'];
-              } else if(gMemFs['main.js']) {
-                 gMainFile = gMemFs['main.js'];
-              } else {
-                 for(var fn in gMemFs) {
-                   if(gMemFs[fn].name.match(/\/main.jscad$/)||gMemFs[fn].name.match(/\/main.js$/)) {
-                      gMainFile = gMemFs[fn];
-                   }
-                 }
-              }
-           } else {
-             gMainFile = f;  
-           }
-           if(gMemFsChanged>0) {
-              if(!gMainFile)
-                throw("No main.jscad found");
-              console.log("update & redraw "+gMainFile.name);
-              setCurrentFile(gMainFile);
-           }
+            f.source = source;                 // -- do it after comparing
+
+            gMemFs[f.name] = f;                // -- we cache the file (and its actual content)
+
+            if (gMemFsCount==gMemFsTotal) {                // -- are we done reading all?
+                console.log("all "+gMemFsTotal+" files read.");
+                if (gMemFsTotal>1||gMemFsCount>1) {         // we deal with multiple files, so we hide the editor to avoid confusion
+                    $('#editor').hide();
+                } else {
+                    $('#editor').show();
+                }
+
+                if (gMemFsTotal>1) {
+                    if (gMemFs['main.jscad']) {
+                        gMainFile = gMemFs['main.jscad'];
+                    } else if (gMemFs['main.js']) {
+                        gMainFile = gMemFs['main.js'];
+                    } else {
+                        for (var fn in gMemFs) {
+                            if (gMemFs[fn].name.match(/\/main.jscad$/)||gMemFs[fn].name.match(/\/main.js$/)) {
+                                gMainFile = gMemFs[fn];
+                            }
+                        }
+                    }
+                } else {
+                    gMainFile = f;
+                }
+                if (gMemFsChanged>0) {
+                    if (!gMainFile)
+                        throw("No main.jscad found");
+                    console.log("update & redraw "+gMainFile.name);
+                    setCurrentFile(gMainFile);
+                }
+            }
+
+        } else {
+            throw new Error("Failed to read file");
+            if(gProcessor) gProcessor.clearViewer();
+            previousScript = null;
         }
-     
-     } else {
-        throw new Error("Failed to read file");
-        if(gProcessor) gProcessor.clearViewer();
-		  previousScript = null;
-     }
-  };
-  if(f.name.match(/\.(stl|gcode)$/)) {
-     reader.readAsBinaryString(f,"UTF-8");
-  } else {
-     reader.readAsText(f,"UTF-8");
-  }
+    };
+    if (f.name.match(/\.(stl|gcode)$/)) {
+        reader.readAsBinaryString(f,"UTF-8");
+    } else {
+        reader.readAsText(f,"UTF-8");
+    }
 }
 
 function fileChanged(f) {               // update the dropzone visual & call the main parser
-  var dropZone = document.getElementById('filedropzone');
-  gCurrentFile = f;
-  if(gCurrentFile) {
-    var txt;
-    if(gMemFsTotal>1) {
-       txt = "Current file: "+gCurrentFile.name+" (+ "+(gMemFsTotal-1)+" more files)";
+    var dropZone = document.getElementById('filedropzone');
+    gCurrentFile = f;
+    if(gCurrentFile) {
+        var txt;
+        if(gMemFsTotal>1) {
+            txt = "Current file: "+gCurrentFile.name+" (+ "+(gMemFsTotal-1)+" more files)";
+        } else {
+            txt = "Current file: "+gCurrentFile.name;
+        }
+        document.getElementById("currentfile").innerHTML = txt;
+        document.getElementById("filedropzone_filled").style.display = "block";
+        document.getElementById("filedropzone_empty").style.display = "none";
     } else {
-       txt = "Current file: "+gCurrentFile.name;
+        document.getElementById("filedropzone_filled").style.display = "none";
+        document.getElementById("filedropzone_empty").style.display = "block";
     }
-    document.getElementById("currentfile").innerHTML = txt;
-    document.getElementById("filedropzone_filled").style.display = "block";
-    document.getElementById("filedropzone_empty").style.display = "none";
-  } else {
-    document.getElementById("filedropzone_filled").style.display = "none";
-    document.getElementById("filedropzone_empty").style.display = "block";
-  }
-  parseFile(f,false,false);
+    parseFile(f,false,false);
 }
 
 function superviseAllFiles(p) {           // check if there were changes: (re-)load all files and check if content was changed

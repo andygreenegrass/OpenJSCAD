@@ -32,7 +32,7 @@
     bottom: 22px;    /* don't invade the status bar */
     right: 0;
     left: calc(100% - 20px);
-    background: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.9);
     
     z-index: 998;
 }
@@ -42,6 +42,43 @@
 }
 
 #editor {
-    width: 100%;
+    position: absolute;
+    top: 0; left: 0; right: 0;
     height: 100%;
+}
+
+#parametersdiv {
+    position: absolute;
+    top: 100%;
+    left: 0; right: 0;
+    bottom: 0;
+/*    background: red;*/
+    overflow: scroll;
+    padding: 20px;
+}
+
+#parametersdiv td {
+  font-size: 0.8em;
+}
+#parametersdiv input, #parametersdiv textarea, #parametersdiv select {
+  font-size: 0.9em;
+  background: #fea;
+  border: none;
+}
+
+#parametersdiv .parameterheader {
+   font-weight: bold;
+   font-size: 0.9em;
+}
+
+#parametersdiv .caption {
+   text-align: right;
+}
+
+#instantUpdate {
+   margin-left: 1em;
+}
+
+#instantUpdateLabel {
+   font-size: 0.9em;
 }
