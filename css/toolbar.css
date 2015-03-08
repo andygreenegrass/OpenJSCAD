@@ -48,12 +48,6 @@
 /*    background-color: #ddd;*/
 }
 
-#toolbar svg {
-    background-color: rgba(0, 0, 0, 0.19);
-/*    border: 1px solid rgba(0, 0, 0, 0.18);*/
-    opacity: 0.6;
-}
-
 #toolbar img:hover, #toolbar svg:hover {
     opacity: 1;
 }
@@ -72,4 +66,44 @@
 #toolbar.shown .pin {
     opacity: 1;
     pointer-events: all;
+}
+
+/* Specific icons */
+/* ------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------- */
+
+#toolbar > div #Frame path, #toolbar > div #Frame rect {
+/*    fill: rgb(170, 0, 0) !important;*/
+}
+
+#toolbar > div #Faces path, #toolbar > div #Faces rect {
+/*    fill: rgba(255, 0, 0, 0.56) !important;*/
+}
+
+#toolbar > div #Faces g {
+    visibility: hidden;
+}
+
+#toolbar > div.front #Faces g#Front {
+    visibility: visible;
+}
+
+#toolbar > div.back #Faces g#Back {
+    visibility: visible;
+}
+
+#toolbar > div.left #Faces g#Left {
+    visibility: visible;
+}
+
+#toolbar > div.right #Faces g#Right {
+    visibility: visible;
+}
+
+#toolbar > div.top #Faces g#Top {
+    visibility: visible;
+}
+
+#toolbar > div.bottom #Faces g#Bottom {
+    visibility: visible;
 }

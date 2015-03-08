@@ -14,6 +14,7 @@ UserPrefs = function() {
     this.autoRender = true;
 
     this.view = {
+        initialViewerDistance: 200,
         grid: {
             plateSize: 200,
             major: {

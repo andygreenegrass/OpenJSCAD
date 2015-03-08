@@ -419,25 +419,17 @@ OpenJsCad.Viewer.prototype = {
                         }
                     }
                 }
-          
-                // Axes
-//                if (this.userPrefs.view.axes.show) {
-//                    gl.color(.0,0,0,1);
-//                    gl.vertex(-plate/2, 0, 0);
-//                    gl.vertex(plate/2, 0, 0);
-//                    gl.vertex(0, -plate/2, 0);
-//                    gl.vertex(0, plate/2, 0);
-//                    gl.vertex(0, 0, -plate/2);
-//                    gl.vertex(0, 0, plate/2);
-//                }
             }
             
             // Colored Axes
             if (this.userPrefs.view.axes.show) {
                 var length = this.userPrefs.view.axes.length;
                 
+                var gray = {r: 0.5, g: 0.5, b: 0.5, a: 0.3};
+
                 //X - red
-                gl.color(1, 0.5, 0.5, 0.3); //negative direction is lighter
+                //gl.color(1, 0.5, 0.5, 0.3); //negative direction is lighter
+                gl.color(gray.r, gray.g, gray.b, gray.a);
                 gl.vertex(-length, 0, 0);
                 gl.vertex(0, 0, 0);
 
@@ -446,16 +438,18 @@ OpenJsCad.Viewer.prototype = {
                 gl.vertex(length, 0, 0);
                 
                 //Y - green
-                gl.color(0.6, 1, 0.7, 0.2); //negative direction is lighter
+                //gl.color(0.6, 1, 0.7, 0.2); //negative direction is lighter
+                gl.color(gray.r, gray.g, gray.b, gray.a);
                 gl.vertex(0, -length, 0);
                 gl.vertex(0, 0, 0);
 
-                gl.color(0.3, 1, 0.4, 0.8); //positive direction
+                gl.color(0.2, 0.7, 0.3, 0.9); //positive direction
                 gl.vertex(0, 0, 0);
                 gl.vertex(0, length, 0);
                 
                 //Z - black
-                gl.color(0.5, 0.5, 0.5, 0.2); //negative direction is lighter
+                //gl.color(0.5, 0.5, 0.5, 0.2); //negative direction is lighter
+                gl.color(gray.r, gray.g, gray.b, gray.a);
                 gl.vertex(0, 0, -length);
                 gl.vertex(0, 0, 0);
 
@@ -943,7 +937,7 @@ OpenJsCad.Processor = function(containerdiv, userPrefs, onchange) {
     this.zoomControl = null;
     //this.viewerwidth = 1200;
     //this.viewerheight = 800;
-    this.initialViewerDistance = 100;
+    this.initialViewerDistance = this.userPrefs.view.initialViewerDistance;
     this.processing = false;
     this.currentObject = null;
     this.hasValidCurrentObject = false;
