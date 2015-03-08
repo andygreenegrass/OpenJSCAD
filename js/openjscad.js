@@ -284,6 +284,14 @@ OpenJsCad.Viewer.prototype = {
         return coeff;
     },
     
+    correctAngle: function(angle) {
+        angle %= 360;
+        if (angle < 0) {
+            angle += 360;
+        }
+        return angle;
+    },
+
     onMouseMove: function(e) {
         if (e.dragging) {
             //console.log(e.which,e.button);
@@ -295,6 +303,10 @@ OpenJsCad.Viewer.prototype = {
             if (e.altKey||b==3) {                     // ROTATE X,Y (ALT or right mouse button)
                 this.view.angle.y += e.deltaX;
                 this.view.angle.x += e.deltaY;
+
+                this.view.angle.x = this.correctAngle(this.view.angle.x);
+                this.view.angle.y = this.correctAngle(this.view.angle.y);
+
                 //this.angleX = Math.max(-180, Math.min(180, this.angleX));
             } else if(e.shiftKey||b==2) {            // PAN  (SHIFT or middle mouse button)
                 var factor = 5e-3;
@@ -308,8 +320,12 @@ OpenJsCad.Viewer.prototype = {
             } else {                                 // ROTATE X,Z  left mouse button
                 this.view.angle.z += e.deltaX;
                 this.view.angle.x += e.deltaY;
+
+                this.view.angle.z = this.correctAngle(this.view.angle.z);
+                this.view.angle.x = this.correctAngle(this.view.angle.x);
             }
             this.onDraw();
+            //$('#status').html(JSON.stringify(this.view));
         }
     },
     
@@ -329,10 +345,12 @@ OpenJsCad.Viewer.prototype = {
             //tilt
             delta = e.gesture.deltaY - this.touch.lastY;
             this.view.angle.x += delta;
+            this.view.angle.x = this.correctAngle(this.view.angle.x);
         } else if (this.touch.lastX && (e.gesture.direction == 'left' || e.gesture.direction == 'right')) {
             //pan
             delta = e.gesture.deltaX - this.touch.lastX;
             this.view.angle.z += delta;
+            this.view.angle.z = this.correctAngle(this.view.angle.z);
         }
         if (delta)
             this.onDraw();
@@ -354,6 +372,7 @@ OpenJsCad.Viewer.prototype = {
             delta = e.gesture.deltaY - this.touch.lastY;
             this.view.viewpoint.y -= factor * delta * this.view.viewpoint.z;
             this.view.angle.x += delta;
+            this.view.angle.x = this.correctAngle(this.view.angle.x);
         } 
         if (this.touch.lastX && (e.gesture.direction == 'left' || e.gesture.direction == 'right')) {
             this.touch.shiftControl
@@ -363,6 +382,7 @@ OpenJsCad.Viewer.prototype = {
             delta = e.gesture.deltaX - this.touch.lastX;
             this.view.viewpoint.x += factor * delta * this.view.viewpoint.z;
             this.view.angle.z += delta;
+            this.view.angle.z = this.correctAngle(this.view.angle.z);
         }
         if (delta)
             this.onDraw();
@@ -1078,8 +1098,8 @@ OpenJsCad.Processor.prototype = {
     this.errorpre = this.errordiv; 
     //this.errordiv.appendChild(this.errorpre);
     //this.statusdiv = document.createElement("div");
-    this.statusdiv = document.getElementById("statusdiv");
-    this.statusdiv.className = "statusdiv";
+    this.statusdiv = document.getElementById("status");
+    this.statusdiv.className = "status";
     //this.statusdiv.style.width = this.viewerwidth + "px";
     this.statusspan = document.createElement("span");
     this.statusspan.id = 'statusspan';

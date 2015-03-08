@@ -2,7 +2,7 @@
  * status.css for index.html of http://OpenJSCAD.org/
  */
 
-.statusdiv {
+#status {
     position: fixed;
     left: 0; right: 0;
     bottom: 0;
