@@ -32,9 +32,9 @@
     bottom: 22px;    /* don't invade the status bar */
     right: 0;
     left: calc(100% - 20px);
-    z-index: 6;
     background: rgba(255,255,255,0.15);
-/*    background-color: red;*/
+    
+    z-index: 998;
 }
 
 #editor-wrapper.shown {

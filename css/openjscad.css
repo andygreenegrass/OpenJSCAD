@@ -2,29 +2,6 @@
  *    few changes made by Rene K. Mueller for OpenSCAD.org
  */
 
-#filedropzone {
-  border: 2px dashed #bbb;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  
-  padding: 15px;
-  color: black;
-  width: 100%;
-  background: #fff;
-  margin-top: 0.5em;
-}
-
-#filedropzone_empty {
-  text-align: center;
-  color: #888;
-}
-
-#filedropzone_filled {
-  color: black;
-  display: none;
-}
-
 #filebuttons {
   /* float: right; */
   margin-left: 2em;

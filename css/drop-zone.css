@@ -1,0 +1,33 @@
+/*
+ * drop-zone.css for index.html of http://OpenJSCAD.org/
+ */
+
+#filedropzone {
+    display: none;
+    position: fixed;
+    left: 0;
+    width: 50%;
+    top: 0;
+    bottom: 0;
+    
+    pointer-events: none;
+    
+    z-index: 1000;
+}
+
+/*
+#filedropzone_empty {
+  text-align: center;
+  color: #888;
+}
+
+#filedropzone_filled {
+  color: black;
+  display: none;
+}
+
+#filebuttons {
+   float: right; 
+  margin-left: 2em;
+  display: inline;
+}*/
