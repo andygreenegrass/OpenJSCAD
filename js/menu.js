@@ -44,59 +44,69 @@ menu.view.showGrid = function(el) {
         $(el).removeClass('checked');
 };
 menu.view.top = function() {
-    gProcessor.viewer.angleX = 0;
-    gProcessor.viewer.angleY = 0;
-    gProcessor.viewer.angleZ = 0;
+    var angle = gProcessor.viewer.view.angle;
+    angle.x = 0;
+    angle.y = 0;
+    angle.z = 0;
     redraw();
 }
 menu.view.bottom = function() {
-    gProcessor.viewer.angleX = -180;
-    gProcessor.viewer.angleY = 0;
-    gProcessor.viewer.angleZ = 0;
+    var angle = gProcessor.viewer.view.angle;
+    angle.x = -180;
+    angle.y = 0;
+    angle.z = 0;
     redraw();
 }
 menu.view.front = function() {
-    gProcessor.viewer.angleX = -90;
-    gProcessor.viewer.angleY = 0;
-    gProcessor.viewer.angleZ = 0;
+    var angle = gProcessor.viewer.view.angle;
+    angle.x = -90;
+    angle.y = 0;
+    angle.z = 0;
     redraw();
 }
 menu.view.back = function() {
-    gProcessor.viewer.angleX = -90;
-    gProcessor.viewer.angleY = 0;
-    gProcessor.viewer.angleZ = -180;
+    var angle = gProcessor.viewer.view.angle;
+    angle.x = -90;
+    angle.y = 0;
+    angle.z = -180;
     redraw();
 }
 menu.view.right = function() {
-    gProcessor.viewer.angleX = -90;
-    gProcessor.viewer.angleY = 0;
-    gProcessor.viewer.angleZ = -90;
+    var angle = gProcessor.viewer.view.angle;
+    angle.x = -90;
+    angle.y = 0;
+    angle.z = -90;
     redraw();
 }
 menu.view.left = function() {
-    gProcessor.viewer.angleX = -90;
-    gProcessor.viewer.angleY = 0;
-    gProcessor.viewer.angleZ = 90;
+    var angle = gProcessor.viewer.view.angle;
+    angle.x = -90;
+    angle.y = 0;
+    angle.z = 90;
     redraw();
 }
 menu.view.diagonal = function() {
-    gProcessor.viewer.angleX = -60;
-    gProcessor.viewer.angleY = 0;
-    gProcessor.viewer.angleZ = -45;
+    var angle = gProcessor.viewer.view.angle;
+    angle.x = -60;
+    angle.y = 0;
+    angle.z = -45;
     redraw();
 }
 menu.view.center = function() {
-    gProcessor.viewer.viewpointX = 0;
-    gProcessor.viewer.viewpointY = 0;
+    var vp = gProcessor.viewer.view.viewpoint;
+    vp.x = 0;
+    vp.y = 0;
     redraw();
 }
 menu.view.resetView = function() {
-    gProcessor.viewer.angleX = -60;
-    gProcessor.viewer.angleY = 0;
-    gProcessor.viewer.angleZ = -45;
-    gProcessor.viewer.viewpointX = 0;
-    gProcessor.viewer.viewpointY = -5;
-    gProcessor.viewer.viewpointZ = gProcessor.initialViewerDistance;
+    var angle = gProcessor.viewer.view.angle;
+    var vp = gProcessor.viewer.view.viewpoint;
+    angle.x = -60;
+    angle.y = 0;
+    angle.z = -45;
+    vp.x = 0;
+    vp.y = -5;
+    vp.z = gProcessor.initialViewerDistance;
     redraw();
 }
 

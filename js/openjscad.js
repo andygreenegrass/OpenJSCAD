@@ -28,12 +28,10 @@ OpenJsCad.log = function(txt) {
 OpenJsCad.Viewer = function(containerelement, initialdepth, userPrefs) {
     var gl = GL.create();
     this.gl = gl;
-    this.angleX = -60;
-    this.angleY = 0;
-    this.angleZ = -45;
-    this.viewpointX = 0;
-    this.viewpointY = -5;
-    this.viewpointZ = initialdepth;
+    this.view = {
+        angle: {x: -60, y: 0, z: -45},
+        viewpoint: {x: 0, y: -5, z: initialdepth}
+    };
     this.userPrefs = userPrefs;
 
     this.touch = {
@@ -245,7 +243,7 @@ OpenJsCad.Viewer.prototype = {
     setZoom: function(coeff) { //0...1
         coeff=Math.max(coeff, 0);
         coeff=Math.min(coeff, 1);
-        this.viewpointZ = this.ZOOM_MIN + coeff * (this.ZOOM_MAX - this.ZOOM_MIN);
+        this.view.viewpoint.z = this.ZOOM_MIN + coeff * (this.ZOOM_MAX - this.ZOOM_MIN);
         if (this.onZoomChanged) {
             this.onZoomChanged();
         }
@@ -253,7 +251,7 @@ OpenJsCad.Viewer.prototype = {
     },
 
     getZoom: function() {
-        var coeff = (this.viewpointZ-this.ZOOM_MIN) / (this.ZOOM_MAX - this.ZOOM_MIN);
+        var coeff = (this.view.viewpoint.z-this.ZOOM_MIN) / (this.ZOOM_MAX - this.ZOOM_MIN);
         return coeff;
     },
     
@@ -266,21 +264,21 @@ OpenJsCad.Viewer.prototype = {
             }
             e.preventDefault();
             if (e.altKey||b==3) {                     // ROTATE X,Y (ALT or right mouse button)
-                this.angleY += e.deltaX;
-                this.angleX += e.deltaY;
+                this.view.angle.y += e.deltaX;
+                this.view.angle.x += e.deltaY;
                 //this.angleX = Math.max(-180, Math.min(180, this.angleX));
             } else if(e.shiftKey||b==2) {            // PAN  (SHIFT or middle mouse button)
                 var factor = 5e-3;
-                this.viewpointX += factor * e.deltaX * this.viewpointZ;
-                this.viewpointY -= factor * e.deltaY * this.viewpointZ;
+                this.view.viewpoint.x += factor * e.deltaX * this.view.viewpoint.z;
+                this.view.viewpoint.y -= factor * e.deltaY * this.view.viewpoint.z;
             } else if(e.ctrlKey) {                   // ZOOM IN/OU
                 var factor = Math.pow(1.006, e.deltaX+e.deltaY);
                 var coeff = this.getZoom();
                 coeff *= factor;
                 this.setZoom(coeff);
             } else {                                 // ROTATE X,Z  left mouse button
-                this.angleZ += e.deltaX;
-                this.angleX += e.deltaY;
+                this.view.angle.z += e.deltaX;
+                this.view.angle.x += e.deltaY;
             }
             this.onDraw();
         }
@@ -301,11 +299,11 @@ OpenJsCad.Viewer.prototype = {
         if (this.touch.lastY && (e.gesture.direction == 'up' || e.gesture.direction == 'down')) {
             //tilt
             delta = e.gesture.deltaY - this.touch.lastY;
-            this.angleX += delta;
+            this.view.angle.x += delta;
         } else if (this.touch.lastX && (e.gesture.direction == 'left' || e.gesture.direction == 'right')) {
             //pan
             delta = e.gesture.deltaX - this.touch.lastX;
-            this.angleZ += delta;
+            this.view.angle.z += delta;
         }
         if (delta)
             this.onDraw();
@@ -325,8 +323,8 @@ OpenJsCad.Viewer.prototype = {
                 .addClass('shift-vertical')
                 .css('top', e.gesture.center.pageY + 'px');
             delta = e.gesture.deltaY - this.touch.lastY;
-            this.viewpointY -= factor * delta * this.viewpointZ;
-            this.angleX += delta;
+            this.view.viewpoint.y -= factor * delta * this.view.viewpoint.z;
+            this.view.angle.x += delta;
         } 
         if (this.touch.lastX && (e.gesture.direction == 'left' || e.gesture.direction == 'right')) {
             this.touch.shiftControl
@@ -334,8 +332,8 @@ OpenJsCad.Viewer.prototype = {
                 .addClass('shift-horizontal')
                 .css('left', e.gesture.center.pageX + 'px');
             delta = e.gesture.deltaX - this.touch.lastX;
-            this.viewpointX += factor * delta * this.viewpointZ;
-            this.angleZ += delta;
+            this.view.viewpoint.x += factor * delta * this.view.viewpoint.z;
+            this.view.angle.z += delta;
         }
         if (delta)
             this.onDraw();
@@ -362,10 +360,13 @@ OpenJsCad.Viewer.prototype = {
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.loadIdentity();
-        gl.translate(this.viewpointX, this.viewpointY, -this.viewpointZ);
-        gl.rotate(this.angleX, 1, 0, 0);
-        gl.rotate(this.angleY, 0, 1, 0);
-        gl.rotate(this.angleZ, 0, 0, 1);
+        gl.translate(
+            this.view.viewpoint.x,
+            this.view.viewpoint.y,
+            -this.view.viewpoint.z);
+        gl.rotate(this.view.angle.x, 1, 0, 0);
+        gl.rotate(this.view.angle.y, 0, 1, 0);
+        gl.rotate(this.view.angle.z, 0, 0, 1);
 
         gl.enable(gl.BLEND);
         //gl.disable(gl.DEPTH_TEST);
@@ -1038,7 +1039,7 @@ OpenJsCad.Processor.prototype = {
 
        this.containerdiv.appendChild(this.zoomControl);
        //this.zoomControl.scrollLeft = this.viewer.viewpointZ / this.viewer.ZOOM_MAX * this.zoomControl.offsetWidth;
-       this.zoomControl.scrollLeft = this.viewer.viewpointZ / this.viewer.ZOOM_MAX * 
+       this.zoomControl.scrollLeft = this.viewer.view.viewpoint.z / this.viewer.ZOOM_MAX * 
          (this.zoomControl.scrollWidth - this.zoomControl.offsetWidth);
 
        //end of zoom control
