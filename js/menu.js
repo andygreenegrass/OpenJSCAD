@@ -25,7 +25,7 @@ menu.file.open = function() {
 menu.view = {};
 menu.view.showAxes = function(el) {
     userPrefs.view.axes.show = !userPrefs.view.axes.show;
-    redraw();
+    gProcessor.viewer.onDraw();
     if (userPrefs.view.axes.show)
         $(el).addClass('checked');
     else
@@ -33,7 +33,7 @@ menu.view.showAxes = function(el) {
 };
 menu.view.showGrid = function(el) {
     userPrefs.view.grid.major.show = !userPrefs.view.grid.major.show;
-    redraw();
+    gProcessor.viewer.onDraw();
     if (userPrefs.view.grid.major.show)
         $(el).addClass('checked');
     else
