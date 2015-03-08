@@ -1,7 +1,3 @@
-function redraw() {
-    gProcessor.viewer.onDraw();
-}
-
 var menu = {};
 
 // OpenJSCAD
@@ -44,70 +40,69 @@ menu.view.showGrid = function(el) {
         $(el).removeClass('checked');
 };
 menu.view.top = function() {
-    var angle = gProcessor.viewer.view.angle;
-    angle.x = 0;
-    angle.y = 0;
-    angle.z = 0;
-    redraw();
+    var view = gProcessor.viewer.getView();
+    view.angle.x = 0;
+    view.angle.y = 0;
+    view.angle.z = 0;
+    gProcessor.viewer.setView(view);
 }
 menu.view.bottom = function() {
-    var angle = gProcessor.viewer.view.angle;
-    angle.x = -180;
-    angle.y = 0;
-    angle.z = 0;
-    redraw();
+    var view = gProcessor.viewer.getView();
+    view.angle.x = -180;
+    view.angle.y = 0;
+    view.angle.z = 0;
+    gProcessor.viewer.setView(view);
 }
 menu.view.front = function() {
-    var angle = gProcessor.viewer.view.angle;
-    angle.x = -90;
-    angle.y = 0;
-    angle.z = 0;
-    redraw();
+    var view = gProcessor.viewer.getView();
+    view.angle.x = -90;
+    view.angle.y = 0;
+    view.angle.z = 0;
+    gProcessor.viewer.setView(view);
 }
 menu.view.back = function() {
-    var angle = gProcessor.viewer.view.angle;
-    angle.x = -90;
-    angle.y = 0;
-    angle.z = -180;
-    redraw();
+    var view = gProcessor.viewer.getView();
+    view.angle.x = -90;
+    view.angle.y = 0;
+    view.angle.z = -180;
+    gProcessor.viewer.setView(view);
 }
 menu.view.right = function() {
-    var angle = gProcessor.viewer.view.angle;
-    angle.x = -90;
-    angle.y = 0;
-    angle.z = -90;
-    redraw();
+    var view = gProcessor.viewer.getView();
+    view.angle.x = -90;
+    view.angle.y = 0;
+    view.angle.z = -90;
+    gProcessor.viewer.setView(view);
 }
 menu.view.left = function() {
-    var angle = gProcessor.viewer.view.angle;
-    angle.x = -90;
-    angle.y = 0;
-    angle.z = 90;
-    redraw();
+    var view = gProcessor.viewer.getView();
+    view.angle.x = -90;
+    view.angle.y = 0;
+    view.angle.z = 90;
+    gProcessor.viewer.setView(view);
 }
 menu.view.diagonal = function() {
-    var angle = gProcessor.viewer.view.angle;
-    angle.x = -60;
-    angle.y = 0;
-    angle.z = -45;
-    redraw();
+    var view = gProcessor.viewer.getView();
+    view.angle.x = -60;
+    view.angle.y = 0;
+    view.angle.z = -45;
+    gProcessor.viewer.setView(view);
 }
 menu.view.center = function() {
-    var vp = gProcessor.viewer.view.viewpoint;
-    vp.x = 0;
-    vp.y = 0;
-    redraw();
+    var view = gProcessor.viewer.getView();
+    view.viewpoint.x = 0;
+    view.viewpoint.y = 0;
+    gProcessor.viewer.setView(view);
 }
 menu.view.resetView = function() {
-    var angle = gProcessor.viewer.view.angle;
-    var vp = gProcessor.viewer.view.viewpoint;
-    angle.x = -60;
-    angle.y = 0;
-    angle.z = -45;
-    vp.x = 0;
-    vp.y = -5;
-    vp.z = gProcessor.initialViewerDistance;
-    redraw();
+    var view = gProcessor.viewer.getView();
+    view.angle.x = -60;
+    view.angle.y = 0;
+    view.angle.z = -45;
+    view.viewpoint.x = 0;
+    view.viewpoint.y = -5;
+    view.viewpoint.z = gProcessor.initialViewerDistance;
+    gProcessor.viewer.setView(view);
 }
 
 // Help

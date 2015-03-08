@@ -68,6 +68,35 @@ OpenJsCad.Viewer = function(containerelement, initialdepth, userPrefs) {
     this.gl.enable(this.gl.CULL_FACE);
     this.gl.polygonOffset(1, 1);
 
+    this.getView = function() {
+        // Hacky way of making a copy...
+        return JSON.parse(JSON.stringify(this.view));
+    };
+
+    this.viewStepper = function(newView, numFrames) {
+        if (numFrames <= 0) {
+            this.view = newView;
+            this.onDraw();
+            return;
+        }
+
+        this.view.angle.x += (newView.angle.x - this.view.angle.x) / numFrames;
+        this.view.angle.y += (newView.angle.y - this.view.angle.y) / numFrames;
+        this.view.angle.z += (newView.angle.z - this.view.angle.z) / numFrames;
+
+        this.view.viewpoint.x += (newView.viewpoint.x - this.view.viewpoint.x) / numFrames;
+        this.view.viewpoint.y += (newView.viewpoint.y - this.view.viewpoint.y) / numFrames;
+        this.view.viewpoint.z += (newView.viewpoint.z - this.view.viewpoint.z) / numFrames;
+
+        this.onDraw();
+        var _this = this;
+        setTimeout(function() {_this.viewStepper(newView, numFrames-1);}, 1000/60);
+    }
+
+    this.setView = function(newView) {
+        this.viewStepper(newView, 20);
+    };
+
     // Black shader for wireframe
     this.blackShader = new GL.Shader('\
         void main() {\
