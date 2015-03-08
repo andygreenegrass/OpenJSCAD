@@ -92,3 +92,10 @@
     top: -5px;
     left: 100%;
 }
+
+#menu .checkbox img {
+    opacity: 0;
+}
+#menu .checkbox.checked img {
+    opacity: 1;
+}

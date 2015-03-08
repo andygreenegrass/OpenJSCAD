@@ -25,94 +25,95 @@ OpenJsCad.log = function(txt) {
 
 // A viewer is a WebGL canvas that lets the user view a mesh. The user can
 // tumble it around by dragging the mouse.
-OpenJsCad.Viewer = function(containerelement, initialdepth) {
-  var gl = GL.create();
-  this.gl = gl;
-  this.angleX = -60;
-  this.angleY = 0;
-  this.angleZ = -45;
-  this.viewpointX = 0;
-  this.viewpointY = -5;
-  this.viewpointZ = initialdepth;
+OpenJsCad.Viewer = function(containerelement, initialdepth, userPrefs) {
+    var gl = GL.create();
+    this.gl = gl;
+    this.angleX = -60;
+    this.angleY = 0;
+    this.angleZ = -45;
+    this.viewpointX = 0;
+    this.viewpointY = -5;
+    this.viewpointZ = initialdepth;
+    this.userPrefs = userPrefs;
 
-  this.touch = {
-    lastX: 0,
-    lastY: 0,
-    scale: 0,
-    ctrl: 0,
-    shiftTimer: null,
-    shiftControl: null,
-    cur: null //current state
-  };
+    this.touch = {
+        lastX: 0,
+        lastY: 0,
+        scale: 0,
+        ctrl: 0,
+        shiftTimer: null,
+        shiftControl: null,
+        cur: null //current state
+    };
 
 
-  // Draw axes flag:
-  this.drawAxes = true;
-  // Draw triangle lines:
-  this.drawLines = false;
-  // Set to true so lines don't use the depth buffer
-  this.lineOverlay = false;
+    // Draw axes flag:
+    this.drawAxes = true;
+    // Draw triangle lines:
+    this.drawLines = false;
+    // Set to true so lines don't use the depth buffer
+    this.lineOverlay = false;
 
-  // Set up the viewport
-  this.gl.canvas.width  = $(containerelement).width();
-  this.gl.canvas.height = $(containerelement).height();
-  this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
-  this.gl.matrixMode(this.gl.PROJECTION);
-  this.gl.loadIdentity();
-  this.gl.perspective(50, this.gl.canvas.width / this.gl.canvas.height, 0.5, 1000);
-  this.gl.matrixMode(this.gl.MODELVIEW);
+    // Set up the viewport
+    this.gl.canvas.width  = $(containerelement).width();
+    this.gl.canvas.height = $(containerelement).height();
+    this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+    this.gl.matrixMode(this.gl.PROJECTION);
+    this.gl.loadIdentity();
+    this.gl.perspective(45, this.gl.canvas.width / this.gl.canvas.height, 0.5, 50000);
+    this.gl.matrixMode(this.gl.MODELVIEW);
 
-  // Set up WebGL state
-  this.gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-  this.gl.clearColor(0.93, 0.93, 0.93, 1);
-  this.gl.enable(this.gl.DEPTH_TEST);
-  this.gl.enable(this.gl.CULL_FACE);
-  this.gl.polygonOffset(1, 1);
+    // Set up WebGL state
+    this.gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    this.gl.clearColor(0.93, 0.93, 0.93, 1);
+    this.gl.enable(this.gl.DEPTH_TEST);
+    this.gl.enable(this.gl.CULL_FACE);
+    this.gl.polygonOffset(1, 1);
 
-  // Black shader for wireframe
-  this.blackShader = new GL.Shader('\
-    void main() {\
-      gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\
-    }', '\
-    void main() {\
-      gl_FragColor = vec4(0.0, 0.0, 0.0, 0.1);\
-    }'
-  );
+    // Black shader for wireframe
+    this.blackShader = new GL.Shader('\
+        void main() {\
+          gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\
+        }', '\
+        void main() {\
+          gl_FragColor = vec4(0.0, 0.0, 0.0, 0.1);\
+        }'
+    );
 
-  // Shader with diffuse and specular lighting
-  this.lightingShader = new GL.Shader('\
-      varying vec3 color;\
-      varying float alpha;\
-      varying vec3 normal;\
-      varying vec3 light;\
-      void main() {\
+    // Shader with diffuse and specular lighting
+    this.lightingShader = new GL.Shader('\
+        varying vec3 color;\
+        varying float alpha;\
+        varying vec3 normal;\
+        varying vec3 light;\
+        void main() {\
         const vec3 lightDir = vec3(1.0, 2.0, 3.0) / 3.741657386773941;\
         light = lightDir;\
         color = gl_Color.rgb;\
         alpha = gl_Color.a;\
         normal = gl_NormalMatrix * gl_Normal;\
         gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\
-      }',
-     '\
-      varying vec3 color;\
-      varying float alpha;\
-      varying vec3 normal;\
-      varying vec3 light;\
-      void main() {\
+        }',
+        '\
+        varying vec3 color;\
+        varying float alpha;\
+        varying vec3 normal;\
+        varying vec3 light;\
+        void main() {\
         vec3 n = normalize(normal);\
         float diffuse = max(0.0, dot(light, n));\
         float specular = pow(max(0.0, -reflect(light, n).z), 10.0) * sqrt(diffuse);\
         gl_FragColor = vec4(mix(color * (0.3 + 0.7 * diffuse), vec3(1.0), specular), alpha);\
-      }'
-  );
+        }'
+    );
 
-  var _this=this;
+    var _this=this;
 
-  var shiftControl = $('<div class="shift-scene"><div class="arrow arrow-left" />\
-    <div class="arrow arrow-right" />\
-    <div class="arrow arrow-top" />\
-    <div class="arrow arrow-bottom" /></div>');
-  this.touch.shiftControl = shiftControl;
+    var shiftControl = $('<div class="shift-scene"><div class="arrow arrow-left" />\
+        <div class="arrow arrow-right" />\
+        <div class="arrow arrow-top" />\
+        <div class="arrow arrow-bottom" /></div>');
+    this.touch.shiftControl = shiftControl;
 
   $(containerelement).append(this.gl.canvas)
     .append(shiftControl)
@@ -216,363 +217,385 @@ OpenJsCad.Viewer = function(containerelement, initialdepth) {
 };
 
 OpenJsCad.Viewer.prototype = {
-  setCsg: function(csg) {
-    if(0&&csg.length) {                            // preparing multiple CSG's (not union-ed), not yet working
-       for(var i=0; i<csg.length; i++)
-          this.meshes.concat(OpenJsCad.Viewer.csgToMeshes(csg[i]));
-    } else {
-       this.meshes = OpenJsCad.Viewer.csgToMeshes(csg);
-    }
-    this.onDraw();    
-  },
+    setCsg: function(csg) {
+        if(0&&csg.length) {                            // preparing multiple CSG's (not union-ed), not yet working
+            for(var i=0; i<csg.length; i++)
+                this.meshes.concat(OpenJsCad.Viewer.csgToMeshes(csg[i]));
+        } else {
+            this.meshes = OpenJsCad.Viewer.csgToMeshes(csg);
+        }
+        this.onDraw();
+    },
+    
+    clear: function() {
+        // empty mesh list:
+        this.meshes = []; 
+        this.onDraw();
+    },
 
-  clear: function() {
-    // empty mesh list:
-    this.meshes = []; 
-    this.onDraw();    
-  },
+    supported: function() {
+        return !!this.gl;
+    },
 
-  supported: function() {
-    return !!this.gl;
-  },
+    ZOOM_MAX: 10000,
+    ZOOM_MIN: 10,
+    onZoomChanged: null,
+    plate: true,                   // render plate
 
-  ZOOM_MAX: 1000,
-  ZOOM_MIN: 10,
-  onZoomChanged: null,
-  plate: true,                   // render plate
+    setZoom: function(coeff) { //0...1
+        coeff=Math.max(coeff, 0);
+        coeff=Math.min(coeff, 1);
+        this.viewpointZ = this.ZOOM_MIN + coeff * (this.ZOOM_MAX - this.ZOOM_MIN);
+        if (this.onZoomChanged) {
+            this.onZoomChanged();
+        }
+        this.onDraw();
+    },
 
-  setZoom: function(coeff) { //0...1
-    coeff=Math.max(coeff, 0);
-    coeff=Math.min(coeff, 1);
-    this.viewpointZ = this.ZOOM_MIN + coeff * (this.ZOOM_MAX - this.ZOOM_MIN);
-    if(this.onZoomChanged) {
-      this.onZoomChanged();
-    }
-    this.onDraw();
-  },
-
-  getZoom: function() {
-    var coeff = (this.viewpointZ-this.ZOOM_MIN) / (this.ZOOM_MAX - this.ZOOM_MIN);
-    return coeff;
-  },
-  
-  onMouseMove: function(e) {
-    if (e.dragging) {
-      //console.log(e.which,e.button);
-      var b = e.button;
-      if(e.which) {                            // RANT: not even the mouse buttons are coherent among the brand (chrome,firefox,etc)
-         b = e.which;
-      }
-      e.preventDefault();
-      if(e.altKey||b==3) {                     // ROTATE X,Y (ALT or right mouse button)
-        this.angleY += e.deltaX;
-        this.angleX += e.deltaY;
-        //this.angleX = Math.max(-180, Math.min(180, this.angleX));
-      } else if(e.shiftKey||b==2) {            // PAN  (SHIFT or middle mouse button)
+    getZoom: function() {
+        var coeff = (this.viewpointZ-this.ZOOM_MIN) / (this.ZOOM_MAX - this.ZOOM_MIN);
+        return coeff;
+    },
+    
+    onMouseMove: function(e) {
+        if (e.dragging) {
+            //console.log(e.which,e.button);
+            var b = e.button;
+            if (e.which) {                            // RANT: not even the mouse buttons are coherent among the brand (chrome,firefox,etc)
+                b = e.which;
+            }
+            e.preventDefault();
+            if (e.altKey||b==3) {                     // ROTATE X,Y (ALT or right mouse button)
+                this.angleY += e.deltaX;
+                this.angleX += e.deltaY;
+                //this.angleX = Math.max(-180, Math.min(180, this.angleX));
+            } else if(e.shiftKey||b==2) {            // PAN  (SHIFT or middle mouse button)
+                var factor = 5e-3;
+                this.viewpointX += factor * e.deltaX * this.viewpointZ;
+                this.viewpointY -= factor * e.deltaY * this.viewpointZ;
+            } else if(e.ctrlKey) {                   // ZOOM IN/OU
+                var factor = Math.pow(1.006, e.deltaX+e.deltaY);
+                var coeff = this.getZoom();
+                coeff *= factor;
+                this.setZoom(coeff);
+            } else {                                 // ROTATE X,Z  left mouse button
+                this.angleZ += e.deltaX;
+                this.angleX += e.deltaY;
+            }
+            this.onDraw();
+        }
+    },
+    
+    clearShift: function() {
+        if(this.touch.shiftTimer) {
+            clearTimeout(this.touch.shiftTimer);
+            this.touch.shiftTimer = null;
+        }
+        return this;
+    },
+    
+    //pan & tilt with one finger
+    onPanTilt: function(e) {
+        this.touch.cur = 'dragging';
+        var delta = 0;
+        if (this.touch.lastY && (e.gesture.direction == 'up' || e.gesture.direction == 'down')) {
+            //tilt
+            delta = e.gesture.deltaY - this.touch.lastY;
+            this.angleX += delta;
+        } else if (this.touch.lastX && (e.gesture.direction == 'left' || e.gesture.direction == 'right')) {
+            //pan
+            delta = e.gesture.deltaX - this.touch.lastX;
+            this.angleZ += delta;
+        }
+        if (delta)
+            this.onDraw();
+        this.touch.lastX = e.gesture.deltaX;
+        this.touch.lastY = e.gesture.deltaY;
+    },
+    
+    //shift after 0.5s touch&hold
+    onShift: function(e) {
+        this.touch.cur = 'shifting';
         var factor = 5e-3;
-        this.viewpointX += factor * e.deltaX * this.viewpointZ;
-        this.viewpointY -= factor * e.deltaY * this.viewpointZ;
-      } else if(e.ctrlKey) {                   // ZOOM IN/OU
-         var factor = Math.pow(1.006, e.deltaX+e.deltaY);
-         var coeff = this.getZoom();
-         coeff *= factor;
-         this.setZoom(coeff);
-      } else {                                 // ROTATE X,Z  left mouse button
-        this.angleZ += e.deltaX;
-        this.angleX += e.deltaY;
-      }
-      this.onDraw();
-    }
-  },
-  clearShift: function() {
-      if(this.touch.shiftTimer) {
-          clearTimeout(this.touch.shiftTimer);
-          this.touch.shiftTimer = null;
-      }
-      return this;
-  },
-  //pan & tilt with one finger
-  onPanTilt: function(e) {
-    this.touch.cur = 'dragging';
-    var delta = 0;
-    if (this.touch.lastY && (e.gesture.direction == 'up' || e.gesture.direction == 'down')) {
-        //tilt
-        delta = e.gesture.deltaY - this.touch.lastY;
-        this.angleX += delta;
-    } else if (this.touch.lastX && (e.gesture.direction == 'left' || e.gesture.direction == 'right')) {
-        //pan
-        delta = e.gesture.deltaX - this.touch.lastX;
-        this.angleZ += delta;
-    }
-    if (delta)
-      this.onDraw();
-    this.touch.lastX = e.gesture.deltaX;
-    this.touch.lastY = e.gesture.deltaY;
-  },
-  //shift after 0.5s touch&hold
-  onShift: function(e) {
-    this.touch.cur = 'shifting';
-    var factor = 5e-3;
-    var delta = 0;
+        var delta = 0;
 
-    if (this.touch.lastY && (e.gesture.direction == 'up' || e.gesture.direction == 'down')) {
-        this.touch.shiftControl
-          .removeClass('shift-horizontal')
-          .addClass('shift-vertical')
-          .css('top', e.gesture.center.pageY + 'px');
-        delta = e.gesture.deltaY - this.touch.lastY;
-        this.viewpointY -= factor * delta * this.viewpointZ;
-        this.angleX += delta;
-    } 
-    if (this.touch.lastX && (e.gesture.direction == 'left' || e.gesture.direction == 'right')) {
-        this.touch.shiftControl
-          .removeClass('shift-vertical')
-          .addClass('shift-horizontal')
-          .css('left', e.gesture.center.pageX + 'px');
-        delta = e.gesture.deltaX - this.touch.lastX;
-        this.viewpointX += factor * delta * this.viewpointZ;
-        this.angleZ += delta;
-    }
-    if (delta)
-      this.onDraw();
-    this.touch.lastX = e.gesture.deltaX;
-    this.touch.lastY = e.gesture.deltaY;
-  },
-  //zooming
-  onTransform: function(e) {
-      this.touch.cur = 'transforming';
-      if (this.touch.scale) {
-        var factor = 1 / (1 + e.gesture.scale - this.touch.scale);
-        var coeff = this.getZoom();
-        coeff *= factor;
-        this.setZoom( coeff);
-      }
-      this.touch.scale = e.gesture.scale;
-      return this;
-  },
-  onDraw: function(e) {
-    var gl = this.gl;
-    gl.makeCurrent();
+        if (this.touch.lastY && (e.gesture.direction == 'up' || e.gesture.direction == 'down')) {
+            this.touch.shiftControl
+                .removeClass('shift-horizontal')
+                .addClass('shift-vertical')
+                .css('top', e.gesture.center.pageY + 'px');
+            delta = e.gesture.deltaY - this.touch.lastY;
+            this.viewpointY -= factor * delta * this.viewpointZ;
+            this.angleX += delta;
+        } 
+        if (this.touch.lastX && (e.gesture.direction == 'left' || e.gesture.direction == 'right')) {
+            this.touch.shiftControl
+                .removeClass('shift-vertical')
+                .addClass('shift-horizontal')
+                .css('left', e.gesture.center.pageX + 'px');
+            delta = e.gesture.deltaX - this.touch.lastX;
+            this.viewpointX += factor * delta * this.viewpointZ;
+            this.angleZ += delta;
+        }
+        if (delta)
+            this.onDraw();
+        this.touch.lastX = e.gesture.deltaX;
+        this.touch.lastY = e.gesture.deltaY;
+    },
+    
+    //zooming
+    onTransform: function(e) {
+        this.touch.cur = 'transforming';
+        if (this.touch.scale) {
+            var factor = 1 / (1 + e.gesture.scale - this.touch.scale);
+            var coeff = this.getZoom();
+            coeff *= factor;
+            this.setZoom( coeff);
+        }
+        this.touch.scale = e.gesture.scale;
+        return this;
+    },
+  
+    onDraw: function(e) {
+        var gl = this.gl;
+        gl.makeCurrent();
 
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.loadIdentity();
-    gl.translate(this.viewpointX, this.viewpointY, -this.viewpointZ);
-    gl.rotate(this.angleX, 1, 0, 0);
-    gl.rotate(this.angleY, 0, 1, 0);
-    gl.rotate(this.angleZ, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.loadIdentity();
+        gl.translate(this.viewpointX, this.viewpointY, -this.viewpointZ);
+        gl.rotate(this.angleX, 1, 0, 0);
+        gl.rotate(this.angleY, 0, 1, 0);
+        gl.rotate(this.angleZ, 0, 0, 1);
 
-    gl.enable(gl.BLEND);
-    //gl.disable(gl.DEPTH_TEST);
-    if (!this.lineOverlay) gl.enable(gl.POLYGON_OFFSET_FILL);
-    for (var i = 0; i < this.meshes.length; i++) {
-      var mesh = this.meshes[i];
-      this.lightingShader.draw(mesh, gl.TRIANGLES);
-    }
-    if (!this.lineOverlay) gl.disable(gl.POLYGON_OFFSET_FILL);
-    gl.disable(gl.BLEND);
-    //gl.enable(gl.DEPTH_TEST);
+        gl.enable(gl.BLEND);
+        //gl.disable(gl.DEPTH_TEST);
+        if (!this.lineOverlay) gl.enable(gl.POLYGON_OFFSET_FILL);
+        for (var i = 0; i < this.meshes.length; i++) {
+            var mesh = this.meshes[i];
+            this.lightingShader.draw(mesh, gl.TRIANGLES);
+        }
+        if (!this.lineOverlay) gl.disable(gl.POLYGON_OFFSET_FILL);
+        gl.disable(gl.BLEND);
+        //gl.enable(gl.DEPTH_TEST);
 
-    if(this.drawLines) {
-      if (this.lineOverlay) gl.disable(gl.DEPTH_TEST);
-      gl.enable(gl.BLEND);
-      for (var i = 0; i < this.meshes.length; i++) {
-        var mesh = this.meshes[i];
-        this.blackShader.draw(mesh, gl.LINES);
-      }
-      gl.disable(gl.BLEND);
-      if (this.lineOverlay) gl.enable(gl.DEPTH_TEST);
-    }
-    //EDW: axes
-    if (this.drawAxes) {
-      gl.enable(gl.BLEND);
-      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-      gl.begin(gl.LINES);
-      var plate = 2000;
-      if(this.plate) {
+        if (this.drawLines) {
+            if (this.lineOverlay) gl.disable(gl.DEPTH_TEST);
+            gl.enable(gl.BLEND);
+            for (var i = 0; i < this.meshes.length; i++) {
+                var mesh = this.meshes[i];
+                this.blackShader.draw(mesh, gl.LINES);
+            }
+            gl.disable(gl.BLEND);
+            if (this.lineOverlay) gl.enable(gl.DEPTH_TEST);
+        }
+        //EDW: axes
+        if (this.drawAxes) {
+            gl.enable(gl.BLEND);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+            gl.begin(gl.LINES);
+            var plate = 2000;
+            if (this.plate) {
+                if (this.userPrefs.view.grid.major.show) {
+                    // major grid
+                    var size = this.userPrefs.view.grid.major.size;
+                    gl.color(.5,.5,.5,.5);
+                    for (var x=-plate/2; x<=plate/2; x+=size) {
+                        gl.vertex(-plate/2, x, 0);
+                        gl.vertex(plate/2, x, 0);
+                        gl.vertex(x, -plate/2, 0);
+                        gl.vertex(x, plate/2, 0);
+                    }
+                    // minor grid
+                    if (this.userPrefs.view.grid.minor.show) {
+                        var size = this.userPrefs.view.grid.minor.size;
+                        gl.color(.8,.8,.8,.5);
+                        for(var x=-plate/2; x<=plate/2; x+=size) {
+                            if(x%10) {
+                                gl.vertex(-plate/2, x, 0);
+                                gl.vertex(plate/2, x, 0);
+                                gl.vertex(x, -plate/2, 0);
+                                gl.vertex(x, plate/2, 0);
+                            }
+                        }
+                    }
+                }
           
-//         gl.color(.8,.8,.8,.5); // -- minor grid
-//         for(var x=-plate/2; x<=plate/2; x++) {
-//            if(x%10) {
-//               gl.vertex(-plate/2, x, 0);
-//               gl.vertex(plate/2, x, 0);
-//               gl.vertex(x, -plate/2, 0);
-//               gl.vertex(x, plate/2, 0);
-//            }
-//         }
-         gl.color(.5,.5,.5,1); // -- major grid
-         gl.vertex(-plate/2, 0, 0);
-         gl.vertex(plate/2, 0, 0);
-         gl.vertex(0, -plate/2, 0);
-         gl.vertex(0, plate/2, 0);
-         gl.vertex(0, 0, -plate/2);
-         gl.vertex(0, 0, plate/2);
-          
-//         gl.color(.5,.5,.5,.5); // -- major grid
-//         for(var x=-plate/2; x<=plate/2; x+=10) {
-//            gl.vertex(-plate/2, x, 0);
-//            gl.vertex(plate/2, x, 0);
-//            gl.vertex(x, -plate/2, 0);
-//            gl.vertex(x, plate/2, 0);
-//         }
-      }
-      if(0) {
-         //X - red
-         gl.color(1, 0.5, 0.5, 0.2); //negative direction is lighter
-         gl.vertex(-100, 0, 0);
-         gl.vertex(0, 0, 0);
-   
-         gl.color(1, 0, 0, 0.8); //positive direction
-         gl.vertex(0, 0, 0);
-         gl.vertex(100, 0, 0);
-         //Y - green
-         gl.color(0.5, 1, 0.5, 0.2); //negative direction is lighter
-         gl.vertex(0, -100, 0);
-         gl.vertex(0, 0, 0);
-   
-         gl.color(0, 1, 0, 0.8); //positive direction
-         gl.vertex(0, 0, 0);
-         gl.vertex(0, 100, 0);
-         //Z - black
-         gl.color(0.5, 0.5, 0.5, 0.2); //negative direction is lighter
-         gl.vertex(0, 0, -100);
-         gl.vertex(0, 0, 0);
-   
-         gl.color(0.2, 0.2, 0.2, 0.8); //positive direction
-         gl.vertex(0, 0, 0);
-         gl.vertex(0, 0, 100);
-      }
-      if(0) {
-         gl.triangle();
-         gl.color(0.6, 0.2, 0.6, 0.2); //positive direction
-         gl.vertex(-plate,-plate,0);
-         gl.vertex(plate,-plate,0);
-         gl.vertex(plate,plate,0);
-         gl.end();
-         gl.triangle();
-         gl.color(0.6, 0.2, 0.6, 0.2); //positive direction
-         gl.vertex(plate,plate,0);
-         gl.vertex(-plate,plate,0);
-         gl.vertex(-plate,-plate,0);
-         gl.end();
-      }
-      gl.end();
-      gl.disable(gl.BLEND);
-      // GL.Mesh.plane({ detailX: 20, detailY: 40 });
+                // Axes
+//                if (this.userPrefs.view.axes.show) {
+//                    gl.color(.0,0,0,1);
+//                    gl.vertex(-plate/2, 0, 0);
+//                    gl.vertex(plate/2, 0, 0);
+//                    gl.vertex(0, -plate/2, 0);
+//                    gl.vertex(0, plate/2, 0);
+//                    gl.vertex(0, 0, -plate/2);
+//                    gl.vertex(0, 0, plate/2);
+//                }
+            }
+            
+            if (this.userPrefs.view.axes.show) {
+                var length = this.userPrefs.view.axes.length;
+                
+                //X - red
+                gl.color(1, 0.5, 0.5, 0.3); //negative direction is lighter
+                gl.vertex(-length, 0, 0);
+                gl.vertex(0, 0, 0);
+
+                gl.color(1, 0.2, 0.2, 0.8); //positive direction
+                gl.vertex(0, 0, 0);
+                gl.vertex(length, 0, 0);
+                
+                //Y - green
+                gl.color(0.6, 1, 0.7, 0.2); //negative direction is lighter
+                gl.vertex(0, -length, 0);
+                gl.vertex(0, 0, 0);
+
+                gl.color(0.3, 1, 0.4, 0.8); //positive direction
+                gl.vertex(0, 0, 0);
+                gl.vertex(0, length, 0);
+                
+                //Z - black
+                gl.color(0.5, 0.5, 0.5, 0.2); //negative direction is lighter
+                gl.vertex(0, 0, -length);
+                gl.vertex(0, 0, 0);
+
+                gl.color(0.2, 0.2, 0.2, 0.8); //positive direction
+                gl.vertex(0, 0, 0);
+                gl.vertex(0, 0, length);
+            }
+            
+            if (0) {
+                gl.triangle();
+                gl.color(0.6, 0.2, 0.6, 0.2); //positive direction
+                gl.vertex(-plate,-plate,0);
+                gl.vertex(plate,-plate,0);
+                gl.vertex(plate,plate,0);
+                gl.end();
+                gl.triangle();
+                gl.color(0.6, 0.2, 0.6, 0.2); //positive direction
+                gl.vertex(plate,plate,0);
+                gl.vertex(-plate,plate,0);
+                gl.vertex(-plate,-plate,0);
+                gl.end();
+            }
+            
+            gl.end();
+            gl.disable(gl.BLEND);
+            // GL.Mesh.plane({ detailX: 20, detailY: 40 });
+        }
     }
-  }
 };
 
 // Convert from CSG solid to an array of GL.Mesh objects
 // limiting the number of vertices per mesh to less than 2^16
 OpenJsCad.Viewer.csgToMeshes = function(initial_csg) {
-  var csg = initial_csg.canonicalized();
-  var mesh = new GL.Mesh({ normals: true, colors: true });
-  var meshes = [ mesh ];
-  var vertexTag2Index = {};
-  var vertices = [];
-  var colors = [];
-  var triangles = [];
-  // set to true if we want to use interpolated vertex normals
-  // this creates nice round spheres but does not represent the shape of
-  // the actual model
-  var smoothlighting = false;
-  var polygons = csg.toPolygons();
-  var numpolygons = polygons.length;
-  for(var j = 0; j < numpolygons; j++) {
-    var polygon = polygons[j];
-    var color = [1,.4,1,1];      // -- default color
-
-    if(polygon.shared && polygon.shared.color) {
-      color = polygon.shared.color;
+    var csg = initial_csg.canonicalized();
+    var mesh = new GL.Mesh({ normals: true, colors: true });
+    var meshes = [ mesh ];
+    var vertexTag2Index = {};
+    var vertices = [];
+    var colors = [];
+    var triangles = [];
+    // set to true if we want to use interpolated vertex normals
+    // this creates nice round spheres but does not represent the shape of
+    // the actual model
+    var smoothlighting = false;
+    var polygons = csg.toPolygons();
+    var numpolygons = polygons.length;
+    for (var j = 0; j < numpolygons; j++) {
+        var polygon = polygons[j];
+        var color = [1,.4,1,1];      // -- default color
+        
+        if (polygon.shared && polygon.shared.color) {
+            color = polygon.shared.color;
+        }
+        if (polygon.color) {
+            color = polygon.color;
+        }
+        
+        if (color.length < 4)
+            color.push(1.); //opaque
+        
+        var indices = polygon.vertices.map(function(vertex) {
+            var vertextag = vertex.getTag();
+            var vertexindex;
+            if(smoothlighting && (vertextag in vertexTag2Index)) {
+                vertexindex = vertexTag2Index[vertextag];
+            } else {
+                vertexindex = vertices.length;
+                vertexTag2Index[vertextag] = vertexindex;
+                vertices.push([vertex.pos.x, vertex.pos.y, vertex.pos.z]);
+                colors.push(color);
+            }
+            return vertexindex;
+        });
+        for (var i = 2; i < indices.length; i++) {
+            triangles.push([indices[0], indices[i - 1], indices[i]]);
+        }
+        // if too many vertices, start a new mesh;
+        if (vertices.length > 65000) {
+            // finalize the old mesh	
+            mesh.triangles = triangles;
+            mesh.vertices = vertices;
+            mesh.colors = colors;
+            mesh.computeWireframe();
+            mesh.computeNormals();
+            
+            if ( mesh.vertices.length ) {
+                meshes.push(mesh);
+            }
+            
+            // start a new mesh
+            mesh = new GL.Mesh({ normals: true, colors: true });
+            triangles = [];
+            colors = [];
+            vertices = [];
+        }
     }
-    if(polygon.color) {
-      color = polygon.color;
-    }
+    // finalize last mesh
+    mesh.triangles = triangles;
+    mesh.vertices = vertices;
+    mesh.colors = colors;
+    mesh.computeWireframe();
+    mesh.computeNormals();
 
-	if (color.length < 4)
-		color.push(1.); //opaque
-
-    var indices = polygon.vertices.map(function(vertex) {
-      var vertextag = vertex.getTag();
-      var vertexindex;
-      if(smoothlighting && (vertextag in vertexTag2Index)) {
-        vertexindex = vertexTag2Index[vertextag];
-      } else {
-        vertexindex = vertices.length;
-        vertexTag2Index[vertextag] = vertexindex;
-        vertices.push([vertex.pos.x, vertex.pos.y, vertex.pos.z]);
-        colors.push(color);
-      }
-      return vertexindex;
-    });
-    for (var i = 2; i < indices.length; i++) {
-      triangles.push([indices[0], indices[i - 1], indices[i]]);
-    }
-    // if too many vertices, start a new mesh;
-    if (vertices.length > 65000) {
-      // finalize the old mesh	
-      mesh.triangles = triangles;
-      mesh.vertices = vertices;
-      mesh.colors = colors;
-      mesh.computeWireframe();
-      mesh.computeNormals();
-
-      if ( mesh.vertices.length ) {
+    if ( mesh.vertices.length ) {
         meshes.push(mesh);
-      }
-
-      // start a new mesh
-      mesh = new GL.Mesh({ normals: true, colors: true });
-      triangles = [];
-      colors = [];
-      vertices = [];
     }
-  }
-  // finalize last mesh
-  mesh.triangles = triangles;
-  mesh.vertices = vertices;
-  mesh.colors = colors;
-  mesh.computeWireframe();
-  mesh.computeNormals();
-
-  if ( mesh.vertices.length ) {
-    meshes.push(mesh);
-  }
-
-  return meshes;
+    
+    return meshes;
 };
 
 // this is a bit of a hack; doesn't properly supports urls that start with '/'
 // but does handle relative urls containing ../
 OpenJsCad.makeAbsoluteUrl = function(url, baseurl) {
-  if(!url.match(/^[a-z]+\:/i)) {
-    var basecomps = baseurl.split("/");
-    if(basecomps.length > 0) {
-      basecomps.splice(basecomps.length - 1, 1);
-    }
-    var urlcomps = url.split("/");
-    var comps = basecomps.concat(urlcomps);
-    var comps2 = [];
-    comps.map(function(c) {
-      if(c == "..") {
-        if(comps2.length > 0) {
-          comps2.splice(comps2.length - 1, 1);
+    if(!url.match(/^[a-z]+\:/i)) {
+        var basecomps = baseurl.split("/");
+        if(basecomps.length > 0) {
+            basecomps.splice(basecomps.length - 1, 1);
         }
-      } else {
-        comps2.push(c);
-      }
-    });  
-    url = "";
-    for(var i = 0; i < comps2.length; i++) {
-      if(i > 0) url += "/";
-      url += comps2[i];
+        var urlcomps = url.split("/");
+        var comps = basecomps.concat(urlcomps);
+        var comps2 = [];
+        comps.map(function(c) {
+            if(c == "..") {
+                if(comps2.length > 0) {
+                    comps2.splice(comps2.length - 1, 1);
+                }
+            } else {
+                comps2.push(c);
+            }
+        });  
+        url = "";
+        for(var i = 0; i < comps2.length; i++) {
+            if(i > 0) url += "/";
+            url += comps2[i];
+        }
     }
-  }
-  return url;
+    return url;
 };
 
 OpenJsCad.isChrome = function() {
-  return (navigator.userAgent.search("Chrome") >= 0);
+    return (navigator.userAgent.search("Chrome") >= 0);
 };
 
 // This is called from within the web worker. Execute the main() function of the supplied script
@@ -910,27 +933,28 @@ OpenJsCad.getParamDefinitions = function(script) {
   return params;
 };
 
-OpenJsCad.Processor = function(containerdiv, onchange) {
-  this.containerdiv = containerdiv;
-  this.onchange = onchange;
-  this.viewerdiv = null;
-  this.viewer = null;
-  this.zoomControl = null;
-  //this.viewerwidth = 1200;
-  //this.viewerheight = 800;
-  this.initialViewerDistance = 100;
-  this.processing = false;
-  this.currentObject = null;
-  this.hasValidCurrentObject = false;
-  this.hasOutputFile = false;
-  this.worker = null;
-  this.paramDefinitions = [];
-  this.paramControls = [];
-  this.script = null;
-  this.hasError = false;
-  this.debugging = false;
-  this.options = {};
-  this.createElements();
+OpenJsCad.Processor = function(containerdiv, userPrefs, onchange) {
+    this.userPrefs = userPrefs;
+    this.containerdiv = containerdiv;
+    this.onchange = onchange;
+    this.viewerdiv = null;
+    this.viewer = null;
+    this.zoomControl = null;
+    //this.viewerwidth = 1200;
+    //this.viewerheight = 800;
+    this.initialViewerDistance = 100;
+    this.processing = false;
+    this.currentObject = null;
+    this.hasValidCurrentObject = false;
+    this.hasOutputFile = false;
+    this.worker = null;
+    this.paramDefinitions = [];
+    this.paramControls = [];
+    this.script = null;
+    this.hasError = false;
+    this.debugging = false;
+    this.options = {};
+    this.createElements();
 };
 
 OpenJsCad.Processor.convertToSolid = function(obj) {
@@ -984,7 +1008,7 @@ OpenJsCad.Processor.prototype = {
     try {
       //this.viewer = new OpenJsCad.Viewer(this.viewerdiv, this.viewerwidth, this.viewerheight, this.initialViewerDistance);
       //this.viewer = new OpenJsCad.Viewer(this.viewerdiv, viewerdiv.offsetWidth, viewer.offsetHeight, this.initialViewerDistance);
-      this.viewer = new OpenJsCad.Viewer(this.viewerdiv, this.initialViewerDistance);
+      this.viewer = new OpenJsCad.Viewer(this.viewerdiv, this.initialViewerDistance, this.userPrefs);
     } catch(e) {
       //      this.viewer = null;
       this.viewerdiv.innerHTML = "<b><br><br>Error: " + e.toString() + "</b><br><br>OpenJsCad currently requires Google Chrome or Firefox with WebGL enabled";

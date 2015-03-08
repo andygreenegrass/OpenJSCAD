@@ -24,6 +24,13 @@
     -moz-box-shadow: 2px 0 6px rgba(0,0,0,0.1);
     -webkit-box-shadow: 2px 0 6px rgba(0,0,0,0.1);
     
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    
     z-index: 998;
 }
 
@@ -35,12 +42,18 @@
     margin-bottom: 10px;
 }
 
-#toolbar img {
+#toolbar img, #toolbar svg {
     width: 100%;
     opacity: 0.8;
 }
 
-#toolbar img:hover {
+#toolbar svg {
+    background-color: rgba(0, 0, 0, 0.19);
+/*    border: 1px solid rgba(0, 0, 0, 0.18);*/
+    opacity: 0.6;
+}
+
+#toolbar img:hover, #toolbar svg:hover {
     opacity: 1;
 }
 
