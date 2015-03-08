@@ -32,7 +32,7 @@
     bottom: 22px;    /* don't invade the status bar */
     right: 0;
     left: calc(100% - 20px);
-    background: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.7);
     
     z-index: 998;
 }
