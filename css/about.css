@@ -15,7 +15,7 @@
     background: white;
     padding: 2.5em;
     text-align: center;
-    z-index: 100;
+    z-index: 999;
     opacity: 0;
     pointer-events: none;
 

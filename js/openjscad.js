@@ -205,7 +205,7 @@ OpenJsCad.Viewer = function(containerelement, initialdepth, userPrefs) {
       // for firefox, see http://stackoverflow.com/questions/8886281/event-wheeldelta-returns-undefined
       wheelDelta = e.detail * -40;     
     }
-    if(wheelDelta) {
+    if (wheelDelta) {
       var factor = Math.pow(1.003, -wheelDelta);
       var coeff = _this.getZoom();
       coeff *= factor;
@@ -218,7 +218,7 @@ OpenJsCad.Viewer = function(containerelement, initialdepth, userPrefs) {
 
 OpenJsCad.Viewer.prototype = {
     setCsg: function(csg) {
-        if(0&&csg.length) {                            // preparing multiple CSG's (not union-ed), not yet working
+        if (0&&csg.length) {                            // preparing multiple CSG's (not union-ed), not yet working
             for(var i=0; i<csg.length; i++)
                 this.meshes.concat(OpenJsCad.Viewer.csgToMeshes(csg[i]));
         } else {
@@ -393,7 +393,7 @@ OpenJsCad.Viewer.prototype = {
             gl.enable(gl.BLEND);
             gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
             gl.begin(gl.LINES);
-            var plate = 2000;
+            var plate = this.userPrefs.view.grid.plateSize;
             if (this.plate) {
                 if (this.userPrefs.view.grid.major.show) {
                     // major grid
@@ -432,6 +432,7 @@ OpenJsCad.Viewer.prototype = {
 //                }
             }
             
+            // Colored Axes
             if (this.userPrefs.view.axes.show) {
                 var length = this.userPrefs.view.axes.length;
                 
@@ -503,7 +504,7 @@ OpenJsCad.Viewer.csgToMeshes = function(initial_csg) {
     var numpolygons = polygons.length;
     for (var j = 0; j < numpolygons; j++) {
         var polygon = polygons[j];
-        var color = [1,.4,1,1];      // -- default color
+        var color = [0.4,0.4,1,1];      // -- default color
         
         if (polygon.shared && polygon.shared.color) {
             color = polygon.shared.color;
@@ -601,38 +602,38 @@ OpenJsCad.isChrome = function() {
 // This is called from within the web worker. Execute the main() function of the supplied script
 // and post a message to the calling thread when finished
 OpenJsCad.runMainInWorker = function(mainParameters) {
-  try {
-    if(typeof(main) != 'function') throw new Error('Your jscad file should contain a function main() which returns a CSG solid or a CAG area.');
-    OpenJsCad.log.prevLogTime = Date.now();    
-    var result = main(mainParameters);
-    if( (typeof(result) != "object") || ((!(result instanceof CSG)) && (!(result instanceof CAG)))) {
-      //throw new Error("Your main() function should return a CSG solid or a CAG area.");
+    try {
+        if(typeof(main) != 'function') throw new Error('Your jscad file should contain a function main() which returns a CSG solid or a CAG area.');
+        OpenJsCad.log.prevLogTime = Date.now();
+        var result = main(mainParameters);
+        if( (typeof(result) != "object") || ((!(result instanceof CSG)) && (!(result instanceof CAG)))) {
+            //throw new Error("Your main() function should return a CSG solid or a CAG area.");
+        }
+        if(result.length) {                   // main() return an array, we consider it a bunch of CSG not intersecting
+            var o = result[0];
+            if(o instanceof CAG) {
+                o = o.extrude({offset: [0,0,0.1]});
+            }
+            for(var i=1; i<result.length; i++) {
+                var c = result[i];
+                if(c instanceof CAG) {
+                    c = c.extrude({offset: [0,0,0.1]});
+                }
+                o = o.unionForNonIntersecting(c);
+            }
+            result = o;
+        }
+        var result_compact = result.toCompactBinary();
+        result = null; // not needed anymore
+        self.postMessage({cmd: 'rendered', result: result_compact});
     }
-    if(result.length) {                   // main() return an array, we consider it a bunch of CSG not intersecting
-       var o = result[0];
-       if(o instanceof CAG) {
-          o = o.extrude({offset: [0,0,0.1]});
-       }
-       for(var i=1; i<result.length; i++) {
-          var c = result[i];
-          if(c instanceof CAG) {
-             c = c.extrude({offset: [0,0,0.1]});
-          }
-          o = o.unionForNonIntersecting(c);
-       }
-       result = o;
-    } 
-    var result_compact = result.toCompactBinary();   
-    result = null; // not needed anymore
-    self.postMessage({cmd: 'rendered', result: result_compact});
-  }
-  catch(e) {
-    var errtxt = e.toString();
-    if(e.stack) {
-      errtxt += '\nStack trace:\n'+e.stack;
-    } 
-    self.postMessage({cmd: 'error', err: errtxt});
-  }
+    catch(e) {
+        var errtxt = e.toString();
+        if(e.stack) {
+            errtxt += '\nStack trace:\n'+e.stack;
+        }
+        self.postMessage({cmd: 'error', err: errtxt});
+    }
 };
 
 OpenJsCad.parseJsCadScriptSync = function(script, mainParameters, debugging) {
@@ -773,7 +774,7 @@ OpenJsCad.parseJsCadScriptASync = function(script, mainParameters, options, call
 // 2) importScripts() works for ASYNC <----
 // 3) _csg_libraries.push(fn) provides only 1 level include()
 
-  if(!ignoreInclude) {
+  if (!ignoreInclude) {
      workerscript += "function include(fn) {\
   if(0) {\
     _csg_libraries.push(fn);\
@@ -806,12 +807,12 @@ OpenJsCad.parseJsCadScriptASync = function(script, mainParameters, options, call
   //workerscript += "function includePath(p) { _includePath = p; }\n";
   var blobURL = OpenJsCad.textToBlobUrl(workerscript);
   
-  if(!window.Worker) throw new Error("Your browser doesn't support Web Workers. Please try the Chrome or Firefox browser instead.");
+  if (!window.Worker) throw new Error("Your browser doesn't support Web Workers. Please try the Chrome or Firefox browser instead.");
   var worker = new Worker(blobURL);
   worker.onmessage = function(e) {
-    if(e.data)
+    if (e.data)
     { 
-      if(e.data.cmd == 'rendered')
+      if (e.data.cmd == 'rendered')
       {
         var resulttype = e.data.result.class;
         var result;
@@ -829,11 +830,11 @@ OpenJsCad.parseJsCadScriptASync = function(script, mainParameters, options, call
         }
         callback(null, result);
       }
-      else if(e.data.cmd == "error")
+      else if (e.data.cmd == "error")
       {
         callback(e.data.err, null);
       }
-      else if(e.data.cmd == "log")
+      else if (e.data.cmd == "log")
       {
         console.log(e.data.txt);
       }
@@ -850,51 +851,51 @@ OpenJsCad.parseJsCadScriptASync = function(script, mainParameters, options, call
 };
 
 OpenJsCad.getWindowURL = function() {
-  if(window.URL) return window.URL;
-  else if(window.webkitURL) return window.webkitURL;
-  else throw new Error("Your browser doesn't support window.URL");
+    if (window.URL) return window.URL;
+    else if (window.webkitURL) return window.webkitURL;
+    else throw new Error("Your browser doesn't support window.URL");
 };
 
 OpenJsCad.textToBlobUrl = function(txt) {
-  var windowURL=OpenJsCad.getWindowURL();
-  var blob = new Blob([txt], { type : 'application/javascript' });
-  var blobURL = windowURL.createObjectURL(blob);
-  if(!blobURL) throw new Error("createObjectURL() failed"); 
-  return blobURL;
+    var windowURL=OpenJsCad.getWindowURL();
+    var blob = new Blob([txt], { type : 'application/javascript' });
+    var blobURL = windowURL.createObjectURL(blob);
+    if (!blobURL) throw new Error("createObjectURL() failed");
+    return blobURL;
 };
 
 OpenJsCad.revokeBlobUrl = function(url) {
-  if(window.URL) window.URL.revokeObjectURL(url);
-  else if(window.webkitURL) window.webkitURL.revokeObjectURL(url);
-  else throw new Error("Your browser doesn't support window.URL");
+    if (window.URL) window.URL.revokeObjectURL(url);
+    else if (window.webkitURL) window.webkitURL.revokeObjectURL(url);
+    else throw new Error("Your browser doesn't support window.URL");
 };
 
 OpenJsCad.FileSystemApiErrorHandler = function(fileError, operation) {
-  var errormap = {
-    1: 'NOT_FOUND_ERR',
-    2: 'SECURITY_ERR',
-    3: 'ABORT_ERR',
-    4: 'NOT_READABLE_ERR',
-    5: 'ENCODING_ERR',
-    6: 'NO_MODIFICATION_ALLOWED_ERR',
-    7: 'INVALID_STATE_ERR',
-    8: 'SYNTAX_ERR',
-    9: 'INVALID_MODIFICATION_ERR',
-    10: 'QUOTA_EXCEEDED_ERR',
-    11: 'TYPE_MISMATCH_ERR',
-    12: 'PATH_EXISTS_ERR',
-  };
-  var errname;
-  if(fileError.code in errormap)
-  {
-    errname = errormap[fileError.code];
-  }
-  else
-  {
-    errname = "Error #"+fileError.code;
-  }
-  var errtxt = "FileSystem API error: "+operation+" returned error "+errname;
-  throw new Error(errtxt);
+    var errormap = {
+        1: 'NOT_FOUND_ERR',
+        2: 'SECURITY_ERR',
+        3: 'ABORT_ERR',
+        4: 'NOT_READABLE_ERR',
+        5: 'ENCODING_ERR',
+        6: 'NO_MODIFICATION_ALLOWED_ERR',
+        7: 'INVALID_STATE_ERR',
+        8: 'SYNTAX_ERR',
+        9: 'INVALID_MODIFICATION_ERR',
+        10: 'QUOTA_EXCEEDED_ERR',
+        11: 'TYPE_MISMATCH_ERR',
+        12: 'PATH_EXISTS_ERR',
+    };
+    var errname;
+    if (fileError.code in errormap)
+    {
+        errname = errormap[fileError.code];
+    }
+    else
+    {
+        errname = "Error #"+fileError.code;
+    }
+    var errtxt = "FileSystem API error: "+operation+" returned error "+errname;
+    throw new Error(errtxt);
 };
 
 OpenJsCad.AlertUserOfUncaughtExceptions = function() {
@@ -1305,56 +1306,46 @@ OpenJsCad.Processor.prototype = {
     var useSync = this.debugging;
 
     //useSync = true;
-    if(!useSync)
-    {
-      try
-      {
+    if (!useSync) {
+      try {
           console.log("trying async compute");
           this.worker = OpenJsCad.parseJsCadScriptASync(this.script, paramValues, this.options, function(err, obj) {
           that.processing = false;
           that.worker = null;
-          if(err)
-          {
+          if (err) {
             that.setError(err);
             that.statusspan.innerHTML = "Error.";
-          }
-          else
-          {
+          } else {
             that.setCurrentObject(obj);
             that.statusspan.innerHTML = "Ready.";
           }
           that.enableItems();
-          if(that.onchange) that.onchange();
+          if (that.onchange) that.onchange();
         });
-      }
-      catch(e)
-      {
+      } catch(e) {
         console.log("async failed, try sync compute, error: "+e.message);
         useSync = true;
       }
     }
     
-    if(useSync)
+    if (useSync)
     {
-      try
-      {
+      try {
         this.statusspan.innerHTML = "Rendering code, please wait <img id=busy src='imgs/busy.gif'>";
         var obj = OpenJsCad.parseJsCadScriptSync(this.script, paramValues, this.debugging);
         that.setCurrentObject(obj);
         that.processing = false;
         that.statusspan.innerHTML = "Ready.";
-      }
-      catch(e)
-      {
+      } catch(e) {
         that.processing = false;
         var errtxt = e.toString();
-        if(e.stack) {
+        if (e.stack) {
           errtxt += '\nStack trace:\n'+e.stack;
         } 
         that.statusspan.innerHTML = "Error.";
       }
       that.enableItems();
-      if(that.onchange) that.onchange();
+      if (that.onchange) that.onchange();
     }
   },
   

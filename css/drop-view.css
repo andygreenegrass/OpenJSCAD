@@ -3,17 +3,34 @@
  */
 
 #drop-view {
-    opacity: 1;
+    opacity: 0;
     position: fixed;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.48);
+    pointer-events: none;
     
     z-index: -1;
+
+    transition: opacity 0.2s;
 }
 
 #drop-view.shown {
+    opacity: 1;
     z-index: 1000;
+}
+
+#drop-view div {
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 40px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(50% - 20px);
+    color: rgba(255, 255, 255, 1);
+    text-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
 }

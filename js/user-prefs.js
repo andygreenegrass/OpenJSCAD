@@ -1,4 +1,8 @@
+// UserPrefs structure and defaults
+
 UserPrefs = function() {
+    this.defaultColor = [1,.4,1,1];
+
     this.toolbar = {
         pinned: true
     };
@@ -7,8 +11,11 @@ UserPrefs = function() {
         pinned: true
     };
     
+    this.autoRender = true;
+
     this.view = {
         grid: {
+            plateSize: 200,
             major: {
                 show: false,
                 size: 10
