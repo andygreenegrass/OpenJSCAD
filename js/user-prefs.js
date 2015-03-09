@@ -11,7 +11,7 @@ UserPrefs = function() {
         pinned: true
     };
     
-    this.autoRender = true;
+    this.autoReload = true;
 
     this.view = {
         initialViewerDistance: 200,

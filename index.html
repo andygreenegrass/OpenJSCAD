@@ -177,8 +177,8 @@ $(document).ready(function() {
     ><span class=parent>
         <div class=title>Design</div>
         <div class=sub-menu>
-            <div class=checkbox enabled=false><img src="imgs/check.svg"/>Automatic Compile &amp; Render</div>
-            <div class=button enabled=true>Compile &amp; Render</div>
+            <div class='checkbox checked' onclick="menu.design.autoReload(this)"><img src="imgs/check.svg"/>Automatic Compile &amp; Render</div>
+            <div class=button enabled=false>Compile &amp; Render</div>
         </div>
     </span
     ><span class=parent>
@@ -216,6 +216,8 @@ $(document).ready(function() {
     var userPrefs = new UserPrefs();
     
     $(document).ready(function() {
+        setAutoReload(userPrefs.autoReload);
+        
         $('.pin').click(function() {
             $(this).toggleClass('pinned');
         });
@@ -229,6 +231,22 @@ $(document).ready(function() {
             }
         });
     });
+    
+    var autoReloadTimer = null;
+
+    function setAutoReload(value) {
+        if (value) {
+            autoReloadTimer = setInterval(function() {
+                //parseFile(gCurrentFile,false,true);
+                superviseAllFiles();
+            }, 1000);
+        } else {
+            if (autoReloadTimer !== null) {
+                clearInterval(autoReloadTimer);
+                autoReloadTimer = null;
+            }
+        }
+    }
 </script>
     
 <!-- Editor ------------------------------------------------------------------>
@@ -1005,22 +1023,6 @@ function superviseAllFiles(p) {           // check if there were changes: (re-)l
          walkFileTree(gRootFs[i]);
       }
    }
-}
-
-var autoReloadTimer = null;
-
-function toggleAutoReload() {
-	if (document.getElementById("autoreload").checked) {
-		autoReloadTimer = setInterval(function(){
-		  //parseFile(gCurrentFile,false,true);
-		  superviseAllFiles();
-    }, 1000);
-	} else {
-		if (autoReloadTimer !== null) {
-			clearInterval(autoReloadTimer);
-			autoReloadTimer = null;
-		}
-	}
 }
 
 var previousScript = null;

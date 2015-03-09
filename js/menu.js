@@ -20,6 +20,17 @@ menu.file.open = function() {
     //alert (f);
 };
 
+// Design
+// -------------
+menu.design = {};
+menu.design.autoReload = function(el) {
+    userPrefs.autoReload = !userPrefs.autoReload;
+    if (userPrefs.autoReload)
+        $(el).addClass('checked');
+    else
+        $(el).removeClass('checked');
+};
+
 // View
 // -------------
 menu.view = {};
