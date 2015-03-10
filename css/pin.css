@@ -16,26 +16,26 @@
 }
 
 .pin > div {
-    background-color: rgba(255, 255, 255, 0.76);
+    background-color: rgba(255, 255, 255, 1);
     position: relative;
     width: 100%;
     height: 100%;
     border-radius: 50%;
     box-sizing: border-box;
     padding: 2px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
 /*    transform: rotate(45deg);*/
 }
 
 .pin > div > img {
     height: 100%;
     width: 100%;
-    opacity: 0.25 !important;
+    opacity: 0.5 !important;
     transform: rotate(0deg);
 }
 
 .pin > div:hover > img {
-    opacity: 0.5 !important;
+    opacity: 0.8 !important;
 }
 
 .pin.pinned img {
