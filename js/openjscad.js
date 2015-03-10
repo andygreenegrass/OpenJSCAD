@@ -1,26 +1,23 @@
 // == openjscad.js, originally written by Joost Nieuwenhuijse (MIT License)
 //   few adjustments by Rene K. Mueller <spiritdude@gmail.com> for OpenJSCAD.org
-//
-// History:
-// 2013/03/12: reenable webgui parameters to fit in current design
-// 2013/03/11: few changes to fit design of http://openjscad.org
 
-OpenJsCad = function() { };
+
+OpenJsCad = function() {};
 
 OpenJsCad.log = function(txt) {
-  var timeInMs = Date.now();
-  var prevtime = OpenJsCad.log.prevLogTime;
-  if(!prevtime) prevtime = timeInMs;
-  var deltatime = timeInMs - prevtime;
-  OpenJsCad.log.prevLogTime = timeInMs;
-  var timefmt = (deltatime*0.001).toFixed(3);
-  txt = "["+timefmt+"] "+txt;
-  if( (typeof(console) == "object") && (typeof(console.log) == "function") ) {
-    console.log(txt);
-  } else if( (typeof(self) == "object") && (typeof(self.postMessage) == "function") ) {
-    self.postMessage({cmd: 'log', txt: txt});
-  }
-  else throw new Error("Cannot log");
+    var timeInMs = Date.now();
+    var prevtime = OpenJsCad.log.prevLogTime;
+    if (!prevtime) prevtime = timeInMs;
+    var deltatime = timeInMs - prevtime;
+    OpenJsCad.log.prevLogTime = timeInMs;
+    var timefmt = (deltatime*0.001).toFixed(3);
+    txt = "["+timefmt+"] "+txt;
+    if ( (typeof(console) == "object") && (typeof(console.log) == "function") ) {
+        console.log(txt);
+    } else if ( (typeof(self) == "object") && (typeof(self.postMessage) == "function") ) {
+        self.postMessage({cmd: 'log', txt: txt});
+    }
+    else throw new Error("Cannot log");
 };
 
 // A viewer is a WebGL canvas that lets the user view a mesh. The user can
@@ -75,18 +72,24 @@ OpenJsCad.Viewer = function(containerelement, initialdepth, userPrefs) {
 
     this.viewStepper = function(newView, numFrames) {
         if (numFrames <= 0) {
+            // Correct any angles outside of [0,360]
+            for (var axis in newView.angle) {
+                newView.angle[axis] = this.correctAngle(newView.angle[axis]);
+            }
             this.view = newView;
             this.onDraw();
             return;
         }
 
-        this.view.angle.x += (newView.angle.x - this.view.angle.x) / numFrames;
-        this.view.angle.y += (newView.angle.y - this.view.angle.y) / numFrames;
-        this.view.angle.z += (newView.angle.z - this.view.angle.z) / numFrames;
+        // Update the angles
+        for (var axis in newView.angle) {
+            this.view.angle[axis] += (newView.angle[axis] - this.view.angle[axis]) / numFrames;
+        }
 
-        this.view.viewpoint.x += (newView.viewpoint.x - this.view.viewpoint.x) / numFrames;
-        this.view.viewpoint.y += (newView.viewpoint.y - this.view.viewpoint.y) / numFrames;
-        this.view.viewpoint.z += (newView.viewpoint.z - this.view.viewpoint.z) / numFrames;
+        // Update the viewpoints
+        for (var axis in newView.viewpoint) {
+            this.view.viewpoint[axis] += (newView.viewpoint[axis] - this.view.viewpoint[axis]) / numFrames;
+        }
 
         this.onDraw();
         var _this = this;
@@ -95,19 +98,19 @@ OpenJsCad.Viewer = function(containerelement, initialdepth, userPrefs) {
 
     this.setView = function(newView) {
         
-        var deltaX = newView.angle.x - this.view.angle.x;
-        var deltaY = newView.angle.y - this.view.angle.y;
-        var deltaZ = newView.angle.z - this.view.angle.z;
-        
-        if (abs(deltaX) > 180) {newView.angle.x +=360;}
-        if (abs(deltaY) > 180) {newView.angle.y +=360;}
-        if (abs(deltaZ) > 180) {newView.angle.z +=360;}
-        
-        $('#status').html(
-            JSON.stringify(this.view.angle) +
-            " ||| " +
-            JSON.stringify(newView.angle) +
-            " ||| " + deltaX + ", " + deltaY + ", " + deltaZ);
+        // Ensure the shortest path is taken for the animation
+        // This could result in angles outside of [0,360]
+        // The last frame will correct this.
+        for (var axis in newView.angle) {
+            // Ensure the angle is between 0 and 360
+            newView.angle[axis] = this.correctAngle(newView.angle[axis]);
+            var delta = newView.angle[axis] - this.view.angle[axis];
+            if (delta < -180) {
+                newView.angle[axis] += 360;
+            } else if (delta > 180) {
+                newView.angle[axis] -= 360;
+            }
+        }
         
         this.viewStepper(newView, 20);
     };
