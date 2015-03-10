@@ -55,7 +55,7 @@
     position: relative;
 /*    height: 27px;*/
 }
-#menu .sub-menu img, #menu .sub-menu svg {
+#menu .sub-menu img.icon, #menu .sub-menu svg.icon {
     height: 12px;
     width: 12px;
     position: absolute;
@@ -73,7 +73,7 @@
     background-color: transparent;
 }
 
-#menu .sub-menu > div:not(.divider)[enabled=false] img {
+#menu .sub-menu > div:not(.divider)[enabled=false] img.icon {
     opacity: 0.2;
 }
 
@@ -93,9 +93,18 @@
     left: 100%;
 }
 
-#menu .checkbox img {
+#menu .checkbox img.icon {
     opacity: 0;
 }
-#menu .checkbox.checked img {
+#menu .checkbox.checked img.icon {
     opacity: 1;
+}
+
+#menu img.arrow {
+    position: absolute;
+    top: calc(50% - 6px); right: 15px;
+    opacity: 0.8;
+    height: 8px;
+    width: 8px;
+    vertical-align: middle;
 }

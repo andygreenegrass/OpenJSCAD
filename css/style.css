@@ -172,6 +172,7 @@ canvas {
 
 /* arrows */
 
+/*
 .shift-scene {
    position: absolute;
    left: 50%;
@@ -190,6 +191,8 @@ canvas {
 .shift-scene.active {
    display: block;
 }
+*/
+/*
 .arrow {
    width: 0px;
    height: 0px;
@@ -221,3 +224,4 @@ canvas {
 .shift-horizontal .arrow-bottom {
    display: none;
 }
+*/

@@ -43,6 +43,7 @@ Todo:
     font-size: 10pt;     // -- not 'px', but 'pt' for high dpi screens
 }
 </style>
+<script src="js/examples.js"></script>
 <script src="js/lightgl.js"></script>
 <script src="js/csg.js"></script>
 <script src="js/user-prefs.js"></script>
@@ -108,7 +109,7 @@ $(document).ready(function() {
     
 <script>
     viewIcon = function (classes) {
-        return "<svg class='" + classes + "' width='100%' preserveAspectRatio='xMinYMin meet' viewBox='0 0 500 500' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xml:space='preserve' style='fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;'><g><g id='Layer1' transform='matrix(1,0,0,1,2.89949,2.89949)'><g id='Faces'><g id='Top' transform='matrix(0.988535,0,0,0.988535,-19.8039,-19.8039)'><path d='M26.6942,27l138.246,137.941l212.169,-2.05025l135.73,-135.89l-486.146,0Z' style='fill:#ffb83f;'/></g><g id='Bottom' transform='matrix(0.988535,0,0,-0.988535,-12.7262,514.005)'><path d='M26.6942,27l138.246,137.941l212.169,-2.05025l135.73,-135.89l-486.146,0Z' style='fill:#ffb83f;'/></g><g id='Left' transform='matrix(-4.81376e-15,0.988535,0.988535,4.81376e-15,-20.1062,-19.5016)'><path d='M26.6942,27l138.246,137.941l212.169,-2.05025l135.73,-135.89l-486.146,0Z' style='fill:#ffb83f;'/></g><g id='Right' transform='matrix(4.81376e-15,0.988535,-0.988535,4.81376e-15,513.847,-19.5016)'><path d='M26.6942,27l138.246,137.941l212.169,-2.05025l135.73,-135.89l-486.146,0Z' style='fill:#ffb83f;'/></g><g id='Back' transform='matrix(0.988535,0,0,0.988535,-19.8039,-19.8039)'><rect x='164.941' y='164.941' width='212.169' height='212.169' style='fill:#ffb83f;'/></g><g id='Front' transform='matrix(0.988535,0,0,0.988535,-19.8039,-19.8039)'><path d='M27,27l486,-1.42109e-14l1.93268e-12,486l-486,0Z' style='fill:#ffb83f;'/></g></g><g id='Frame' transform='matrix(0.988535,0,0,0.988535,-19.8039,-19.8039)'><g><g transform='matrix(1,2.39667e-17,2.39667e-17,0.902149,0,1.95703)'><path d='M520,27.7593c0,-4.28532 -3.13401,-7.75925 -7,-7.75925l-486,0c-3.86599,0 -7,3.47394 -7,7.75925c0,4.28532 3.13401,7.75925 7,7.75925l486,0c3.86599,0 7,-3.47394 7,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(1,2.39667e-17,2.39667e-17,0.902149,-3.19744e-14,487.957)'><path d='M520,27.7593c0,-4.28532 -3.13401,-7.75925 -7,-7.75925l-486,0c-3.86599,0 -7,3.47394 -7,7.75925c0,4.28532 3.13401,7.75925 7,7.75925l486,0c3.86599,0 7,-3.47394 7,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(7.8557e-15,-1,0.902149,7.04211e-15,487.957,540)'><path d='M520,27.7593c0,-4.28532 -3.13401,-7.75925 -7,-7.75925l-486,0c-3.86599,0 -7,3.47394 -7,7.75925c0,4.28532 3.13401,7.75925 7,7.75925l486,0c3.86599,0 7,-3.47394 7,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(7.8557e-15,-1,0.902149,7.04211e-15,1.95703,540)'><path d='M520,27.7593c0,-4.28532 -3.13401,-7.75925 -7,-7.75925l-486,0c-3.86599,0 -7,3.47394 -7,7.75925c0,4.28532 3.13401,7.75925 7,7.75925l486,0c3.86599,0 7,-3.47394 7,-7.75925Z' style='fill:#cc8d00;'/></g></g><g transform='matrix(3.58564e-15,-0.456439,0.902149,7.04211e-15,137.847,393.238)'><path d='M520,27.7593c0,-4.28532 -6.86621,-7.75925 -15.3361,-7.75925l-469.328,0c-8.4699,0 -15.3361,3.47394 -15.3361,7.75925c0,4.28532 6.86621,7.75925 15.3361,7.75925l469.328,0c8.4699,0 15.3361,-3.47394 15.3361,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(3.58564e-15,-0.456439,0.902149,7.04211e-15,352.067,393.238)'><path d='M520,27.7593c0,-4.28532 -6.86621,-7.75925 -15.3361,-7.75925l-469.328,0c-8.4699,0 -15.3361,3.47394 -15.3361,7.75925c0,4.28532 6.86621,7.75925 15.3361,7.75925l469.328,0c8.4699,0 15.3361,-3.47394 15.3361,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(0.456439,1.62164e-15,-3.16045e-15,0.902149,146.762,137.847)'><path d='M520,27.7593c0,-4.28532 -6.86621,-7.75925 -15.3361,-7.75925l-469.328,0c-8.4699,0 -15.3361,3.47394 -15.3361,7.75925c0,4.28532 6.86621,7.75925 15.3361,7.75925l469.328,0c8.4699,0 15.3361,-3.47394 15.3361,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(0.285781,0.285781,-0.637915,0.637915,34.0427,-1.37342)'><path d='M520,27.7593c0,-4.28532 -7.75447,-7.75925 -17.3201,-7.75925l-465.36,0c-9.56563,0 -17.3201,3.47394 -17.3201,7.75925c0,4.28532 7.75447,7.75925 17.3201,7.75925l465.36,0c9.56563,0 17.3201,-3.47394 17.3201,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(0.285781,0.285781,-0.637915,0.637915,387.052,351.636)'><path d='M520,27.7593c0,-4.28532 -7.75447,-7.75925 -17.3201,-7.75925l-465.36,0c-9.56563,0 -17.3201,3.47394 -17.3201,7.75925c0,4.28532 7.75447,7.75925 17.3201,7.75925l465.36,0c9.56563,0 17.3201,-3.47394 17.3201,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(0.285781,-0.285781,0.637915,0.637915,351.636,152.948)'><path d='M520,27.7593c0,-4.28532 -7.75447,-7.75925 -17.3201,-7.75925l-465.36,0c-9.56563,0 -17.3201,3.47394 -17.3201,7.75925c0,4.28532 7.75447,7.75925 17.3201,7.75925l465.36,0c9.56563,0 17.3201,-3.47394 17.3201,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(0.285781,-0.285781,0.637915,0.637915,-1.37342,505.957)'><path d='M520,27.7593c0,-4.28532 -7.75447,-7.75925 -17.3201,-7.75925l-465.36,0c-9.56563,0 -17.3201,3.47394 -17.3201,7.75925c0,4.28532 7.75447,7.75925 17.3201,7.75925l465.36,0c9.56563,0 17.3201,-3.47394 17.3201,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(0.456439,1.62164e-15,-3.16045e-15,0.902149,146.762,352.067)'><path d='M520,27.7593c0,-4.28532 -6.86621,-7.75925 -15.3361,-7.75925l-469.328,0c-8.4699,0 -15.3361,3.47394 -15.3361,7.75925c0,4.28532 6.86621,7.75925 15.3361,7.75925l469.328,0c8.4699,0 15.3361,-3.47394 15.3361,-7.75925Z' style='fill:#cc8d00;'/></g></g></g></g></svg>";
+        return "<svg class='icon " + classes + "' width='100%' preserveAspectRatio='xMinYMin meet' viewBox='0 0 500 500' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xml:space='preserve' style='fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;'><g><g id='Layer1' transform='matrix(1,0,0,1,2.89949,2.89949)'><g id='Faces'><g id='Top' transform='matrix(0.988535,0,0,0.988535,-19.8039,-19.8039)'><path d='M26.6942,27l138.246,137.941l212.169,-2.05025l135.73,-135.89l-486.146,0Z' style='fill:#ffb83f;'/></g><g id='Bottom' transform='matrix(0.988535,0,0,-0.988535,-12.7262,514.005)'><path d='M26.6942,27l138.246,137.941l212.169,-2.05025l135.73,-135.89l-486.146,0Z' style='fill:#ffb83f;'/></g><g id='Left' transform='matrix(-4.81376e-15,0.988535,0.988535,4.81376e-15,-20.1062,-19.5016)'><path d='M26.6942,27l138.246,137.941l212.169,-2.05025l135.73,-135.89l-486.146,0Z' style='fill:#ffb83f;'/></g><g id='Right' transform='matrix(4.81376e-15,0.988535,-0.988535,4.81376e-15,513.847,-19.5016)'><path d='M26.6942,27l138.246,137.941l212.169,-2.05025l135.73,-135.89l-486.146,0Z' style='fill:#ffb83f;'/></g><g id='Back' transform='matrix(0.988535,0,0,0.988535,-19.8039,-19.8039)'><rect x='164.941' y='164.941' width='212.169' height='212.169' style='fill:#ffb83f;'/></g><g id='Front' transform='matrix(0.988535,0,0,0.988535,-19.8039,-19.8039)'><path d='M27,27l486,-1.42109e-14l1.93268e-12,486l-486,0Z' style='fill:#ffb83f;'/></g></g><g id='Frame' transform='matrix(0.988535,0,0,0.988535,-19.8039,-19.8039)'><g><g transform='matrix(1,2.39667e-17,2.39667e-17,0.902149,0,1.95703)'><path d='M520,27.7593c0,-4.28532 -3.13401,-7.75925 -7,-7.75925l-486,0c-3.86599,0 -7,3.47394 -7,7.75925c0,4.28532 3.13401,7.75925 7,7.75925l486,0c3.86599,0 7,-3.47394 7,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(1,2.39667e-17,2.39667e-17,0.902149,-3.19744e-14,487.957)'><path d='M520,27.7593c0,-4.28532 -3.13401,-7.75925 -7,-7.75925l-486,0c-3.86599,0 -7,3.47394 -7,7.75925c0,4.28532 3.13401,7.75925 7,7.75925l486,0c3.86599,0 7,-3.47394 7,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(7.8557e-15,-1,0.902149,7.04211e-15,487.957,540)'><path d='M520,27.7593c0,-4.28532 -3.13401,-7.75925 -7,-7.75925l-486,0c-3.86599,0 -7,3.47394 -7,7.75925c0,4.28532 3.13401,7.75925 7,7.75925l486,0c3.86599,0 7,-3.47394 7,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(7.8557e-15,-1,0.902149,7.04211e-15,1.95703,540)'><path d='M520,27.7593c0,-4.28532 -3.13401,-7.75925 -7,-7.75925l-486,0c-3.86599,0 -7,3.47394 -7,7.75925c0,4.28532 3.13401,7.75925 7,7.75925l486,0c3.86599,0 7,-3.47394 7,-7.75925Z' style='fill:#cc8d00;'/></g></g><g transform='matrix(3.58564e-15,-0.456439,0.902149,7.04211e-15,137.847,393.238)'><path d='M520,27.7593c0,-4.28532 -6.86621,-7.75925 -15.3361,-7.75925l-469.328,0c-8.4699,0 -15.3361,3.47394 -15.3361,7.75925c0,4.28532 6.86621,7.75925 15.3361,7.75925l469.328,0c8.4699,0 15.3361,-3.47394 15.3361,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(3.58564e-15,-0.456439,0.902149,7.04211e-15,352.067,393.238)'><path d='M520,27.7593c0,-4.28532 -6.86621,-7.75925 -15.3361,-7.75925l-469.328,0c-8.4699,0 -15.3361,3.47394 -15.3361,7.75925c0,4.28532 6.86621,7.75925 15.3361,7.75925l469.328,0c8.4699,0 15.3361,-3.47394 15.3361,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(0.456439,1.62164e-15,-3.16045e-15,0.902149,146.762,137.847)'><path d='M520,27.7593c0,-4.28532 -6.86621,-7.75925 -15.3361,-7.75925l-469.328,0c-8.4699,0 -15.3361,3.47394 -15.3361,7.75925c0,4.28532 6.86621,7.75925 15.3361,7.75925l469.328,0c8.4699,0 15.3361,-3.47394 15.3361,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(0.285781,0.285781,-0.637915,0.637915,34.0427,-1.37342)'><path d='M520,27.7593c0,-4.28532 -7.75447,-7.75925 -17.3201,-7.75925l-465.36,0c-9.56563,0 -17.3201,3.47394 -17.3201,7.75925c0,4.28532 7.75447,7.75925 17.3201,7.75925l465.36,0c9.56563,0 17.3201,-3.47394 17.3201,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(0.285781,0.285781,-0.637915,0.637915,387.052,351.636)'><path d='M520,27.7593c0,-4.28532 -7.75447,-7.75925 -17.3201,-7.75925l-465.36,0c-9.56563,0 -17.3201,3.47394 -17.3201,7.75925c0,4.28532 7.75447,7.75925 17.3201,7.75925l465.36,0c9.56563,0 17.3201,-3.47394 17.3201,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(0.285781,-0.285781,0.637915,0.637915,351.636,152.948)'><path d='M520,27.7593c0,-4.28532 -7.75447,-7.75925 -17.3201,-7.75925l-465.36,0c-9.56563,0 -17.3201,3.47394 -17.3201,7.75925c0,4.28532 7.75447,7.75925 17.3201,7.75925l465.36,0c9.56563,0 17.3201,-3.47394 17.3201,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(0.285781,-0.285781,0.637915,0.637915,-1.37342,505.957)'><path d='M520,27.7593c0,-4.28532 -7.75447,-7.75925 -17.3201,-7.75925l-465.36,0c-9.56563,0 -17.3201,3.47394 -17.3201,7.75925c0,4.28532 7.75447,7.75925 17.3201,7.75925l465.36,0c9.56563,0 17.3201,-3.47394 17.3201,-7.75925Z' style='fill:#cc8d00;'/></g><g transform='matrix(0.456439,1.62164e-15,-3.16045e-15,0.902149,146.762,352.067)'><path d='M520,27.7593c0,-4.28532 -6.86621,-7.75925 -15.3361,-7.75925l-469.328,0c-8.4699,0 -15.3361,3.47394 -15.3361,7.75925c0,4.28532 6.86621,7.75925 15.3361,7.75925l469.328,0c8.4699,0 15.3361,-3.47394 15.3361,-7.75925Z' style='fill:#cc8d00;'/></g></g></g></g></svg>";
     }
 </script>
     
@@ -128,7 +129,7 @@ $(document).ready(function() {
         <div class=title>OpenJSCAD</div>
         <div class=sub-menu>
             <div class=button onclick="menu.openjscad.about()">About OpenJSCAD...</div>
-            <div class=button onclick="menu.openjscad.recentUpdates()"><img src="imgs/link.svg"/>Recent Updates</div>
+            <div class=button onclick="menu.openjscad.recentUpdates()"><img class=icon src="imgs/link.svg"/>Recent Updates</div>
             <div class=divider></div>
             <div class=button enabled=false>Preferences...</div>
         </div>
@@ -140,18 +141,35 @@ $(document).ready(function() {
             <div class=button onclick="menu.file.open()">Open...</div>
             <div class='additional parent'>
                 <div>Examples</div>
+                <img class=arrow src="imgs/arrow.svg"/>
                 <div class=sub-menu>
-                    <div class=button enabled=false>Example 1</div>
-                    <div class=button enabled=false>Example 2</div>
-                    <div class=button enabled=false>Example 3</div>
-                    <div class=button enabled=false>Example 4</div>
+                    <script>
+                        for (i in ex) {
+                            document.write("<div class='additional parent'>");
+                            document.write("<div>" + ex[i].title + "</div>");
+                            document.write("<img class=arrow src='imgs/arrow.svg'/>");
+                            document.write("<div class=sub-menu>");
+                            files = ex[i].files;
+                            for (j in files) {
+                                document.write("<div class=button enabled=false>" + files[j].title + "</div>");
+                            }
+                            document.write("</div></div>");
+                        }
+                    </script>
                 </div>
             </div>
             <div class=button enabled=false>Reload</div>
             <div class=divider></div>
             <div  class='additional parent'>
                 <div>Export</div>
+                <img class=arrow src="imgs/arrow.svg"/>
                 <div class=sub-menu>
+                    <script>
+//                        $(document).ready(function() {
+//                            alert(JSON.stringify(gProcessor.formatInfo()));
+//                        });
+//                        alert(JSON.stringify(gProcessor.formatInfo()));
+                    </script>
                     <div class=button enabled=false>STL (Binary)</div>
                     <div class=button enabled=false>STL (ASCII)</div>
                     <div class=button enabled=false>AMF (experimental)</div>
@@ -163,18 +181,18 @@ $(document).ready(function() {
     ><span class=parent>
         <div class=title>Design</div>
         <div class=sub-menu>
-            <div class='checkbox checked' onclick="menu.design.autoReload(this)"><img src="imgs/check.svg"/>Automatic Compile &amp; Render</div>
+            <div class='checkbox checked' onclick="menu.design.autoReload(this)"><img class=icon src="imgs/check.svg"/>Automatic Compile &amp; Render</div>
             <div class=button enabled=false>Compile &amp; Render</div>
         </div>
     </span
     ><span class=parent>
         <div class=title>View</div>
         <div class=sub-menu>
-            <div class='checkbox checked' onclick="menu.view.showAxes(this)"><img src="imgs/check.svg"/>Show Axes</div>
-            <div class='checkbox' onClick="menu.view.showGrid(this)"><img src="imgs/check.svg"/>Show Grid</div>
+            <div class='checkbox checked' onclick="menu.view.showAxes(this)"><img class=icon src="imgs/check.svg"/>Show Axes</div>
+            <div class='checkbox' onClick="menu.view.showGrid(this)"><img class=icon src="imgs/check.svg"/>Show Grid</div>
             <div class=button enabled=false>Grid Options...</div>
             <div class=divider></div>
-            <div class=radio enabled=false><img src="imgs/check.svg"/>Perspective</div>
+            <div class=radio enabled=false><img class='icon' src="imgs/check.svg"/>Perspective</div>
             <div class=radio enabled=false>Orthogonal</div>
             <div class=divider></div>
             <div class=button onclick='menu.view.top()'><script>document.write(viewIcon("view top"));</script>Top</div>
@@ -192,8 +210,8 @@ $(document).ready(function() {
     ><span class=parent>
         <div class=title>Help</div>
         <div class=sub-menu>
-            <div onclick="menu.help.documentation()"><img src="imgs/link.svg"/>Documentation</div>
-            <div onclick="menu.help.community()"><img src="imgs/link.svg"/>Google+ Community</div>
+            <div onclick="menu.help.documentation()"><img class='icon' src="imgs/link.svg"/>Documentation</div>
+            <div onclick="menu.help.community()"><img class='icon' src="imgs/link.svg"/>Google+ Community</div>
         </div>
     </span>
 </div>
@@ -322,183 +340,189 @@ $(document).ready(function() {
 </div>
 
 <script>
-var ex = [ 
-{ file:'box.jscad', title: 'Just a box' },
-{ file:'logo.jscad', title: 'OpenJSCAD.org Logo' },
-{ file:'logo.amf', title: 'OpenJSCAD.org Logo', type: 'AMF', new: true },
 
-{ file:'example001.jscad', title: 'Sphere with cutouts', spacing: true },
-{ file:'example001.scad', title: 'Sphere with cutouts', type: 'OpenSCAD' },
-{ file:'example002.jscad', title: 'Cone with cutouts' },
-{ file:'example002.scad', title: 'Cone with cutouts', type: 'OpenSCAD' },
-{ file:'example003.jscad', title: 'Cube with cutouts' },
-{ file:'example003.scad', title: 'Cube with cutouts', type: 'OpenSCAD' },
-// { file:'example004.jscad', title: 'Cube minus sphere' },
-{ file:'example005.jscad', title: 'Pavillon' },
-// { file:'center.jscad', title: 'Centers of Primitives' },
+    var examples = [
+        {
+            title: 'Basics',
+            files: [
+                { file:'box.jscad', title: 'Just a box' },
+                { file:'example001.jscad', title: 'Sphere with cutouts', spacing: true },
+                { file:'example001.scad', title: 'Sphere with cutouts', type: 'OpenSCAD' },
+                { file:'example002.jscad', title: 'Cone with cutouts' },
+                { file:'example002.scad', title: 'Cone with cutouts', type: 'OpenSCAD' },
+                { file:'example003.jscad', title: 'Cube with cutouts' },
+                { file:'example003.scad', title: 'Cube with cutouts', type: 'OpenSCAD' },
+                // { file:'example004.jscad', title: 'Cube minus sphere' },
+                { file:'example005.jscad', title: 'Pavillon' }
+                // { file:'center.jscad', title: 'Centers of Primitives' },
+            ]
+        },
+        {
+            title: 'Extrusion',
+            files: [
+                { file:'rectangular_extrude.jscad', title: 'Rectangular_extrude()' },
+                { file:'linear_extrude.jscad', title: 'Linear_extrude()' },
+                { file:'rotate_extrude.jscad', title: 'Rotate_extrude()' }
+            ]
+        },
+        {
+            title: 'Slices',
+            files: [
+                { file:'slices/double-screw.jscad', title: 'SolidFromSlices(): Double Screw', new: true, spacing: true },
+                { file:'slices/four2three.jscad', title: 'SolidFromSlices(): 4 to 3', new: true },
+                { file:'slices/four2three-round.jscad', title: 'SolidFromSlices(): 4 to 3 round', new: true },
+                { file:'slices/spring.jscad', title: 'SolidFromSlices(): Spring', new: true },
+                { file:'slices/tor.jscad', title: 'SolidFromSlices(): Tor (multi-color)', new: true },
+                { file:'slices/rose.jscad', title: 'SolidFromSlices(): Rose Curve', new: true }
+            ]
+        },
+        {
+            title: 'Interactive Params',
+            files: [
+                { file:'servo.jscad', title: 'Interactive Params: Servo Motor', wrap: true },
+                { file:'gear.jscad', title: 'Interactive Params: Gear' },
+                { file:'s-hook.jscad', title: 'Interactive Params: S Hook' },
+                { file:'grille.jscad', title: 'Interactive Params: Grille' },
+                { file:'axis-coupler.jscad', title: 'Interactive Params: Axis Coupler' },
+                { file:'lamp-shade.jscad', title: 'Interactive Params: Lamp Shade' },
+                { file:'celtic-knot-ring.jscad', title: 'Interactive Params: Celtic Knot Ring' },
+                { file:'stepper-motor.jscad', title: 'Interactive Params: Stepper Motor' },
+                { file:'iphone4-case.jscad', title: 'Interactive Params: iPhone4 Case' },
+                { file:'name_plate.jscad', title: 'Interactive Params: Name Plate', new: true }
+            ]
+        },
+        {
+            title: 'STL',
+            files: [
+                { file:'3d_sculpture-VernonBussler.stl', title: '3D Model: 3D Sculpture (Vernon Bussler)', type: 'STL', spacing: true },
+                { file:'frog-OwenCollins.stl', title: '3D Model: Frog (Owen Collins)', type: 'STL' },
+                { file:'thing_7-Zomboe.stl', title: '3D Model: Thing 7 / Flower (Zomboe)', type: 'STL' },
+                // { file:'organic_flower-Bogoboy23.stl', title: '3D Model: Organic Flower (Bogoboy23)', type: 'STL' }, // all wrong normals!!
+                { file:'yoda-RichRap.stl', title: '3D Model: Yoda (RichRap)', type: 'STL' }
+            ]
+        },
+        {
+            title: 'AMF',
+            files: [
+                { file:'logo.amf', title: 'OpenJSCAD.org Logo', type: 'AMF', new: true },
+                { file:'transparency.amf', title: 'Transparency', type: 'AMF', new: true }
+            ]
+        }
 
-// { file:'bunch-cubes.jscad', title: 'Bunch of Cubes', new: true }, 
-{ file:'lookup.jscad', title: 'Lookup()', spacing: true },
-{ file:'expand.jscad', title: 'Expand()' },
-{ file:'rectangular_extrude.jscad', title: 'Rectangular_extrude()' },
-{ file:'linear_extrude.jscad', title: 'Linear_extrude()' },
-{ file:'rotate_extrude.jscad', title: 'Rotate_extrude()' },
-{ file:'polyhedron.jscad', title: 'Polyhedron()' },
-{ file:'hull.jscad', title: 'Hull()', new: true },
-{ file:'chain_hull.jscad', title: 'Chain_hull()', new: true },
-{ file:'torus.jscad', title: 'Torus()' },
 
-{ file:'text.jscad', title: 'Vector_text()', new: true, spacing: true },
 
-{ file:'transparency.jscad', title: 'Transparency', new: true, spacing: true },
-{ file:'transparency.amf', title: 'Transparency', type: 'AMF', new: true },
-{ file:'transparency2.jscad', title: 'Transparency 2', new: true },
+    //// { file:'bunch-cubes.jscad', title: 'Bunch of Cubes', new: true },
+    //{ file:'lookup.jscad', title: 'Lookup()', spacing: true },
+    //{ file:'expand.jscad', title: 'Expand()' },
+    //
+    //{ file:'polyhedron.jscad', title: 'Polyhedron()' },
+    //{ file:'hull.jscad', title: 'Hull()', new: true },
+    //{ file:'chain_hull.jscad', title: 'Chain_hull()', new: true },
+    //{ file:'torus.jscad', title: 'Torus()' },
+    //
+    //{ file:'text.jscad', title: 'Vector_text()', new: true, spacing: true },
+    //
+    //{ file:'transparency.jscad', title: 'Transparency', new: true, spacing: true },
+    //
+    //{ file:'transparency2.jscad', title: 'Transparency 2', new: true },
+    //
+    //{ file:'globe.jscad', title: 'Globe', new: true },
+    //
+    //{ file:'platonics/', title: 'Recursive Include(): Platonics', new: true, spacing: true },
+    ];
 
-{ file:'slices/double-screw.jscad', title: 'SolidFromSlices(): Double Screw', new: true, spacing: true },
-{ file:'slices/four2three.jscad', title: 'SolidFromSlices(): 4 to 3', new: true },
-{ file:'slices/four2three-round.jscad', title: 'SolidFromSlices(): 4 to 3 round', new: true },
-{ file:'slices/spring.jscad', title: 'SolidFromSlices(): Spring', new: true },
-{ file:'slices/tor.jscad', title: 'SolidFromSlices(): Tor (multi-color)', new: true },
-{ file:'slices/rose.jscad', title: 'SolidFromSlices(): Rose Curve', new: true },
+    {
+        var options = [ 'renderCode', 'author', 'license' ];
+        var metakeys = [ 'author', 'license' ];
+        saveOptions = function() {
+            for(var k in options) {
+                k = options[k];
+                //echo("setting "+k);
+                setCookie(k,$('#'+k).val());
+                if(metakeys[k]) metadata[k] = options[k];
+            }
+        }
+        getOptions = function() {
+            for(var k in options) {
+                k = options[k];
+                //echo("getting "+k);
+                if(getCookie(k)) $('#'+k).val(getCookie(k))
+                    }
+        }
 
-{ file:'servo.jscad', title: 'Interactive Params: Servo Motor', wrap: true },
-{ file:'gear.jscad', title: 'Interactive Params: Gear' },
-{ file:'s-hook.jscad', title: 'Interactive Params: S Hook' },
-{ file:'grille.jscad', title: 'Interactive Params: Grille' },
-{ file:'axis-coupler.jscad', title: 'Interactive Params: Axis Coupler' },
-{ file:'lamp-shade.jscad', title: 'Interactive Params: Lamp Shade' },
-{ file:'celtic-knot-ring.jscad', title: 'Interactive Params: Celtic Knot Ring' },
-{ file:'stepper-motor.jscad', title: 'Interactive Params: Stepper Motor' },
-{ file:'iphone4-case.jscad', title: 'Interactive Params: iPhone4 Case' },
-{ file:'name_plate.jscad', title: 'Interactive Params: Name Plate', new: true },
-{ file:'globe.jscad', title: 'Globe', new: true },
+        var src = '';
+        src += "<form id=optionsForm onsubmit='saveOptions(); return false'>";
+        src += "<div class=optionGroup><b>Your Identity / Full Name & Email</b><br/>";
+        src += "<input id=author type=text name=author size=30><div class=optionInfo>Applies when you export AMF (sets metadata)</div></div>";
 
-{ file:'platonics/', title: 'Recursive Include(): Platonics', new: true, spacing: true },
+        var licenseOptions = {
+            "Public Domain": "Public Domain",
+            "CC BY": "Creative Commons CC BY",
+            "CC BY-ND": "Creative Commons CC BY-ND",
+            "CC BY-NC": "Creative Commons CC BY-NC",
+            "CC BY-SA": "Creative Commons CC BY-SA",
+            "CC BY-NC-SA": "Creative Commons CC BY-NC-SA",
+            "CC BY-NC-ND": "Creative Commons CC BY-NC-ND",
+            "MIT": "MIT License",
+            "GPLv2": "GPLv2",
+            "GPLv3": "GPLv3",
+            "Copyright": "Copyright",
+        };
+        src += "<div class=optionGroup><b>Default License</b><br/>";
+        src += "<select id=license name=license>";
+        for(var k in licenseOptions) {
+            src += "<option value='"+k+"'>"+licenseOptions[k];
+            src += "<br/>";
+        }
+        src += "</select><div class=optionInfo>Applies when you export AMF (sets metadata)</div></div>\n";
 
-{ file:'3d_sculpture-VernonBussler.stl', title: '3D Model: 3D Sculpture (Vernon Bussler)', type: 'STL', spacing: true },
-{ file:'frog-OwenCollins.stl', title: '3D Model: Frog (Owen Collins)', type: 'STL' },  
-{ file:'thing_7-Zomboe.stl', title: '3D Model: Thing 7 / Flower (Zomboe)', type: 'STL' },  
-// { file:'organic_flower-Bogoboy23.stl', title: '3D Model: Organic Flower (Bogoboy23)', type: 'STL' }, // all wrong normals!!
-{ file:'yoda-RichRap.stl', title: '3D Model: Yoda (RichRap)', type: 'STL' },
-// { url:'http://pastebin.com/raw.php?i=wJLctyAQ', title: 'OpenJSCAD.org Logo', type:'Remote JSCAD' }
-// { file:'treefrog-Jerrill.stl', title: '3D Model: Treefrog (Jerrill)', type: 'STL' },    // nice frog, yet slow 
-// { file:'klein_bottle-DizingOf.stl', title: '3D Model: Klein Bottle (DizingOf)', type: 'STL' } // too slow, over 400k triangles, huge memory consumption
-];
-if (me=='web-online') {
-   var wrap = 26;
-   var colp = 100/Math.floor(ex.length/wrap+1)+"%";
-   var src = '<table width=100%><tr><td widthx="+colp+" valign=top>';
-   //src += "<img id=examplesHandle src=\"imgs/menuHandleHU.png\">";
-   //src += '<b>Examples:</b>';
-   for(var i=0; i<ex.length; i++) {
-      if(ex[i].wrap) {
-         src += "</td><td class=examplesSeparator widthx="+colp+" valign=top>";
-      }
-      if(ex[i].spacing) src += "<p/>";
-      src += "<li><a href=# onclick='fetchExample(\"examples/"+ex[i].file+"\"); return false;'>"+ex[i].title+"</a>\n";
-      if(ex[i].type) src += " <span class=type>("+ex[i].type+")</span></a>";
-      if(ex[i].new) src += " <span class=newExample>new</span></a>";
-      //src += "<li><a href='examples/"+ex[i].file+"\'>"+ex[i].title+"</a>\n";
-   }
-   src += "</td></tr></table>";
-   $('#examples').html(src);
-} else {
-   // examples off-line won't work yet as XHR is used
-   $('#examples').html("You are offline, drag'n'drop the examples from your installation");
-}
+        if (0) {
+            var renderCodeOptions = {
+                shiftReturn: "SHIFT+RETURN",
+                auto: "Automatic"
+            };
+            src += "<div class=optionGroup><b>Render Code</b></br>";
+            src += "<select id=renderCode name=renderCode>";
+            for(var k in renderCodeOptions) {
+                src += "<option value='"+k+"'>"+renderCodeOptions[k];
+            }
+            src += "</select></div>";
+        }
+        if (1) {
+            var plateOptions = {
+                "200x200": "200mm x 200mm",
+                "150x150": "150mm x 150mm",
+                "100x100": "100mm x 100mm",
+                "custom": "Custom",
+                "none": "None",
+            };
+            src += "<div class=optionGroup><b>Plate</b></br>";
+            src += "<select id=plate name=plate>";
+            for (var k in plateOptions) {
+                src += "<option value='"+k+"'>"+plateOptions[k];
+            }
+            src += "</select><br/>";
+            src += "<div style='display: none' id=customPlate>Custom: <input type=text id=plateCustomX name=plateCustomX size=4 value='125'> x <input type=text id=plateCustomY name=plateCustomY size=4 value='125'> [mm]</div>";
+            src += "</div>";
 
-{
-   var options = [ 'renderCode', 'author', 'license' ];
-   var metakeys = [ 'author', 'license' ];
-   saveOptions = function() {
-      for(var k in options) {
-         k = options[k];
-         //echo("setting "+k);
-         setCookie(k,$('#'+k).val());
-         if(metakeys[k]) metadata[k] = options[k];
-      }
-   }
-   getOptions = function() {
-      for(var k in options) {
-         k = options[k];
-         //echo("getting "+k);
-         if(getCookie(k)) $('#'+k).val(getCookie(k))
-      }
-   }
-   
-   var src = '';
-   src += "<form id=optionsForm onsubmit='saveOptions(); return false'>";
-   src += "<div class=optionGroup><b>Your Identity / Full Name & Email</b><br/>";
-   src += "<input id=author type=text name=author size=30><div class=optionInfo>Applies when you export AMF (sets metadata)</div></div>";
+        }
+        if (1) {
+            var themeOptions = {
+                "bright": "Bright",
+                "dark": "Dark",
+            };
+            src += "<div class=optionGroup><b>Theme</b></br>";
+            src += "<select id=theme name=theme>";
+            for(var k in themeOptions) {
+                src += "<option value='"+k+"'>"+themeOptions[k];
+            }
+            src += "</select><br/>";
+            src += "</div>";
+        }
 
-   var licenseOptions = {
-      "Public Domain": "Public Domain", 
-      "CC BY": "Creative Commons CC BY", 
-      "CC BY-ND": "Creative Commons CC BY-ND", 
-      "CC BY-NC": "Creative Commons CC BY-NC", 
-      "CC BY-SA": "Creative Commons CC BY-SA", 
-      "CC BY-NC-SA": "Creative Commons CC BY-NC-SA", 
-      "CC BY-NC-ND": "Creative Commons CC BY-NC-ND", 
-      "MIT": "MIT License", 
-      "GPLv2": "GPLv2", 
-      "GPLv3": "GPLv3", 
-      "Copyright": "Copyright",
-   };
-   src += "<div class=optionGroup><b>Default License</b><br/>";
-   src += "<select id=license name=license>";
-   for(var k in licenseOptions) {
-      src += "<option value='"+k+"'>"+licenseOptions[k];
-      src += "<br/>";
-   }
-   src += "</select><div class=optionInfo>Applies when you export AMF (sets metadata)</div></div>\n";
-
-   if (0) {
-      var renderCodeOptions = {
-         shiftReturn: "SHIFT+RETURN", 
-         auto: "Automatic"
-      };
-      src += "<div class=optionGroup><b>Render Code</b></br>";
-      src += "<select id=renderCode name=renderCode>";
-      for(var k in renderCodeOptions) {
-         src += "<option value='"+k+"'>"+renderCodeOptions[k];
-      }
-      src += "</select></div>";
-   }
-   if (1) {
-      var plateOptions = {
-         "200x200": "200mm x 200mm",
-         "150x150": "150mm x 150mm",
-         "100x100": "100mm x 100mm",
-         "custom": "Custom",
-         "none": "None",
-      };
-      src += "<div class=optionGroup><b>Plate</b></br>";
-      src += "<select id=plate name=plate>";
-      for (var k in plateOptions) {
-         src += "<option value='"+k+"'>"+plateOptions[k];
-      }
-      src += "</select><br/>";
-      src += "<div style='display: none' id=customPlate>Custom: <input type=text id=plateCustomX name=plateCustomX size=4 value='125'> x <input type=text id=plateCustomY name=plateCustomY size=4 value='125'> [mm]</div>";
-      src += "</div>";
-      
-   }
-   if (1) {
-      var themeOptions = {
-         "bright": "Bright",
-         "dark": "Dark",
-      };
-      src += "<div class=optionGroup><b>Theme</b></br>";
-      src += "<select id=theme name=theme>";
-      for(var k in themeOptions) {
-         src += "<option value='"+k+"'>"+themeOptions[k];
-      }
-      src += "</select><br/>";
-      src += "</div>";
-   }
-   
-   src += "</form>";
-   $('#options').html(src);
-}
+        src += "</form>";
+        $('#options').html(src);
+    }
 </script>
 
 <script>
@@ -654,7 +678,7 @@ function onload() {
             fetchExample(fn);
             document.location = document.URL.replace(/#.*$/,'#');
         } else {
-            fetchExample('examples/'+ex[0].file);
+            fetchExample('examples/'+ examples[0].files[0].file);
         }
     } else {
         gProcessor.setJsCad(editor.getValue());
