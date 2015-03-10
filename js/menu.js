@@ -48,44 +48,44 @@ menu.view.top = function() {
 }
 menu.view.bottom = function() {
     var view = gProcessor.viewer.getView();
-    view.angle.x = -180;
+    view.angle.x = 180;
     view.angle.y = 0;
     view.angle.z = 0;
     gProcessor.viewer.setView(view);
 }
 menu.view.front = function() {
     var view = gProcessor.viewer.getView();
-    view.angle.x = -90;
+    view.angle.x = 270;
     view.angle.y = 0;
     view.angle.z = 0;
     gProcessor.viewer.setView(view);
 }
 menu.view.back = function() {
     var view = gProcessor.viewer.getView();
-    view.angle.x = -90;
+    view.angle.x = 270;
     view.angle.y = 0;
-    view.angle.z = -180;
+    view.angle.z = 180;
     gProcessor.viewer.setView(view);
 }
 menu.view.right = function() {
     var view = gProcessor.viewer.getView();
-    view.angle.x = -90;
+    view.angle.x = 270;
     view.angle.y = 0;
-    view.angle.z = -90;
+    view.angle.z = 270;
     gProcessor.viewer.setView(view);
 }
 menu.view.left = function() {
     var view = gProcessor.viewer.getView();
-    view.angle.x = -90;
+    view.angle.x = 270;
     view.angle.y = 0;
     view.angle.z = 90;
     gProcessor.viewer.setView(view);
 }
 menu.view.diagonal = function() {
     var view = gProcessor.viewer.getView();
-    view.angle.x = -60;
+    view.angle.x = 300;
     view.angle.y = 0;
-    view.angle.z = -45;
+    view.angle.z = 315;
     gProcessor.viewer.setView(view);
 }
 menu.view.center = function() {
@@ -96,9 +96,9 @@ menu.view.center = function() {
 }
 menu.view.resetView = function() {
     var view = gProcessor.viewer.getView();
-    view.angle.x = -60;
+    view.angle.x = 300;
     view.angle.y = 0;
-    view.angle.z = -45;
+    view.angle.z = 315;
     view.viewpoint.x = 0;
     view.viewpoint.y = -5;
     view.viewpoint.z = gProcessor.initialViewerDistance;

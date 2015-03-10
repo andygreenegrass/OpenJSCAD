@@ -29,7 +29,7 @@ OpenJsCad.Viewer = function(containerelement, initialdepth, userPrefs) {
     var gl = GL.create();
     this.gl = gl;
     this.view = {
-        angle: {x: -60, y: 0, z: -45},
+        angle: {x: 300, y: 0, z: 315},
         viewpoint: {x: 0, y: -5, z: initialdepth}
     };
     this.userPrefs = userPrefs;
@@ -94,6 +94,21 @@ OpenJsCad.Viewer = function(containerelement, initialdepth, userPrefs) {
     }
 
     this.setView = function(newView) {
+        
+        var deltaX = newView.angle.x - this.view.angle.x;
+        var deltaY = newView.angle.y - this.view.angle.y;
+        var deltaZ = newView.angle.z - this.view.angle.z;
+        
+        if (abs(deltaX) > 180) {newView.angle.x +=360;}
+        if (abs(deltaY) > 180) {newView.angle.y +=360;}
+        if (abs(deltaZ) > 180) {newView.angle.z +=360;}
+        
+        $('#status').html(
+            JSON.stringify(this.view.angle) +
+            " ||| " +
+            JSON.stringify(newView.angle) +
+            " ||| " + deltaX + ", " + deltaY + ", " + deltaZ);
+        
         this.viewStepper(newView, 20);
     };
 
