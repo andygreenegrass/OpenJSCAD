@@ -1,0 +1,35 @@
+/*
+ * svg.css for index.html
+ */
+
+/* View Icons */
+/* ------------------------------------------------------------------------- */
+
+svg.view #Faces path, svg.view #Faces rect {
+/*    fill: rgba(255, 0, 0, 0.56) !important;*/
+    opacity: 0;
+}
+
+svg.view.front #Faces #Front path {
+    opacity: 1;
+}
+
+svg.view.back #Faces g#Back rect {
+    opacity: 1;
+}
+
+svg.view.left #Faces g#Left path {
+    opacity: 1;
+}
+
+svg.view.right #Faces g#Right path {
+    opacity: 1;
+}
+
+svg.view.top #Faces g#Top path {
+    opacity: 1;
+}
+
+svg.view.bottom #Faces g#Bottom path {
+    opacity: 1;
+}

@@ -1,5 +1,5 @@
 /*
- * toolbar.css for index.html of http://OpenJSCAD.org/
+ * toolbar.css for index.html
  */
 
 #toolbar, #toolbar .pin {
@@ -66,50 +66,4 @@
 #toolbar.shown .pin {
     opacity: 1;
     pointer-events: all;
-}
-
-/* Specific icons */
-/* ------------------------------------------------------------------------- */
-/* ------------------------------------------------------------------------- */
-
-#toolbar > div #Frame path, #toolbar > div #Frame rect {
-/*    fill: rgb(170, 0, 0) !important;*/
-/*
-    opacity: 0.6;
-    stroke: #ff8000;
-    stroke-width: 6px;
-*/
-}
-
-#toolbar > div #Faces path, #toolbar > div #Faces rect {
-/*    fill: rgba(255, 0, 0, 0.56) !important;*/
-    opacity: 0;
-}
-
-#toolbar > div #Faces g {
-/*    visibility: hidden;*/
-}
-
-#toolbar > div.front #Faces #Front path {
-    opacity: 1;
-}
-
-#toolbar > div.back #Faces g#Back rect {
-    opacity: 1;
-}
-
-#toolbar > div.left #Faces g#Left path {
-    opacity: 1;
-}
-
-#toolbar > div.right #Faces g#Right path {
-    opacity: 1;
-}
-
-#toolbar > div.top #Faces g#Top path {
-    opacity: 1;
-}
-
-#toolbar > div.bottom #Faces g#Bottom path {
-    opacity: 1;
 }
