@@ -144,12 +144,12 @@ $(document).ready(function() {
                 <img class=arrow src="imgs/arrow.svg"/>
                 <div class=sub-menu>
                     <script>
-                        for (i in ex) {
+                        for (i in examples) {
                             document.write("<div class='additional parent'>");
-                            document.write("<div>" + ex[i].title + "</div>");
+                            document.write("<div>" + examples[i].title + "</div>");
                             document.write("<img class=arrow src='imgs/arrow.svg'/>");
                             document.write("<div class=sub-menu>");
-                            files = ex[i].files;
+                            files = examples[i].files;
                             for (j in files) {
                                 document.write("<div class=button enabled=false>" + files[j].title + "</div>");
                             }
