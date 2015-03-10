@@ -55,7 +55,7 @@
     position: relative;
 /*    height: 27px;*/
 }
-#menu .sub-menu > div:not(.divider) img {
+#menu .sub-menu img, #menu .sub-menu svg {
     height: 12px;
     width: 12px;
     position: absolute;
