@@ -5,8 +5,13 @@
 /* View Icons */
 /* ------------------------------------------------------------------------- */
 
+svg.view #Frame * {
+/*    fill: rgba(0, 46, 119, 0.67) !important;*/
+    opacity: 1;
+}
+
 svg.view #Faces path, svg.view #Faces rect {
-/*    fill: rgba(255, 0, 0, 0.56) !important;*/
+/*    fill: rgba(0, 69, 255, 0.79) !important;*/
     opacity: 0;
 }
 

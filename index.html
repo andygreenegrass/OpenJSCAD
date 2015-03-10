@@ -240,7 +240,7 @@ $(document).ready(function() {
                             document.write("<div class=sub-menu>");
                             files = examples[i].files;
                             for (j in files) {
-                                document.write("<div class=button enabled=false>" + files[j].title + "</div>");
+                                document.write("<div class=button onclick=\"fetchExample('examples/" + files[j].file + "');\">" + files[j].title + "</div>");
                             }
                             document.write("</div></div>");
                         }
