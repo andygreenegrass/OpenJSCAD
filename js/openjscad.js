@@ -969,31 +969,28 @@ OpenJsCad.AlertUserOfUncaughtExceptions = function() {
 
 // parse the jscad script to get the parameter definitions
 OpenJsCad.getParamDefinitions = function(script) {
-  var scriptisvalid = true;
-  script += "\nfunction include() {}";    // at least make it not throw an error so early
-  try
-  {
-    // first try to execute the script itself
-    // this will catch any syntax errors
-    //    BUT we can't introduce any new function!!!
-    (new Function(script))();
-  }
-  catch(e) {
-    scriptisvalid = false;
-  }
-  var params = [];
-  if(scriptisvalid)
-  {
-    var script1 = "if(typeof(getParameterDefinitions) == 'function') {return getParameterDefinitions();} else {return [];} ";
-    script1 += script;
-    var f = new Function(script1);
-    params = f();
-    if( (typeof(params) != "object") || (typeof(params.length) != "number") )
-    {
-      throw new Error("The getParameterDefinitions() function should return an array with the parameter definitions");
+    var scriptisvalid = true;
+    script += "\nfunction include() {}";    // at least make it not throw an error so early
+    try {
+        // first try to execute the script itself
+        // this will catch any syntax errors
+        //    BUT we can't introduce any new function!!!
+        (new Function(script))();
     }
-  }
-  return params;
+    catch(e) {
+        scriptisvalid = false;
+    }
+    var params = [];
+    if (scriptisvalid) {
+        var script1 = "if(typeof(getParameterDefinitions) == 'function') {return getParameterDefinitions();} else {return [];} ";
+        script1 += script;
+        var f = new Function(script1);
+        params = f();
+        if ( (typeof(params) != "object") || (typeof(params.length) != "number") ) {
+            throw new Error("The getParameterDefinitions() function should return an array with the parameter definitions");
+        }
+    }
+    return params;
 };
 
 OpenJsCad.Processor = function(containerdiv, userPrefs, onchange) {
@@ -1147,38 +1144,38 @@ OpenJsCad.Processor.prototype = {
     this.downloadOutputFileLink.className = "downloadOutputFileLink"; // so we can css it
     //this.statusbuttons.appendChild(this.downloadOutputFileLink);
 
-    //this.parametersdiv = document.createElement("div");            // already created
-    this.parametersdiv = document.getElementById("parametersdiv");   // get the info
-    this.parametersdiv.id = "parametersdiv";
-    // this.parametersdiv.className = "ui-draggable";                   // via jQuery draggable() but it screws up 
-
-    var headerdiv = document.createElement("div");
-    //headerdiv.innerText = "Parameters:";
-    headerdiv.innerHTML = "Parameters:";
-    headerdiv.className = "parameterheader";
-    this.parametersdiv.appendChild(headerdiv);
-
-    this.parameterstable = document.createElement("table");
-    this.parameterstable.className = "parameterstable";
-    this.parametersdiv.appendChild(this.parameterstable);
-
-    var parseParametersButton = document.createElement("button");
-    parseParametersButton.innerHTML = "Update";
-    parseParametersButton.onclick = function(e) {
-      that.rebuildSolid();
-    };
-    this.parametersdiv.appendChild(parseParametersButton);
-
-    // implementing instantUpdate
-    var instantUpdateCheckbox = document.createElement("input");
-    instantUpdateCheckbox.type = "checkbox";
-    instantUpdateCheckbox.id = "instantUpdate";
-    this.parametersdiv.appendChild(instantUpdateCheckbox);
-
-    var instantUpdateCheckboxText = document.createElement("span");
-    instantUpdateCheckboxText.innerHTML = "Instant Update";
-    instantUpdateCheckboxText.id = "instantUpdateLabel";
-    this.parametersdiv.appendChild(instantUpdateCheckboxText);
+//    //this.parametersdiv = document.createElement("div");            // already created
+//    this.parametersdiv = document.getElementById("parametersdiv");   // get the info
+//    this.parametersdiv.id = "parametersdiv";
+//    // this.parametersdiv.className = "ui-draggable";                   // via jQuery draggable() but it screws up 
+//
+//    var headerdiv = document.createElement("div");
+//    //headerdiv.innerText = "Parameters:";
+//    headerdiv.innerHTML = "Parameters:";
+//    headerdiv.className = "parameterheader";
+//    this.parametersdiv.appendChild(headerdiv);
+//
+//    this.parameterstable = document.createElement("table");
+//    this.parameterstable.className = "parameterstable";
+//    this.parametersdiv.appendChild(this.parameterstable);
+//
+//    var parseParametersButton = document.createElement("button");
+//    parseParametersButton.innerHTML = "Update";
+//    parseParametersButton.onclick = function(e) {
+//      that.rebuildSolid();
+//    };
+//    this.parametersdiv.appendChild(parseParametersButton);
+//
+//    // implementing instantUpdate
+//    var instantUpdateCheckbox = document.createElement("input");
+//    instantUpdateCheckbox.type = "checkbox";
+//    instantUpdateCheckbox.id = "instantUpdate";
+//    this.parametersdiv.appendChild(instantUpdateCheckbox);
+//
+//    var instantUpdateCheckboxText = document.createElement("span");
+//    instantUpdateCheckboxText.innerHTML = "Instant Update";
+//    instantUpdateCheckboxText.id = "instantUpdateLabel";
+//    this.parametersdiv.appendChild(instantUpdateCheckboxText);
 
     this.enableItems();    
 
@@ -1293,7 +1290,7 @@ OpenJsCad.Processor.prototype = {
     try
     {
       this.paramDefinitions = OpenJsCad.getParamDefinitions(script);
-      this.createParamControls();
+      //this.createParamControls();
     }
     catch(e)
     {
@@ -1314,103 +1311,72 @@ OpenJsCad.Processor.prototype = {
     }
   },
   
-  getParamValues: function()
-  {
-    var paramValues = {};
-    for(var i = 0; i < this.paramDefinitions.length; i++)
-    {
-      var paramdef = this.paramDefinitions[i];
-      var type = "text";
-      if('type' in paramdef)
-      {
-        type = paramdef.type;
-      }
-      var control = this.paramControls[i];
-      var value = null;
-      if( (type == "text") || (type == "float") || (type == "int") || (type == "number") )
-      {
-        value = control.value;
-        if( (type == "float") || (type == "int") || (type == "number") )
-        {
-          var isnumber = !isNaN(parseFloat(value)) && isFinite(value);
-          if(!isnumber)
-          {
-            throw new Error("Not a number: "+value);
-          }
-          if(type == "int")
-          {
-            value = parseInt(value);
-          }
-          else
-          {
-            value = parseFloat(value);
-          }
+    getParamValues: function() {
+        var paramValues = {};
+        
+        // TODO
+        for (i in this.paramDefinitions) {
+            var param = this.paramDefinitions[i];
+            paramValues[param.name] = param.initial;
         }
-      }
-      else if(type == "choice")
-      {
-        value = control.options[control.selectedIndex].value;
-      }
-      paramValues[paramdef.name] = value;
-    }
-    return paramValues;
-  },
+        
+        return paramValues;
+    },
     
-  rebuildSolid: function()
-  {
-    this.abort();
-    this.setError("");
-    this.clearViewer();
-    this.processing = true;
-    this.statusspan.innerHTML = "Rendering code, please wait <img id=busy src='imgs/busy.gif'>";
-    this.enableItems();
-    var that = this;
-    var paramValues = this.getParamValues();
-    var useSync = this.debugging;
-
-    //useSync = true;
-    if (!useSync) {
-      try {
-          console.log("trying async compute");
-          this.worker = OpenJsCad.parseJsCadScriptASync(this.script, paramValues, this.options, function(err, obj) {
-          that.processing = false;
-          that.worker = null;
-          if (err) {
-            that.setError(err);
-            that.statusspan.innerHTML = "Error.";
-          } else {
-            that.setCurrentObject(obj);
-            that.statusspan.innerHTML = "Ready.";
-          }
-          that.enableItems();
-          if (that.onchange) that.onchange();
-        });
-      } catch(e) {
-        console.log("async failed, try sync compute, error: "+e.message);
-        useSync = true;
-      }
-    }
-    
-    if (useSync)
-    {
-      try {
+    rebuildSolid: function() {
+        this.abort();
+        this.setError("");
+        this.clearViewer();
+        this.processing = true;
         this.statusspan.innerHTML = "Rendering code, please wait <img id=busy src='imgs/busy.gif'>";
-        var obj = OpenJsCad.parseJsCadScriptSync(this.script, paramValues, this.debugging);
-        that.setCurrentObject(obj);
-        that.processing = false;
-        that.statusspan.innerHTML = "Ready.";
-      } catch(e) {
-        that.processing = false;
-        var errtxt = e.toString();
-        if (e.stack) {
-          errtxt += '\nStack trace:\n'+e.stack;
-        } 
-        that.statusspan.innerHTML = "Error.";
-      }
-      that.enableItems();
-      if (that.onchange) that.onchange();
-    }
-  },
+        this.enableItems();
+        var that = this;
+        var paramValues = this.getParamValues();
+        var useSync = this.debugging;
+        
+        //useSync = true;
+        if (!useSync) {
+            try {
+                console.log("trying async compute");
+                this.worker = OpenJsCad.parseJsCadScriptASync(this.script, paramValues, this.options, function(err, obj) {
+                    that.processing = false;
+                    that.worker = null;
+                    if (err) {
+                        that.setError(err);
+                        that.statusspan.innerHTML = "Error.";
+                    } else {
+                        that.setCurrentObject(obj);
+                        that.statusspan.innerHTML = "Ready.";
+                    }
+                    that.enableItems();
+                    if (that.onchange) that.onchange();
+                });
+            } catch(e) {
+                console.log("async failed, try sync compute, error: "+e.message);
+                useSync = true;
+            }
+        }
+        
+        if (useSync)
+        {
+            try {
+                this.statusspan.innerHTML = "Rendering code, please wait <img id=busy src='imgs/busy.gif'>";
+                var obj = OpenJsCad.parseJsCadScriptSync(this.script, paramValues, this.debugging);
+                that.setCurrentObject(obj);
+                that.processing = false;
+                that.statusspan.innerHTML = "Ready.";
+            } catch(e) {
+                that.processing = false;
+                var errtxt = e.toString();
+                if (e.stack) {
+                    errtxt += '\nStack trace:\n'+e.stack;
+                } 
+                that.statusspan.innerHTML = "Error.";
+            }
+            that.enableItems();
+            if (that.onchange) that.onchange();
+        }
+    },
   
   hasSolid: function() {
     return this.hasValidCurrentObject;
@@ -1590,138 +1556,6 @@ OpenJsCad.Processor.prototype = {
       }, 
       function(fileerror){OpenJsCad.FileSystemApiErrorHandler(fileerror, "requestFileSystem");}
     );
-  },
-  
-  createParamControls: function() {
-    this.parameterstable.innerHTML = "";
-    this.paramControls = [];
-    var paramControls = [];
-    var tablerows = [];
-    for(var i = 0; i < this.paramDefinitions.length; i++)
-    {
-      var errorprefix = "Error in parameter definition #"+(i+1)+": ";
-      var paramdef = this.paramDefinitions[i];
-      if(!('name' in paramdef))
-      {
-        throw new Error(errorprefix + "Should include a 'name' parameter");
-      }
-      var type = "text";
-      if('type' in paramdef)
-      {
-        type = paramdef.type;
-      }
-      if( (type !== "text") && (type !== "int") && (type !== "float") && (type !== "choice") && (type !== "number") )
-      {
-        throw new Error(errorprefix + "Unknown parameter type '"+type+"'");
-      }
-      var control;
-      if( (type == "text") || (type == "int") || (type == "float") || (type == "number") )
-      {
-        control = document.createElement("input");
-        if (type == "number")
-            control.type = "number";
-        else
-            control.type = "text";
-        if('default' in paramdef)
-        {
-          control.value = paramdef["default"];
-        }
-        else if('initial' in paramdef)
-          control.value = paramdef.initial;
-        else
-        {
-          if( (type == "int") || (type == "float") || (type == "number") )
-          {
-            control.value = "0";
-          }
-          else
-          {
-            control.value = "";
-          }
-        }
-        if(paramdef.size!==undefined) 
-           control.size = paramdef.size;
-        for (var property in paramdef)
-            if (paramdef.hasOwnProperty (property))
-                if ((property != "name") && (property != "type") && (property != "default") && (property != "initial") && (property != "caption"))
-                    control.setAttribute (property, paramdef[property]);
-      }
-      else if(type == "choice")
-      {
-        if(!('values' in paramdef))
-        {
-          throw new Error(errorprefix + "Should include a 'values' parameter");
-        }        
-        control = document.createElement("select");
-        var values = paramdef.values;
-        var captions;
-        if('captions' in paramdef)
-        {
-          captions = paramdef.captions;
-          if(captions.length != values.length)
-          {
-            throw new Error(errorprefix + "'captions' and 'values' should have the same number of items");
-          }
-        }
-        else
-        {
-          captions = values;
-        }
-        var selectedindex = 0;
-        for(var valueindex = 0; valueindex < values.length; valueindex++)
-        {
-          var option = document.createElement("option");
-          option.value = values[valueindex];
-          option.text = captions[valueindex];
-          control.add(option);
-          if('default' in paramdef)
-          {
-            if(paramdef["default"] == values[valueindex])
-            {
-              selectedindex = valueindex;
-            }
-          }
-          else if('initial' in paramdef)
-          {
-            if(paramdef.initial == values[valueindex])
-            {
-              selectedindex = valueindex;
-            }
-          }
-        }
-        if(values.length > 0)
-        {
-          control.selectedIndex = selectedindex;
-        }        
-      }
-      // implementing instantUpdate
-      control.onchange = function() { 
-         if(document.getElementById("instantUpdate").checked==true) {
-            that.rebuildSolid();
-         }
-      };
-      paramControls.push(control);
-      var tr = document.createElement("tr");
-      var td = document.createElement("td");
-      var label = paramdef.name + ":";
-      if('caption' in paramdef)
-      {
-        label = paramdef.caption;
-        td.className = 'caption';
-      }
-       
-      td.innerHTML = label;
-      tr.appendChild(td);
-      td = document.createElement("td");
-      td.appendChild(control);
-      tr.appendChild(td);
-      tablerows.push(tr);
-    }
-    var that = this;
-    tablerows.map(function(tr){
-      that.parameterstable.appendChild(tr);
-    }); 
-    this.paramControls = paramControls;
   },
 };
 

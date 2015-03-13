@@ -1,0 +1,56 @@
+/*
+ * parameters.css for index.html
+ */
+
+#parameters {
+    cursor: default;
+    overflow-y: scroll;
+    padding: 20px;
+    
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#parameters .button {
+    display: inline-block;
+    cursor: pointer;
+    background: #ff9a9a;
+    color: white;
+    font-weight: 100;
+    font-size: 0.8em;
+    padding: 1em;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 12px rgba(188, 0, 0, 0.6);
+}
+
+#parameters .param {
+/*    background-color: #eee;*/
+/*    border-bottom: 1px solid rgba(0, 0, 0, 0.11);*/
+    font-size: 0.9em;
+    padding: 10px;
+}
+
+#parameters .param .title {
+    font-size: 1em;
+    font-weight: 100;
+    margin-bottom: 7px;
+    color: rgba(0, 0, 0, 0.8);
+}
+
+#parameters .param input, #parameters .param select {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 100%;
+    border: 0;
+    padding: 7px;
+    border-radius: 4px;
+    background-color: #eee;;
+    color: #4b69d0;
+    font-size: 1em;
+    outline: none;
+}
