@@ -1,6 +1,7 @@
 // UserPrefs structure and defaults
 
 UserPrefs = function() {
+    this.version = 1;
     this.defaultColor = [1,.4,1,1];
 
     this.toolbar = {

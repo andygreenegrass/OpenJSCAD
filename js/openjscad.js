@@ -1465,33 +1465,39 @@ OpenJsCad.Processor.prototype = {
   },
   
   formatInfo: function(format) {
-    return {
-      stla: {
-        displayName: "STL (ASCII)",
-        extension: "stl",
-        mimetype: "application/sla",
-        },
-      stlb: {
-        displayName: "STL (Binary)",
-        extension: "stl",
-        mimetype: "application/sla",
-        },
-      amf: {
-        displayName: "AMF (experimental)",
-        extension: "amf",
-        mimetype: "application/amf+xml",
-        },
-      x3d: {
-        displayName: "X3D",
-        extension: "x3d",
-        mimetype: "model/x3d+xml",
-        },
-      dxf: {
-        displayName: "DXF",
-        extension: "dxf",
-        mimetype: "application/dxf",
-        }
-    }[format];
+      var formats = {
+          stla: {
+              displayName: "STL (ASCII)",
+              extension: "stl",
+              mimetype: "application/sla",
+          },
+          stlb: {
+              displayName: "STL (Binary)",
+              extension: "stl",
+              mimetype: "application/sla",
+          },
+          amf: {
+              displayName: "AMF (experimental)",
+              extension: "amf",
+              mimetype: "application/amf+xml",
+          },
+          x3d: {
+              displayName: "X3D",
+              extension: "x3d",
+              mimetype: "model/x3d+xml",
+          },
+          dxf: {
+              displayName: "DXF",
+              extension: "dxf",
+              mimetype: "application/dxf",
+          }
+      };
+      
+      if (typeof format == 'undefined') {
+          return formats;
+      } else {
+          return formats[format];
+      }
   },
 
   downloadLinkTextForCurrentObject: function() {

@@ -4,7 +4,7 @@
 
 #parameters {
     cursor: default;
-    padding: 0px 20px 20px 20px;
+    padding: 10px 20px 20px 20px;
     overflow-y: scroll !important;
     
     -webkit-touch-callout: none;
@@ -32,14 +32,25 @@
 /*    background-color: #eee;*/
 /*    border-bottom: 1px solid rgba(0, 0, 0, 0.11);*/
     font-size: 0.9em;
-    padding: 10px;
+    margin-bottom: 15px;
+/*    padding: 10px;*/
+}
+
+#parameters .param:last-child {
+    margin-bottom: 0;
 }
 
 #parameters .param .title {
-    font-size: 1em;
-    font-weight: 100;
+    font-size: 0.8em;
+    font-weight: bold;
     margin-bottom: 7px;
     color: rgba(0, 0, 0, 0.8);
+}
+
+#parameters .param .title .type {
+    font-weight: normal;
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.46);
 }
 
 #parameters .param input, #parameters .param select {

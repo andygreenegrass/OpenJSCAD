@@ -57,19 +57,33 @@
 }
 
 .okButton {
+    cursor: default;
     font-weight: 100;
     font-size: 13px;
+    height: 34px;
+    line-height: 34px;
     box-sizing: border-box;
     display: inline-block;
-    background-color: #bdf8ff;
-/*    width: 100%;*/
-    padding: 10px 20px;
+    padding: 0px 20px;
     margin-top: 15px;
-    color: rgba(0, 100, 113, 0.62);
-    border-radius: 3px;
-    box-shadow: 0 -3px 0 rgba(0, 132, 132, 0.1) inset;
+    border-radius: 17px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    color: rgba(0, 0, 0, 0.51);
+    
+    transition: background-color 0.2s;
 }
 
 .okButton:hover {
-   background-color: #9af4ff;
+/*   background-color: #9af4ff;*/
+}
+
+.okButton:hover {
+    border-color: rgba(0, 0, 0, 0.45);
+    color: rgba(0, 0, 0, 0.75);
+}
+
+.okButton:active {
+    background-color: #999;
+    
+    transition: background-color 0s;
 }

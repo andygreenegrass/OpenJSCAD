@@ -23,33 +23,20 @@ Menu = function() {
     // Design
     // -------------
     this.design = {};
-    this.design.autoReload = function(el) {
-        userPrefs2.autoReload = !userPrefs2.autoReload;
-        if (userPrefs2.autoReload)
-            $(el).addClass('checked');
-        else
-            $(el).removeClass('checked');
+    this.design.autoReload = function() {
+//        userPrefs2.autoReload = !userPrefs2.autoReload;
     };
 
     // View
     // -------------
     this.view = {};
-    this.view.showAxes = function(el) {
-        userPrefs2.view.axes.show = !userPrefs2.view.axes.show;
-        gProcessor.viewer.onDraw();
-        if (userPrefs2.view.axes.show)
-            $(el).addClass('checked');
-        else
-            $(el).removeClass('checked');
+    this.view.showAxes = function() {
+//        userPrefs2.view.axes.show = !userPrefs2.view.axes.show;
+//        gProcessor.viewer.onDraw();
     };
-    this.view.showGrid = function(el) {
-        //$scope.userPrefs.view.grid.show = !$scope.userPrefs.view.grid.show;
-        userPrefs2.view.grid.show = !userPrefs2.view.grid.show;
-        gProcessor.viewer.onDraw();
-        if (userPrefs2.view.grid.major.show)
-            $(el).addClass('checked');
-        else
-            $(el).removeClass('checked');
+    this.view.showGrid = function() {
+//        userPrefs2.view.grid.show = !userPrefs2.view.grid.show;
+//        gProcessor.viewer.onDraw();
     };
     this.view.top = function() {
         var view = gProcessor.viewer.getView();

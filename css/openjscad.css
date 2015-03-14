@@ -2,6 +2,16 @@
  *    few changes made by Rene K. Mueller for OpenSCAD.org
  */
 
+#loader {
+    display: none;
+    position: absolute;
+    top: calc(50% - 98px);
+    left: calc(50% - 98px);
+    width: 196px;
+    height: 196px;
+    pointer-events: none;
+}
+
 #filebuttons {
   /* float: right; */
   margin-left: 2em;

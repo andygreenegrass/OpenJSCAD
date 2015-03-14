@@ -33,7 +33,7 @@ Todo:
     <link rel="stylesheet" href="css/drop-view.css" type="text/css"/>
     <link rel="stylesheet" href="css/svg.css" type="text/css"/>
 </head>
-<body ng-controller='mainController' onload="onload()">
+<body ng-controller='mainController'>
 <style>
 /* we choose chrome theme for ace, and make sure line number is transparent too */
 /* this has to stay in the body (not head) otherwise does not take effect */
@@ -197,40 +197,13 @@ Todo:
             //
             //{ file:'platonics/', title: 'Recursive Include(): Platonics', new: true, spacing: true },
             ];
-
-            $scope.formatInfo = {
-                stla: {
-                    displayName: "STL (ASCII)",
-                    extension: "stl",
-                    mimetype: "application/sla",
-                },
-                stlb: {
-                    displayName: "STL (Binary)",
-                    extension: "stl",
-                    mimetype: "application/sla",
-                },
-                amf: {
-                    displayName: "AMF (experimental)",
-                    extension: "amf",
-                    mimetype: "application/amf+xml",
-                },
-                x3d: {
-                    displayName: "X3D",
-                    extension: "x3d",
-                    mimetype: "model/x3d+xml",
-                },
-                dxf: {
-                    displayName: "DXF",
-                    extension: "dxf",
-                    mimetype: "application/dxf",
-                }
-            };
             
             $scope.paramDefinitions = [];
 
             $scope.fetchExample = function(f) {
                 fetchExample("examples/" + f.file);
                 $scope.currentFile = f.file;
+                $scope.paramDefinitions = [];
             };
             
             $scope.currentFile = "[Untitled]";
@@ -238,12 +211,85 @@ Todo:
             $scope.newFile = function() {
                 fetchExample("new.jscad");
                 $scope.currentFile = "[Untitled]";
+                $scope.paramDefinitions = [];
             }
             
             $scope.refreshParams = function() {
                 $scope.paramDefinitions = gProcessor.paramDefinitions;
             }
+            
+            $scope.toggleGrid = function() {
+                $scope.userPrefs.view.grid.show = !$scope.userPrefs.view.grid.show;
+                gProcessor.viewer.onDraw();
+            }
+            
+            $scope.toggleAxes = function() {
+                $scope.userPrefs.view.axes.show = !$scope.userPrefs.view.axes.show;
+                gProcessor.viewer.onDraw();
+            }
+            
+            $scope.toggleAutoReload = function() {
+                $scope.userPrefs.autoReload = !$scope.userPrefs.autoReload;
+            };
+            
+            onload($scope.userPrefs);
+            setAutoReload($scope.userPrefs.autoReload);
+            
+            // TODO - get from gProcessor
+            $scope.formatInfo = gProcessor.formatInfo();
         }]);
+    
+    angular.module('mc.resizer', []).directive('resizer', function($document) {
+        return function($scope, $element, $attrs) {
+            $element.on('mousedown', function(event) {
+                event.preventDefault();
+                
+                $document.on('mousemove', mousemove);
+                $document.on('mouseup', mouseup);
+            });
+            function mousemove(event) {
+                
+                if ($attrs.resizer == 'vertical') {
+                    // Handle vertical resizer
+                    var x = event.pageX;
+                    
+                    if ($attrs.resizerMax && x > $attrs.resizerMax) {
+                        x = parseInt($attrs.resizerMax);
+                    }
+                    
+                    $element.css({
+                        left: x + 'px'
+                    });
+                    
+                    $($attrs.resizerLeft).css({
+                        width: x + 'px'
+                    });
+                    $($attrs.resizerRight).css({
+                        left: (x + parseInt($attrs.resizerWidth)) + 'px'
+                    });
+                    
+                } else {
+                    // Handle horizontal resizer
+                    var y = window.innerHeight - event.pageY;
+                    
+                    $element.css({
+                        bottom: y + 'px'
+                    });
+                    
+                    $($attrs.resizerTop).css({
+                        bottom: (y + parseInt($attrs.resizerHeight)) + 'px'
+                    });
+                    $($attrs.resizerBottom).css({
+                        height: y + 'px'
+                    });
+                }
+            }
+            function mouseup() {
+                $document.unbind('mousemove', mousemove);
+                $document.unbind('mouseup', mouseup);
+            }
+        };
+    });
 </script>
     
 <div id="header">
@@ -253,6 +299,8 @@ Todo:
 <div id=drop-view class=>
     <div>Thanks for all the files.</div>
 </div>
+    
+<img id=loader src='imgs/loader.gif'/>
     
 <!-- Menu -------------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
@@ -299,15 +347,15 @@ Todo:
     ><span class=parent>
         <div class=title>Design</div>
         <div class=sub-menu>
-            <div class='checkbox checked' ng-click="menu.design.autoReload(this)"><img class=icon src="imgs/check.svg"/>Automatic Compile &amp; Render</div>
+            <div class='checkbox' ng-class='{checked: userPrefs.autoReload}' ng-click="toggleAutoReload()"><img class=icon src="imgs/check.svg"/>Automatic Compile &amp; Render</div>
             <div class=button enabled=false>Compile &amp; Render</div>
         </div>
     </span
     ><span class=parent>
         <div class=title>View</div>
         <div class=sub-menu>
-            <div class='checkbox checked' ng-click="menu.view.showAxes(this)"><img class=icon src="imgs/check.svg"/>Show Axes</div>
-            <div class='checkbox' ng-class='{checked: userPrefs.view.grid.show}' ng-click="menu.view.showGrid(this)"><img class=icon src="imgs/check.svg"/>Show Grid</div>
+            <div class='checkbox' ng-class='{checked: userPrefs.view.axes.show}' ng-click="toggleAxes()"><img class=icon src="imgs/check.svg"/>Show Axes</div>
+            <div class='checkbox' ng-class='{checked: userPrefs.view.grid.show}' ng-click="toggleGrid()"><img class=icon src="imgs/check.svg"/>Show Grid</div>
             <div class=button enabled=false>Grid Options...</div>
             <div class=divider></div>
             <div class=radio enabled=false><img class='icon' src="imgs/check.svg"/>Perspective</div>
@@ -341,15 +389,8 @@ Todo:
     </span>
 </div>
 
-<script>
-    var userPrefs2 = new UserPrefs();
-    
+<script>    
     $(document).ready(function() {
-        setAutoReload(userPrefs2.autoReload);
-        
-//        $('.pin').click(function() {
-//            $(this).toggleClass('pinned');
-//        });
         $('.pinnable').mouseenter(function() {
             $(this).addClass('shown');
         });
@@ -403,15 +444,22 @@ Todo:
     
 <div id=workspace class='pinnable' ng-class="{shown: userPrefs.workspace.pinned, params: paramDefinitions.length > 0}">
     <div class='pin' ng-class="{pinned: userPrefs.workspace.pinned}" ng-click="userPrefs.workspace.pinned = !userPrefs.workspace.pinned"><div><img src="imgs/pin.svg"/></div></div>
+    <div class='size-handle'></div>
     <div class=blocks>
         <!-- Editor block -->
         <div class='block editor'>
-            <div class=title>{{currentFile}}</div>
+            <div class=header><img src="imgs/file.svg"/>{{currentFile}}<div class=right></div></div>
             <div id=editor class=body></div>
         </div>
         <!-- Parameters block -->
         <div class='block parameters'>
-            <div class=title>Parameters</div>
+            <div class=header>
+                <img src="imgs/gear.svg"/>Parameters
+                <div class=right
+                    ><div class=button ng-click='refreshParams();'>Defaults</div
+                    ><div class=button ng-click=''>Render</div
+                ></div>
+            </div>
             <div class=body id=parameters>
                 <!--
                 [
@@ -421,10 +469,8 @@ Todo:
                     { name: 'cutout', caption: 'Subtract the servo cutout shape from the plate:', type: 'choice', values: [0, 1], initial: 1, captions: ["No", "Yes"]}
                 ]
                 -->
-                <div class=button ng-click='refreshParams();'>Refresh Parameters</div>
-                <div class=button ng-click=''>Update</div>
                 <div class=param ng-repeat='p in paramDefinitions'>
-                    <div class=title>{{p.caption}} ({{p.type}})</div>
+                    <div class=title>{{p.caption}} <span class=type>({{p.type}})</span></div>
                     <div ng-if="p.type == 'choice'">
         <!--                Choice: {{p.initial}}-->
                         <select><option ng-repeat='c in p.captions'>{{c}}</option></select>
@@ -477,110 +523,12 @@ Todo:
         Get your copy/clone/fork from <a href="https://github.com/Spiritdude/OpenJSCAD.org" target=_blank>GitHub: OpenJSCAD</a>
     </div>
     <div style='text-align: right;'>
-        <a class=okButton href='#' onclick="$('#about').attr('visible', 'false'); return false;">Close</a>
+        <span class=okButton href='#' onclick="$('#about').attr('visible', 'false'); return false;">Close</span>
     </div>
 </div>
     
 <!---------------------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
-
-<script>
-    {
-        var options = [ 'renderCode', 'author', 'license' ];
-        var metakeys = [ 'author', 'license' ];
-        saveOptions = function() {
-            for(var k in options) {
-                k = options[k];
-                //echo("setting "+k);
-                setCookie(k,$('#'+k).val());
-                if(metakeys[k]) metadata[k] = options[k];
-            }
-        }
-        getOptions = function() {
-            for(var k in options) {
-                k = options[k];
-                //echo("getting "+k);
-                if(getCookie(k)) $('#'+k).val(getCookie(k))
-                    }
-        }
-
-        var src = '';
-        src += "<form id=optionsForm onsubmit='saveOptions(); return false'>";
-        src += "<div class=optionGroup><b>Your Identity / Full Name & Email</b><br/>";
-        src += "<input id=author type=text name=author size=30><div class=optionInfo>Applies when you export AMF (sets metadata)</div></div>";
-
-        var licenseOptions = {
-            "Public Domain": "Public Domain",
-            "CC BY": "Creative Commons CC BY",
-            "CC BY-ND": "Creative Commons CC BY-ND",
-            "CC BY-NC": "Creative Commons CC BY-NC",
-            "CC BY-SA": "Creative Commons CC BY-SA",
-            "CC BY-NC-SA": "Creative Commons CC BY-NC-SA",
-            "CC BY-NC-ND": "Creative Commons CC BY-NC-ND",
-            "MIT": "MIT License",
-            "GPLv2": "GPLv2",
-            "GPLv3": "GPLv3",
-            "Copyright": "Copyright",
-        };
-        src += "<div class=optionGroup><b>Default License</b><br/>";
-        src += "<select id=license name=license>";
-        for(var k in licenseOptions) {
-            src += "<option value='"+k+"'>"+licenseOptions[k];
-            src += "<br/>";
-        }
-        src += "</select><div class=optionInfo>Applies when you export AMF (sets metadata)</div></div>\n";
-
-        if (0) {
-            var renderCodeOptions = {
-                shiftReturn: "SHIFT+RETURN",
-                auto: "Automatic"
-            };
-            src += "<div class=optionGroup><b>Render Code</b></br>";
-            src += "<select id=renderCode name=renderCode>";
-            for(var k in renderCodeOptions) {
-                src += "<option value='"+k+"'>"+renderCodeOptions[k];
-            }
-            src += "</select></div>";
-        }
-//        if (1) {
-//            var plateOptions = {
-//                "200x200": "200mm x 200mm",
-//                "150x150": "150mm x 150mm",
-//                "100x100": "100mm x 100mm",
-//                "custom": "Custom",
-//                "none": "None",
-//            };
-//            src += "<div class=optionGroup><b>Plate</b></br>";
-//            src += "<select id=plate name=plate>";
-//            for (var k in plateOptions) {
-//                src += "<option value='"+k+"'>"+plateOptions[k];
-//            }
-//            src += "</select><br/>";
-//            src += "<div style='display: none' id=customPlate>Custom: <input type=text id=plateCustomX name=plateCustomX size=4 value='125'> x <input type=text id=plateCustomY name=plateCustomY size=4 value='125'> [mm]</div>";
-//            src += "</div>";
-//
-//        }
-        if (1) {
-            var themeOptions = {
-                "bright": "Bright",
-                "dark": "Dark",
-            };
-            src += "<div class=optionGroup><b>Theme</b></br>";
-            src += "<select id=theme name=theme>";
-            for(var k in themeOptions) {
-                src += "<option value='"+k+"'>"+themeOptions[k];
-            }
-            src += "</select><br/>";
-            src += "</div>";
-        }
-
-        src += "</form>";
-        $('#options').html(src);
-    }
-</script>
-    
-<div id="tail"></div>
-<div id=footer></div>
 
 <script src="js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
 
@@ -620,7 +568,7 @@ self.onmessage = function(e) {      // Worker to import STL/OBJ as it can take q
 
 <script>
 
-function onload() {
+function onload(userPrefs) {
     // -- http://ace.ajax.org/#nav=howto
     editor = ace.edit("editor");
     editor.setTheme("ace/theme/chrome");
@@ -654,7 +602,7 @@ function onload() {
         };
     }
     
-    gProcessor = new OpenJsCad.Processor(document.getElementById("viewerContext"), userPrefs2);
+    gProcessor = new OpenJsCad.Processor(document.getElementById("viewerContext"), userPrefs);
     setupDragDrop();
     //gProcessor.setDebugging(debugging); 
     if (me=='web-online') {    // we are online, fetch first example
