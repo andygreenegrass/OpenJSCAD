@@ -43,7 +43,8 @@ Menu = function() {
             $(el).removeClass('checked');
     };
     this.view.showGrid = function(el) {
-        userPrefs2.view.grid.major.show = !userPrefs2.view.grid.major.show;
+        //$scope.userPrefs.view.grid.show = !$scope.userPrefs.view.grid.show;
+        userPrefs2.view.grid.show = !userPrefs2.view.grid.show;
         gProcessor.viewer.onDraw();
         if (userPrefs2.view.grid.major.show)
             $(el).addClass('checked');

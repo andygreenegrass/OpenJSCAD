@@ -16,9 +16,9 @@ UserPrefs = function() {
     this.view = {
         initialViewerDistance: 200,
         grid: {
+            show: false,
             plateSize: 200,
             major: {
-                show: false,
                 size: 10
             },
             minor: {

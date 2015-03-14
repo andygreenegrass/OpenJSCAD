@@ -463,7 +463,7 @@ OpenJsCad.Viewer.prototype = {
             gl.begin(gl.LINES);
             var plate = this.userPrefs.view.grid.plateSize;
             if (this.plate) {
-                if (this.userPrefs.view.grid.major.show) {
+                if (this.userPrefs.view.grid.show) {
                     // major grid
                     var size = this.userPrefs.view.grid.major.size;
                     gl.color(.5,.5,.5,.5);

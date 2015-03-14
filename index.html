@@ -307,7 +307,7 @@ Todo:
         <div class=title>View</div>
         <div class=sub-menu>
             <div class='checkbox checked' ng-click="menu.view.showAxes(this)"><img class=icon src="imgs/check.svg"/>Show Axes</div>
-            <div class='checkbox' ng-click="menu.view.showGrid(this)"><img class=icon src="imgs/check.svg"/>Show Grid</div>
+            <div class='checkbox' ng-class='{checked: userPrefs.view.grid.show}' ng-click="menu.view.showGrid(this)"><img class=icon src="imgs/check.svg"/>Show Grid</div>
             <div class=button enabled=false>Grid Options...</div>
             <div class=divider></div>
             <div class=radio enabled=false><img class='icon' src="imgs/check.svg"/>Perspective</div>
