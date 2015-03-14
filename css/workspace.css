@@ -1,0 +1,169 @@
+/*
+ * editor.css for index.html
+ */
+
+#workspace {
+    position: fixed;
+    width: 20px;
+    top: 27px;       /* don't invade the menu */
+    bottom: 22px;    /* don't invade the status bar */
+    width: 30%;
+    right: calc(-30% + 20px);
+    background: rgba(255, 255, 255, 0.9);
+    
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    
+    z-index: 998;
+}
+
+#workspace.shown {
+    right: 0;
+}
+
+#workspace, #workspace .pin {
+    transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+}
+
+#workspace > .size-handle {
+    display: none;
+}
+
+#workspace.shown > .size-handle {
+    display: block;
+    cursor: ew-resize;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -6px;
+    width: 12px;
+/*    background: rgba(255, 0, 0, 0.36);*/
+    z-index: 10;
+}
+
+#workspace .pin {
+    opacity: 0;
+    position: absolute;
+    top: 0px;
+    left: -32px;
+    width: 32px;
+    height: 32px;
+    pointer-events: none;
+    
+    z-index: 11;
+/*    background-color: red;*/
+}
+
+#workspace.shown .pin {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#workspace > .blocks > .block {
+    position: absolute;
+    left: 0; right: 0;
+    overflow: hidden;
+    
+    transition: all 0.5s;
+}
+
+/* -- Header --------------------------------------------------------------- */
+
+#workspace > .blocks > .block > .header {
+    cursor: default;
+    position: absolute;
+    top: 0;
+    left: 0; right: 0;
+    height: 29px;
+    line-height: 30px;
+/*    top: 0; left: 0; right: 0;*/
+/*    background-color: rgb(255, 255, 255);*/
+    padding: 0px 20px;
+    color: rgba(0, 0, 0, 0.6);
+    border: 0px solid rgba(0, 0, 0, 0.14);
+    border-left: 0;
+    border-right: 0;
+    font-size: 12px;
+    font-weight: 400;
+    margin-bottom: 0;
+/*    z-index: 10000;*/
+    border-top: 1px solid rgba(0, 0, 0, 0.15);
+/*    box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.09);*/
+}
+
+#workspace > .blocks > .block > .header > img {
+    position: relative;
+    height: 12px;
+    width: 12px;
+    vertical-align: middle;
+    top: -2px;
+    margin-right: 5px;
+}
+
+#workspace > .blocks > .block:first-child > .header {
+    border-color: transparent;
+}
+
+#workspace > .blocks > .block > .header .right {
+    position: absolute;
+    top: 0; bottom: 0; right: 20px;
+}
+
+#workspace > .blocks > .block > .header .right .button {
+    position: relative;
+    display: inline-block;
+    top: 0px;
+    border: 1px solid rgba(0, 0, 0, 0.23);
+    color: rgba(0, 0, 0, 0.51);
+    border-radius: 9px;
+    line-height: 19px;
+    height: 18px;
+    padding: 0 10px 0 10px;
+    font-size: 10px;
+    margin-right: 4px;
+    
+    transition: background-color 0.2s;
+}
+
+#workspace > .blocks > .block > .header .right .button:last-child {
+    margin-right: 0;
+}
+
+#workspace > .blocks > .block > .header .right .button:hover {
+    border-color: rgba(0, 0, 0, 0.45);
+    color: rgba(0, 0, 0, 0.75);
+}
+
+#workspace > .blocks > .block > .header .right .button:active {
+    background-color: #999;
+    
+    transition: background-color 0s;
+}
+
+/* ------------------------------------------------------------------------- */
+
+#workspace > .blocks > .block > .body {
+    position: absolute;
+    top: 30px; /* make space for the title bar */
+    left: 0; right: 0;
+    bottom: 0;
+}
+
+/* specific block sizing and location -------------------------------------- */
+
+#workspace > .blocks > .block.editor {
+    top: 0;
+    height: 50%;
+}
+    
+#workspace > .blocks > .block.parameters {
+    top: 50%;
+    bottom: 0;
+}
