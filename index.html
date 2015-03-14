@@ -24,7 +24,7 @@ Todo:
     <link rel="stylesheet" href="css/openjscad.css" type="text/css"/>
     <link rel="stylesheet" href="css/menu.css" type="text/css"/>
     <link rel="stylesheet" href="css/toolbar.css" type="text/css"/>
-    <link rel="stylesheet" href="css/editor-wrapper.css" type="text/css"/>
+    <link rel="stylesheet" href="css/workspace.css" type="text/css"/>
     <link rel="stylesheet" href="css/editor.css" type="text/css"/>
     <link rel="stylesheet" href="css/parameters.css" type="text/css"/>
     <link rel="stylesheet" href="css/status.css" type="text/css"/>
@@ -103,6 +103,8 @@ Todo:
             }, true);
             
             // ----------------------------------------------
+            
+            $scope.menu = new Menu();
             
             $scope.examples = [
                 {
@@ -227,8 +229,16 @@ Todo:
             $scope.paramDefinitions = [];
 
             $scope.fetchExample = function(f) {
-                fetchExample("examples/" + f.file);  
+                fetchExample("examples/" + f.file);
+                $scope.currentFile = f.file;
             };
+            
+            $scope.currentFile = "[Untitled]";
+            
+            $scope.newFile = function() {
+                fetchExample("new.jscad");
+                $scope.currentFile = "[Untitled]";
+            }
             
             $scope.refreshParams = function() {
                 $scope.paramDefinitions = gProcessor.paramDefinitions;
@@ -251,8 +261,8 @@ Todo:
     <span class=parent>
         <div class=title>OpenJSCAD</div>
         <div class=sub-menu>
-            <div class=button onclick="menu.openjscad.about()">About OpenJSCAD...</div>
-            <div class=button onclick="menu.openjscad.recentUpdates()"><img class=icon src="imgs/link.svg"/>Recent Updates</div>
+            <div class=button ng-click="menu.openjscad.about()">About OpenJSCAD...</div>
+            <div class=button ng-click="menu.openjscad.recentUpdates()"><img class=icon src="imgs/link.svg"/>Recent Updates</div>
             <div class=divider></div>
             <div class=button enabled=false>Preferences...</div>
         </div>
@@ -260,8 +270,8 @@ Todo:
     ><span class=parent>
         <div class=title>File</div>
         <div class=sub-menu>
-            <div class=button enabled=false>New</div>
-            <div class=button onclick="menu.file.open()">Open...</div>
+            <div class=button enabled=true ng-click="newFile()">New</div>
+            <div class=button ng-click="menu.file.open()" enabled=false>Open...</div>
             <div class='additional parent'>
                 <div>Examples</div>
                 <img class=arrow src="imgs/arrow.svg"/>
@@ -289,37 +299,44 @@ Todo:
     ><span class=parent>
         <div class=title>Design</div>
         <div class=sub-menu>
-            <div class='checkbox checked' onclick="menu.design.autoReload(this)"><img class=icon src="imgs/check.svg"/>Automatic Compile &amp; Render</div>
+            <div class='checkbox checked' ng-click="menu.design.autoReload(this)"><img class=icon src="imgs/check.svg"/>Automatic Compile &amp; Render</div>
             <div class=button enabled=false>Compile &amp; Render</div>
         </div>
     </span
     ><span class=parent>
         <div class=title>View</div>
         <div class=sub-menu>
-            <div class='checkbox checked' onclick="menu.view.showAxes(this)"><img class=icon src="imgs/check.svg"/>Show Axes</div>
-            <div class='checkbox' onClick="menu.view.showGrid(this)"><img class=icon src="imgs/check.svg"/>Show Grid</div>
+            <div class='checkbox checked' ng-click="menu.view.showAxes(this)"><img class=icon src="imgs/check.svg"/>Show Axes</div>
+            <div class='checkbox' ng-click="menu.view.showGrid(this)"><img class=icon src="imgs/check.svg"/>Show Grid</div>
             <div class=button enabled=false>Grid Options...</div>
             <div class=divider></div>
             <div class=radio enabled=false><img class='icon' src="imgs/check.svg"/>Perspective</div>
             <div class=radio enabled=false>Orthogonal</div>
             <div class=divider></div>
-            <div class=button onclick='menu.view.top()'><script>document.write(viewIcon("view top"));</script>Top</div>
-            <div class=button onclick='menu.view.bottom()'><script>document.write(viewIcon("view bottom"));</script>Bottom</div>
-            <div class=button onclick='menu.view.left()'><script>document.write(viewIcon("view left"));</script>Left</div>
-            <div class=button onclick='menu.view.right()'><script>document.write(viewIcon("view right"));</script>Right</div>
-            <div class=button onclick='menu.view.front()'><script>document.write(viewIcon("view front"));</script>Front</div>
-            <div class=button onclick='menu.view.back()'><script>document.write(viewIcon("view back"));</script>Back</div>
-            <div class=button onclick='menu.view.diagonal()'>Diagonal</div>
-            <div class=button onclick='menu.view.center()'>Center</div>
+            <div class=button ng-click='menu.view.top()'><script>document.write(viewIcon("view top"));</script>Top</div>
+            <div class=button ng-click='menu.view.bottom()'><script>document.write(viewIcon("view bottom"));</script>Bottom</div>
+            <div class=button ng-click='menu.view.left()'><script>document.write(viewIcon("view left"));</script>Left</div>
+            <div class=button ng-click='menu.view.right()'><script>document.write(viewIcon("view right"));</script>Right</div>
+            <div class=button ng-click='menu.view.front()'><script>document.write(viewIcon("view front"));</script>Front</div>
+            <div class=button ng-click='menu.view.back()'><script>document.write(viewIcon("view back"));</script>Back</div>
+            <div class=button ng-click='menu.view.diagonal()'>Diagonal</div>
+            <div class=button ng-click='menu.view.center()'>Center</div>
             <div class=divider></div>
-            <div class=button  onclick='menu.view.resetView()'>Reset View</div>
+            <div class=button  ng-click='menu.view.resetView()'>Reset View</div>
         </div>
     </span
     ><span class=parent>
         <div class=title>Help</div>
         <div class=sub-menu>
-            <div onclick="menu.help.documentation()"><img class='icon' src="imgs/link.svg"/>Documentation</div>
-            <div onclick="menu.help.community()"><img class='icon' src="imgs/link.svg"/>Google+ Community</div>
+            <div ng-click="menu.help.documentation()"><img class='icon' src="imgs/link.svg"/>Documentation</div>
+            <div ng-click="menu.help.community()"><img class='icon' src="imgs/link.svg"/>Google+ Community</div>
+        </div>
+    </span
+    ><span class=parent>
+        <div class=title style='display: none;'>Developer</div>
+        <div class=sub-menu>
+            <div ng-click="">Reset UserPrefs</div>
+            <div ng-click="">Delete all cookies</div>
         </div>
     </span>
 </div>
@@ -372,40 +389,50 @@ Todo:
 <div id=toolbar class='pinnable' ng-class="{shown: userPrefs.toolbar.pinned}">
     <div class='pin' ng-class="{pinned: userPrefs.toolbar.pinned}"  ng-click="userPrefs.toolbar.pinned = !userPrefs.toolbar.pinned"><div><img src="imgs/pin.svg"/></div></div>
     <!--    TODO - Use angular to duplicate-->
-    <div onclick='menu.view.front()'><script>document.write(viewIcon("view front"));</script></div
-    ><div onclick='menu.view.back()'><script>document.write(viewIcon("view back"));</script></div
-    ><div onclick='menu.view.left()'><script>document.write(viewIcon("view left"));</script></div
-    ><div onclick='menu.view.right()'><script>document.write(viewIcon("view right"));</script></div
-    ><div onclick='menu.view.top()'><script>document.write(viewIcon("view top"));</script></div
-    ><div onclick='menu.view.bottom()'><script>document.write(viewIcon("view bottom"));</script></div
+    <div ng-click='menu.view.front()'><script>document.write(viewIcon("view front"));</script></div
+    ><div ng-click='menu.view.back()'><script>document.write(viewIcon("view back"));</script></div
+    ><div ng-click='menu.view.left()'><script>document.write(viewIcon("view left"));</script></div
+    ><div ng-click='menu.view.right()'><script>document.write(viewIcon("view right"));</script></div
+    ><div ng-click='menu.view.top()'><script>document.write(viewIcon("view top"));</script></div
+    ><div ng-click='menu.view.bottom()'><script>document.write(viewIcon("view bottom"));</script></div
     >
 </div>
     
-<!-- Editor ------------------------------------------------------------------>
+<!-- Workspace --------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
     
-<div id=editor-wrapper class='pinnable' ng-class="{shown: userPrefs.editor.pinned, params: paramDefinitions.length > 0}">
-    <div class='pin' ng-class="{pinned: userPrefs.editor.pinned}" ng-click="userPrefs.editor.pinned = !userPrefs.editor.pinned"><div><img src="imgs/pin.svg"/></div></div>
-    <div id=editor></div>
-    <div id=parameters>
-        <!--
-        [
-            { name: 'showservo', caption: 'Show servo:', type: 'choice', values: [0, 1], initial: 1, captions: ["No", "Yes"]},
-            { name: 'showplate', caption: 'Show plate:', type: 'choice', values: [0, 1], initial: 1, captions: ["No", "Yes"]},
-            { name: 'showcutout', caption: 'Show cutout:', type: 'choice', values: [0, 1], initial: 0, captions: ["No", "Yes"]},
-            { name: 'cutout', caption: 'Subtract the servo cutout shape from the plate:', type: 'choice', values: [0, 1], initial: 1, captions: ["No", "Yes"]}
-        ]
-        -->
-        <div class=button ng-click='refreshParams();'>Refresh Parameters</div>
-        <div class=button ng-click=''>Update</div>
-        <div class=param ng-repeat='p in paramDefinitions'>
-            <div class=title>{{p.caption}} ({{p.type}})</div>
-            <div ng-if="p.type == 'choice'">
-<!--                Choice: {{p.initial}}-->
-                <select><option ng-repeat='c in p.captions'>{{c}}</option></select>
+<div id=workspace class='pinnable' ng-class="{shown: userPrefs.workspace.pinned, params: paramDefinitions.length > 0}">
+    <div class='pin' ng-class="{pinned: userPrefs.workspace.pinned}" ng-click="userPrefs.workspace.pinned = !userPrefs.workspace.pinned"><div><img src="imgs/pin.svg"/></div></div>
+    <div class=blocks>
+        <!-- Editor block -->
+        <div class='block editor'>
+            <div class=title>{{currentFile}}</div>
+            <div id=editor class=body></div>
+        </div>
+        <!-- Parameters block -->
+        <div class='block parameters'>
+            <div class=title>Parameters</div>
+            <div class=body id=parameters>
+                <!--
+                [
+                    { name: 'showservo', caption: 'Show servo:', type: 'choice', values: [0, 1], initial: 1, captions: ["No", "Yes"]},
+                    { name: 'showplate', caption: 'Show plate:', type: 'choice', values: [0, 1], initial: 1, captions: ["No", "Yes"]},
+                    { name: 'showcutout', caption: 'Show cutout:', type: 'choice', values: [0, 1], initial: 0, captions: ["No", "Yes"]},
+                    { name: 'cutout', caption: 'Subtract the servo cutout shape from the plate:', type: 'choice', values: [0, 1], initial: 1, captions: ["No", "Yes"]}
+                ]
+                -->
+                <div class=button ng-click='refreshParams();'>Refresh Parameters</div>
+                <div class=button ng-click=''>Update</div>
+                <div class=param ng-repeat='p in paramDefinitions'>
+                    <div class=title>{{p.caption}} ({{p.type}})</div>
+                    <div ng-if="p.type == 'choice'">
+        <!--                Choice: {{p.initial}}-->
+                        <select><option ng-repeat='c in p.captions'>{{c}}</option></select>
+                    </div>
+                    <div ng-if="p.type == 'float' || p.type == 'int'"><input type='text' ng-value='p.initial'/></div>
+                    <div ng-if="p.type == 'text'"><input type='text' ng-value='p.initial'/></div>
+                </div>
             </div>
-            <div ng-if="p.type == 'float' || p.type == 'int'"><input type='text' ng-value='p.initial'/></div>
-            <div ng-if="p.type == 'text'"><input type='text' ng-value='p.initial'/></div>
         </div>
     </div>
 </div>
@@ -656,7 +683,7 @@ function onload() {
             fetchExample(fn);
             document.location = document.URL.replace(/#.*$/,'#');
         } else {
-            //fetchExample('examples/'+ examples[0].files[0].file);
+            fetchExample('new.jscad');
         }
     } else {
         gProcessor.setJsCad(editor.getValue());
