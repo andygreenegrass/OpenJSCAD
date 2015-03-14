@@ -86,6 +86,24 @@ Todo:
 
     angular.module('mainApp', [])
         .controller('mainController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+            
+            // User Preferences Stuff
+            // ----------------------------------------------
+            
+            $scope.userPrefs = $scope.userPrefs = new UserPrefs();
+            {
+                var temp = getCookie('userPrefs');
+                if (temp != null && temp != "") {
+                    // TODO - Try/Catch for parse
+                    $scope.userPrefs = JSON.parse(temp);
+                }
+            }
+            $scope.$watch("userPrefs", function(newValue, oldValue) {
+                setCookie('userPrefs', JSON.stringify(newValue), 365)
+            }, true);
+            
+            // ----------------------------------------------
+            
             $scope.examples = [
                 {
                     title: 'Basics',
@@ -206,8 +224,6 @@ Todo:
                 }
             };
             
-            $scope.userPrefs = new UserPrefs();
-            
             $scope.paramDefinitions = [];
 
             $scope.fetchExample = function(f) {
@@ -309,14 +325,14 @@ Todo:
 </div>
 
 <script>
-    var userPrefs = new UserPrefs();
+    var userPrefs2 = new UserPrefs();
     
     $(document).ready(function() {
-        setAutoReload(userPrefs.autoReload);
+        setAutoReload(userPrefs2.autoReload);
         
-        $('.pin').click(function() {
-            $(this).toggleClass('pinned');
-        });
+//        $('.pin').click(function() {
+//            $(this).toggleClass('pinned');
+//        });
         $('.pinnable').mouseenter(function() {
             $(this).addClass('shown');
         });
@@ -349,12 +365,27 @@ Todo:
 <!---------------------------------------------------------------------------->
     
 <div id="viewerContext"></div>
+
+<!-- Toolbar ----------------------------------------------------------------->
+<!---------------------------------------------------------------------------->
+    
+<div id=toolbar class='pinnable' ng-class="{shown: userPrefs.toolbar.pinned}">
+    <div class='pin' ng-class="{pinned: userPrefs.toolbar.pinned}"  ng-click="userPrefs.toolbar.pinned = !userPrefs.toolbar.pinned"><div><img src="imgs/pin.svg"/></div></div>
+    <!--    TODO - Use angular to duplicate-->
+    <div onclick='menu.view.front()'><script>document.write(viewIcon("view front"));</script></div
+    ><div onclick='menu.view.back()'><script>document.write(viewIcon("view back"));</script></div
+    ><div onclick='menu.view.left()'><script>document.write(viewIcon("view left"));</script></div
+    ><div onclick='menu.view.right()'><script>document.write(viewIcon("view right"));</script></div
+    ><div onclick='menu.view.top()'><script>document.write(viewIcon("view top"));</script></div
+    ><div onclick='menu.view.bottom()'><script>document.write(viewIcon("view bottom"));</script></div
+    >
+</div>
     
 <!-- Editor ------------------------------------------------------------------>
 <!---------------------------------------------------------------------------->
     
-<div id=editor-wrapper class='pinnable shown' ng-class="{params: paramDefinitions.length > 0}">
-    <div class='pin pinned'><div><img src="imgs/pin.svg"/></div></div>
+<div id=editor-wrapper class='pinnable' ng-class="{shown: userPrefs.editor.pinned, params: paramDefinitions.length > 0}">
+    <div class='pin' ng-class="{pinned: userPrefs.editor.pinned}" ng-click="userPrefs.editor.pinned = !userPrefs.editor.pinned"><div><img src="imgs/pin.svg"/></div></div>
     <div id=editor></div>
     <div id=parameters>
         <!--
@@ -377,21 +408,6 @@ Todo:
             <div ng-if="p.type == 'text'"><input type='text' ng-value='p.initial'/></div>
         </div>
     </div>
-</div>
-
-<!-- Toolbar ----------------------------------------------------------------->
-<!---------------------------------------------------------------------------->
-    
-<div id=toolbar class='pinnable shown'>
-    <div class='pin pinned'><div><img src="imgs/pin.svg"/></div></div>
-    <!--    TODO - Use angular to duplicate-->
-    <div onclick='menu.view.front()'><script>document.write(viewIcon("view front"));</script></div
-    ><div onclick='menu.view.back()'><script>document.write(viewIcon("view back"));</script></div
-    ><div onclick='menu.view.left()'><script>document.write(viewIcon("view left"));</script></div
-    ><div onclick='menu.view.right()'><script>document.write(viewIcon("view right"));</script></div
-    ><div onclick='menu.view.top()'><script>document.write(viewIcon("view top"));</script></div
-    ><div onclick='menu.view.bottom()'><script>document.write(viewIcon("view bottom"));</script></div
-    >
 </div>
 
 <!-- Status ------------------------------------------------------------------>
@@ -611,7 +627,7 @@ function onload() {
         };
     }
     
-    gProcessor = new OpenJsCad.Processor(document.getElementById("viewerContext"), userPrefs);
+    gProcessor = new OpenJsCad.Processor(document.getElementById("viewerContext"), userPrefs2);
     setupDragDrop();
     //gProcessor.setDebugging(debugging); 
     if (me=='web-online') {    // we are online, fetch first example

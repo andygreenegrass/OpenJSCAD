@@ -24,8 +24,8 @@ menu.file.open = function() {
 // -------------
 menu.design = {};
 menu.design.autoReload = function(el) {
-    userPrefs.autoReload = !userPrefs.autoReload;
-    if (userPrefs.autoReload)
+    userPrefs2.autoReload = !userPrefs2.autoReload;
+    if (userPrefs2.autoReload)
         $(el).addClass('checked');
     else
         $(el).removeClass('checked');
@@ -35,17 +35,17 @@ menu.design.autoReload = function(el) {
 // -------------
 menu.view = {};
 menu.view.showAxes = function(el) {
-    userPrefs.view.axes.show = !userPrefs.view.axes.show;
+    userPrefs2.view.axes.show = !userPrefs2.view.axes.show;
     gProcessor.viewer.onDraw();
-    if (userPrefs.view.axes.show)
+    if (userPrefs2.view.axes.show)
         $(el).addClass('checked');
     else
         $(el).removeClass('checked');
 };
 menu.view.showGrid = function(el) {
-    userPrefs.view.grid.major.show = !userPrefs.view.grid.major.show;
+    userPrefs2.view.grid.major.show = !userPrefs2.view.grid.major.show;
     gProcessor.viewer.onDraw();
-    if (userPrefs.view.grid.major.show)
+    if (userPrefs2.view.grid.major.show)
         $(el).addClass('checked');
     else
         $(el).removeClass('checked');

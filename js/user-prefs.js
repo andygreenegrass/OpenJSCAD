@@ -4,7 +4,7 @@ UserPrefs = function() {
     this.defaultColor = [1,.4,1,1];
 
     this.toolbar = {
-        pinned: true
+        pinned: false
     };
     
     this.editor = {

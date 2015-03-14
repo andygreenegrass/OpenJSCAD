@@ -53,4 +53,7 @@
     color: #4b69d0;
     font-size: 1em;
     outline: none;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
 }
