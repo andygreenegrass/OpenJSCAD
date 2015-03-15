@@ -200,17 +200,21 @@ Todo:
             $scope.paramDefinitions = [];
 
             $scope.fetchExample = function(f) {
-                fetchExample("examples/" + f.file);
-                $scope.currentFile = f.file;
+                $scope.fetchFile("examples/" + f.file, f.file);
+            };
+            $scope.fetchFile = function(filePath, fn) {
                 $scope.paramDefinitions = [];
+                fetchExample(filePath, null, function() {
+                    $scope.paramDefinitions = gProcessor.paramDefinitions;
+                    $scope.$digest();
+                });
+                $scope.currentFile = fn;
             };
             
             $scope.currentFile = "[Untitled]";
             
             $scope.newFile = function() {
-                fetchExample("new.jscad");
-                $scope.currentFile = "[Untitled]";
-                $scope.paramDefinitions = [];
+                $scope.fetchFile("new.jscad", "[Untitled]");
             }
             
             $scope.refreshParams = function() {
@@ -535,7 +539,7 @@ Todo:
         </table>
     </div>
     <div>
-        by Ren&eacute; K. M&uuml;ller (UI & CLI), Joost Nieuwenhuijse (core), Eduard Bespalov (core), Gary Hogdson (OpenSCAD translator)
+        by Ren&eacute; K. M&uuml;ller (CLI), Joost Nieuwenhuijse (core), Andy Greene (UI), Eduard Bespalov (core), Gary Hogdson (OpenSCAD translator)
         <p>csg.js core &amp; improvements by
         Evan Wallace,
         Eduard Bespalov,
@@ -661,15 +665,15 @@ function onload(userPrefs) {
     }
 }
 
-function fetchExample(fn, url) {
+function fetchExample(fn, url, callback) {
     gMemFs = []; gCurrentFiles = [];
 
-    $('#editor').show();
+    //$('#editor').show();
 
-    if(fn.match(/\.[^\/]+$/)) {     // -- has extension
+    if (fn.match(/\.[^\/]+$/)) {     // -- has extension
         ;                                  // -- we could already check if valid extension (later)
     } else {                              // -- folder referenced
-        if(!fn.match(/\/$/)) 
+        if (!fn.match(/\/$/)) 
             fn += "/";      // add tailing /
         fn += 'main.jscad';
     }
@@ -681,7 +685,7 @@ function fetchExample(fn, url) {
     if (1) {     // doesn't work off-line yet
         var xhr = new XMLHttpRequest();
         xhr.open("GET", fn, true);
-        if(fn.match(/\.(stl|gcode)$/i)) {
+        if (fn.match(/\.(stl|gcode)$/i)) {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");    // our pseudo binary retrieval (works with Chrome)
         }
         status("Loading "+fn+" <img id=busy src='imgs/busy.gif'>");
@@ -694,13 +698,13 @@ function fetchExample(fn, url) {
             _includePath = path.replace(/\/[^\/]+$/,'/');
 
             editor.getSession().setMode("ace/mode/javascript");
-            if(fn.match(/\.jscad$/i)||fn.match(/\.js$/i)) {
+            if (fn.match(/\.jscad$/i)||fn.match(/\.js$/i)) {
                 status("Processing "+fn+" <img id=busy src='imgs/busy.gif'>");
                 //if(url) editorSource = "// Remote retrieved <"+url+">\n"+editorSource;
                 putSourceInEditor(editorSource,fn);
                 gProcessor.setJsCad(source,fn);
 
-            } else if(fn.match(/\.scad$/i)) {
+            } else if (fn.match(/\.scad$/i)) {
                 status("Converting "+fn+" <img id=busy src='imgs/busy.gif'>");
                 editorSource = source;
                 //if(url) editorSource = "// Remote retrieved <"+url+">\n"+editorSource;
@@ -708,16 +712,16 @@ function fetchExample(fn, url) {
                     editorSource = "//!OpenSCAD\n"+editorSource;
                 }
                 source = openscadOpenJscadParser.parse(editorSource);
-                if(0) {
+                if (0) {
                     source = "// OpenJSCAD.org: scad importer (openscad-openjscad-translator) '"+fn+"'\n\n"+source;
                 }
                 editor.getSession().setMode("ace/mode/scad");
                 putSourceInEditor(editorSource,fn);
                 gProcessor.setJsCad(source,fn);
 
-            } else if(fn.match(/\.(stl|obj|amf|gcode)$/i)) {
+            } else if (fn.match(/\.(stl|obj|amf|gcode)$/i)) {
                 status("Converting "+fn+" <img id=busy src='imgs/busy.gif'>");
-                if(!fn.match(/\.amf/)) {
+                if (!fn.match(/\.amf/)) {
                     // import STL/OBJ/AMF via Worker() (async computation) as it takes quite some time
                     // RANT: the whole Blob() & Worker() is anything but a clean concept, mess over mess:
                     //       for example, to pass a DOM variable to worker via postMessage may create a circular reference
@@ -731,7 +735,7 @@ function fetchExample(fn, url) {
                     worker.onmessage = function(e) {    // worker finished
                         var data = e.data;
                         //echo("worker end:",data.source,data.filename);
-                        if(e.url) data.source = "// Remote retrieve <"+e.url+">\n"+data.source;
+                        if (e.url) data.source = "// Remote retrieve <"+e.url+">\n"+data.source;
                         putSourceInEditor(data.source,data.filename);
                         gProcessor.setJsCad(data.source,data.filename);
                     };
@@ -757,11 +761,13 @@ function fetchExample(fn, url) {
                     //if(url) editorSource = source = "// Remote retrieved <"+url+">\n"+editorSource;
                     putSourceInEditor(source,fn);
                 }
-                if(!asyncComputation) {
+                if (!asyncComputation) {
                     gProcessor.setJsCad(source,fn);
                 }
             }
-            //callback();
+            if (typeof(callback) == 'function') {
+                callback();
+            }
         }
         xhr.send();
     }
