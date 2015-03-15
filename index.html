@@ -34,14 +34,14 @@ Todo:
 </head>
 <body ng-controller='mainController'>
 <style>
-/* we choose chrome theme for ace, and make sure line number is transparent too */
-/* this has to stay in the body (not head) otherwise does not take effect */
-.ace-chrome .ace_gutter {
-    background: none;
-}
-.ace-chrome {
-    font-size: 10pt;     /* -- not 'px', but 'pt' for high dpi screens */
-}
+    /* we choose chrome theme for ace, and make sure line number is transparent too */
+    /* this has to stay in the body (not head) otherwise does not take effect */
+    .ace-chrome .ace_gutter {
+        background: none;
+    }
+    .ace-chrome {
+        font-size: 10pt;     /* -- not 'px', but 'pt' for high dpi screens */
+    }
 </style>
 <script src="js/lightgl.js"></script>
 <script src="js/csg.js"></script>
@@ -153,6 +153,23 @@ Todo:
                     ]
                 },
                 {
+                    title: 'Misc',
+                    files: [
+                        { file:'bunch-cubes.jscad', title: 'Bunch of Cubes', new: true },
+                        { file:'lookup.jscad', title: 'Lookup()', spacing: true },
+                        { file:'expand.jscad', title: 'Expand()' },
+                        { file:'polyhedron.jscad', title: 'Polyhedron()' },
+                        { file:'hull.jscad', title: 'Hull()', new: true },
+                        { file:'chain_hull.jscad', title: 'Chain_hull()', new: true },
+                        { file:'torus.jscad', title: 'Torus()' },
+                        { file:'text.jscad', title: 'Vector_text()', new: true, spacing: true },
+                        { file:'transparency.jscad', title: 'Transparency', new: true, spacing: true },
+                        { file:'transparency2.jscad', title: 'Transparency 2', new: true },
+                        { file:'globe.jscad', title: 'Globe', new: true },
+                        { file:'platonics/', title: 'Recursive Include(): Platonics', new: true, spacing: true }
+                    ]
+                },
+                {
                     title: 'STL',
                     files: [
                         { file:'3d_sculpture-VernonBussler.stl', title: '3D Model: 3D Sculpture (Vernon Bussler)', type: 'STL', spacing: true },
@@ -177,24 +194,6 @@ Todo:
                         { file:'transparency.amf', title: 'Transparency', type: 'AMF', new: true }
                     ]
                 }
-            //// { file:'bunch-cubes.jscad', title: 'Bunch of Cubes', new: true },
-            //{ file:'lookup.jscad', title: 'Lookup()', spacing: true },
-            //{ file:'expand.jscad', title: 'Expand()' },
-            //
-            //{ file:'polyhedron.jscad', title: 'Polyhedron()' },
-            //{ file:'hull.jscad', title: 'Hull()', new: true },
-            //{ file:'chain_hull.jscad', title: 'Chain_hull()', new: true },
-            //{ file:'torus.jscad', title: 'Torus()' },
-            //
-            //{ file:'text.jscad', title: 'Vector_text()', new: true, spacing: true },
-            //
-            //{ file:'transparency.jscad', title: 'Transparency', new: true, spacing: true },
-            //
-            //{ file:'transparency2.jscad', title: 'Transparency 2', new: true },
-            //
-            //{ file:'globe.jscad', title: 'Globe', new: true },
-            //
-            //{ file:'platonics/', title: 'Recursive Include(): Platonics', new: true, spacing: true },
             ];
             
             $scope.paramDefinitions = [];
