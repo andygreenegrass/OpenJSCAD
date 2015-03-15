@@ -3,4 +3,9 @@
  */
 
 #editor {
+    display: none;
+}
+
+#editor.show {
+    display: block;
 }

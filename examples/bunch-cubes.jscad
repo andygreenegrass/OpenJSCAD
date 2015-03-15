@@ -3,7 +3,7 @@
 // license: MIT License
 // description: creating 100 cubes in space ...
 
-var cubes = new Array();
+var cubes = [];
 
 function main() {
    for(var i=0; i<100; i++) {
