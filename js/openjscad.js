@@ -1189,8 +1189,7 @@ OpenJsCad.Processor.prototype = {
     },
     
     abort: function() {
-        if(this.processing)
-        {
+        if(this.processing) {
             //todo: abort
             this.processing=false;
             this.statusspan.innerHTML = "Aborted.";
@@ -1243,7 +1242,7 @@ OpenJsCad.Processor.prototype = {
         this.setError("");
         var scripthaserrors = false;
         try {
-            this.paramDefinitions = OpenJsCad.getParamDefinitions(script);
+            this.setParamDefinitions(OpenJsCad.getParamDefinitions(script));
         }
         catch(e) {
             this.setError(e.toString());
@@ -1261,16 +1260,47 @@ OpenJsCad.Processor.prototype = {
         }
     },
     
+    setParamDefinitions: function(paramDefs) {
+        // TODO - Defensive programming... assume nothing is correct
+        // and provide helpful feedback
+        var pd = this.paramDefinitions = paramDefs;
+        for (i in pd) {
+            var p = pd[i];
+            p.ui = {};
+            var val = null;
+            if (typeof(p.initial) !== 'undefined')
+                val = p.initial;
+            else if (typeof(p.default) !== 'undefined')
+                val = p.default;
+            p.ui.value = val;
+            
+            // organize choice values for UI
+            if (p.type === 'choice') {
+                p.ui.options = [];
+                for (var i = 0; i < p.values.length; i++) {
+                    var o = {
+                        label: p.captions[i],
+                        value: p.values[i]
+                    };
+                    if (o.value == p.ui.value) {
+                        p.ui.value = o;
+                    }
+                    p.ui.options.push(o);
+                }
+            }
+        }
+    },
+    
     getInputParamObject: function(params) {
         var paramValues = {};
-        
-        // TODO
         for (i in params) {
             var param = params[i];
-            paramValues[param.name] = param.initial;
+            var val = param.ui.value;
+            if (param.type === 'choice') {
+                val = val.value;
+            }
+            paramValues[param.name] = val;
         }
-        
-        //alert(JSON.stringify(paramValues));
         return paramValues;
     },
     
