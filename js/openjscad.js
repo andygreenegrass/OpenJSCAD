@@ -30,7 +30,7 @@ OpenJsCad.Viewer = function(containerelement, initialdepth, userPrefs) {
         viewpoint: {x: 0, y: -5, z: initialdepth}
     };
     this.userPrefs = userPrefs;
-
+    
     this.touch = {
         lastX: 0,
         lastY: 0,
@@ -40,15 +40,15 @@ OpenJsCad.Viewer = function(containerelement, initialdepth, userPrefs) {
         shiftControl: null,
         cur: null //current state
     };
-
-
+    
+    
     // Draw axes flag:
     this.drawAxes = true;
     // Draw triangle lines:
     this.drawLines = false;
     // Set to true so lines don't use the depth buffer
     this.lineOverlay = false;
-
+    
     // Set up the viewport
     this.gl.canvas.width  = $(containerelement).width();
     this.gl.canvas.height = $(containerelement).height();
@@ -57,19 +57,19 @@ OpenJsCad.Viewer = function(containerelement, initialdepth, userPrefs) {
     this.gl.loadIdentity();
     this.gl.perspective(45, this.gl.canvas.width / this.gl.canvas.height, 0.5, 50000);
     this.gl.matrixMode(this.gl.MODELVIEW);
-
+    
     // Set up WebGL state
     this.gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     this.gl.clearColor(0.93, 0.93, 0.93, 1);
     this.gl.enable(this.gl.DEPTH_TEST);
     this.gl.enable(this.gl.CULL_FACE);
     this.gl.polygonOffset(1, 1);
-
+    
     this.getView = function() {
         // Hacky way of making a copy...
         return JSON.parse(JSON.stringify(this.view));
     };
-
+    
     this.viewStepper = function(newView, numFrames) {
         if (numFrames <= 0) {
             // Correct any angles outside of [0,360]
@@ -80,22 +80,22 @@ OpenJsCad.Viewer = function(containerelement, initialdepth, userPrefs) {
             this.onDraw();
             return;
         }
-
+        
         // Update the angles
         for (var axis in newView.angle) {
             this.view.angle[axis] += (newView.angle[axis] - this.view.angle[axis]) / numFrames;
         }
-
+        
         // Update the viewpoints
         for (var axis in newView.viewpoint) {
             this.view.viewpoint[axis] += (newView.viewpoint[axis] - this.view.viewpoint[axis]) / numFrames;
         }
-
+        
         this.onDraw();
         var _this = this;
         setTimeout(function() {_this.viewStepper(newView, numFrames-1);}, 1000/60);
     }
-
+    
     this.setView = function(newView) {
         
         // Ensure the shortest path is taken for the animation
@@ -114,17 +114,17 @@ OpenJsCad.Viewer = function(containerelement, initialdepth, userPrefs) {
         
         this.viewStepper(newView, 20);
     };
-
+    
     // Black shader for wireframe
     this.blackShader = new GL.Shader('\
         void main() {\
-          gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\
+            gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\
         }', '\
         void main() {\
-          gl_FragColor = vec4(0.0, 0.0, 0.0, 0.1);\
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 0.1);\
         }'
     );
-
+    
     // Shader with diffuse and specular lighting
     this.lightingShader = new GL.Shader('\
         varying vec3 color;\
@@ -139,7 +139,7 @@ OpenJsCad.Viewer = function(containerelement, initialdepth, userPrefs) {
         normal = gl_NormalMatrix * gl_Normal;\
         gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\
         }',
-        '\
+                                                '\
         varying vec3 color;\
         varying float alpha;\
         varying vec3 normal;\
@@ -151,115 +151,118 @@ OpenJsCad.Viewer = function(containerelement, initialdepth, userPrefs) {
         gl_FragColor = vec4(mix(color * (0.3 + 0.7 * diffuse), vec3(1.0), specular), alpha);\
         }'
     );
-
+    
     var _this=this;
-
+    
     var shiftControl = $('<div class="shift-scene"><div class="arrow arrow-left" />\
         <div class="arrow arrow-right" />\
         <div class="arrow arrow-top" />\
         <div class="arrow arrow-bottom" /></div>');
     this.touch.shiftControl = shiftControl;
-
-  $(containerelement).append(this.gl.canvas)
-    .append(shiftControl)
-    .hammer({//touch screen control
-      drag_lock_to_axis: true
+    
+    $(containerelement).append(this.gl.canvas)
+        .append(shiftControl)
+        .hammer({//touch screen control
+        drag_lock_to_axis: true
     }).on("transform", function(e){
-      if (e.gesture.touches.length >= 2) {
-          _this.clearShift();
-          _this.onTransform(e);
-          e.preventDefault();
-      }
+        if (e.gesture.touches.length >= 2) {
+            _this.clearShift();
+            _this.onTransform(e);
+            e.preventDefault();
+        }
     }).on("touch", function(e) {
-      if (e.gesture.pointerType != 'touch'){
-        e.preventDefault();
-        return;
-      }
-
-      if (e.gesture.touches.length == 1) {
-          var point = e.gesture.center;
-          _this.touch.shiftTimer = setTimeout(function(){
-              shiftControl.addClass('active').css({
-                  left: point.pageX + 'px',
-                  top: point.pageY + 'px'
-              });
-              _this.touch.shiftTimer = null;
-              _this.touch.cur = 'shifting';
-        }, 500);
-      } else {
-        _this.clearShift();
-      }
+        if (e.gesture.pointerType != 'touch'){
+            e.preventDefault();
+            return;
+        }
+        
+        if (e.gesture.touches.length == 1) {
+            var point = e.gesture.center;
+            _this.touch.shiftTimer = setTimeout(function(){
+                shiftControl.addClass('active').css({
+                    left: point.pageX + 'px',
+                    top: point.pageY + 'px'
+                });
+                _this.touch.shiftTimer = null;
+                _this.touch.cur = 'shifting';
+            }, 500);
+        } else {
+            _this.clearShift();
+        }
     }).on("drag", function(e) {
-      if (e.gesture.pointerType != 'touch') {
-        e.preventDefault();
-        return;
-      }
-
-      if (!_this.touch.cur || _this.touch.cur == 'dragging') {
-          _this.clearShift();
-          _this.onPanTilt(e);
-      } else if (_this.touch.cur == 'shifting') {
-          _this.onShift(e);
-      }
+        if (e.gesture.pointerType != 'touch') {
+            e.preventDefault();
+            return;
+        }
+        
+        if (!_this.touch.cur || _this.touch.cur == 'dragging') {
+            _this.clearShift();
+            _this.onPanTilt(e);
+        } else if (_this.touch.cur == 'shifting') {
+            _this.onShift(e);
+        }
     }).on("touchend", function(e) {
         _this.clearShift();
         if (_this.touch.cur) {
             shiftControl.removeClass('active shift-horizontal shift-vertical');
         }
     }).on("transformend dragstart dragend", function(e) {
-      if ((e.type == 'transformend' && _this.touch.cur == 'transforming') || 
-          (e.type == 'dragend' && _this.touch.cur == 'shifting') ||
-          (e.type == 'dragend' && _this.touch.cur == 'dragging'))
-        _this.touch.cur = null;
-      _this.touch.lastX = 0;
-      _this.touch.lastY = 0;
-      _this.touch.scale = 0;
+        if ((e.type == 'transformend' && _this.touch.cur == 'transforming') || 
+            (e.type == 'dragend' && _this.touch.cur == 'shifting') ||
+            (e.type == 'dragend' && _this.touch.cur == 'dragging'))
+            _this.touch.cur = null;
+        _this.touch.lastX = 0;
+        _this.touch.lastY = 0;
+        _this.touch.scale = 0;
     });
-
-  this.gl.onmousemove = function(e) {
-    _this.onMouseMove(e);
-  };
-
-  this.gl.ondraw = function() {
-    _this.onDraw();
-  };
-
-  this.gl.resizeCanvas = function() {
-    var canvasWidth  = _this.gl.canvas.clientWidth;
-    var canvasHeight = _this.gl.canvas.clientHeight;
-    if (_this.gl.canvas.width  != canvasWidth ||
-        _this.gl.canvas.height != canvasHeight) {
-      _this.gl.canvas.width  = canvasWidth;
-      _this.gl.canvas.height = canvasHeight;
-      _this.gl.viewport(0, 0, _this.gl.canvas.width, _this.gl.canvas.height);
-      _this.gl.matrixMode( _this.gl.PROJECTION );
-      _this.gl.loadIdentity();
-      _this.gl.perspective(45, _this.gl.canvas.width / _this.gl.canvas.height, 0.5, 1000 );
-      _this.gl.matrixMode( _this.gl.MODELVIEW );
-      _this.onDraw();
-    }
-  };
-  // only window resize is available, so add an event callback for the canvas
-  window.addEventListener( 'resize', this.gl.resizeCanvas );
-
-  this.gl.onmousewheel = function(e) {
-    var wheelDelta = 0;    
-    if (e.wheelDelta) {
-      wheelDelta = e.wheelDelta;
-    } else if (e.detail) {
-      // for firefox, see http://stackoverflow.com/questions/8886281/event-wheeldelta-returns-undefined
-      wheelDelta = e.detail * -40;     
-    }
-    if (wheelDelta) {
-      var factor = Math.pow(1.003, -wheelDelta);
-      var coeff = _this.getZoom();
-      coeff *= factor;
-      _this.setZoom(coeff);
-    }
-  };
-
-  this.clear();
+    
+    this.gl.onmousemove = function(e) {
+        _this.onMouseMove(e);
+    };
+    
+    this.gl.ondraw = function() {
+        _this.onDraw();
+    };
+    
+    this.gl.resizeCanvas = function() {
+        var canvasWidth  = _this.gl.canvas.clientWidth;
+        var canvasHeight = _this.gl.canvas.clientHeight;
+        if (_this.gl.canvas.width  != canvasWidth ||
+            _this.gl.canvas.height != canvasHeight) {
+            _this.gl.canvas.width  = canvasWidth;
+            _this.gl.canvas.height = canvasHeight;
+            _this.gl.viewport(0, 0, _this.gl.canvas.width, _this.gl.canvas.height);
+            _this.gl.matrixMode( _this.gl.PROJECTION );
+            _this.gl.loadIdentity();
+            _this.gl.perspective(45, _this.gl.canvas.width / _this.gl.canvas.height, 0.5, 1000 );
+            _this.gl.matrixMode( _this.gl.MODELVIEW );
+            _this.onDraw();
+        }
+    };
+    // only window resize is available, so add an event callback for the canvas
+    window.addEventListener( 'resize', this.gl.resizeCanvas );
+    
+    this.gl.onmousewheel = function(e) {
+        var wheelDelta = 0;    
+        if (e.wheelDelta) {
+            wheelDelta = e.wheelDelta;
+        } else if (e.detail) {
+            // for firefox, see http://stackoverflow.com/questions/8886281/event-wheeldelta-returns-undefined
+            wheelDelta = e.detail * -40;     
+        }
+        if (wheelDelta) {
+            var factor = Math.pow(1.003, -wheelDelta);
+            var coeff = _this.getZoom();
+            coeff *= factor;
+            _this.setZoom(coeff);
+        }
+    };
+    
+    this.clear();
 };
+
+// Prototype ------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 OpenJsCad.Viewer.prototype = {
     setCsg: function(csg) {
@@ -699,217 +702,213 @@ OpenJsCad.runMainInWorker = function(mainParameters) {
 };
 
 OpenJsCad.parseJsCadScriptSync = function(script, mainParameters, debugging) {
-  var workerscript = "//SYNC\n";
-  workerscript += "_includePath = "+JSON.stringify(_includePath)+";\n";
-  workerscript += script;
-  if(debugging) {
-    workerscript += "\n\n\n\n\n\n\n/* -------------------------------------------------------------------------\n";
-    workerscript += "OpenJsCad debugging\n\nAssuming you are running Chrome:\nF10 steps over an instruction\nF11 steps into an instruction\n";
-    workerscript += "F8  continues running\nPress the (||) button at the bottom to enable pausing whenever an error occurs\n";
-    workerscript += "Click on a line number to set or clear a breakpoint\n";
-    workerscript += "For more information see: http://code.google.com/chrome/devtools/docs/overview.html\n\n";
-    workerscript += "------------------------------------------------------------------------- */\n"; 
-    workerscript += "\n\n// Now press F11 twice to enter your main() function:\n\n";
-    workerscript += "debugger;\n";
-  }
-  workerscript += "var me = " + JSON.stringify(me) + ";\n";
-  workerscript += "return main("+JSON.stringify(mainParameters)+");";  
-// trying to get include() somewhere:
-// 1) XHR works for SYNC <---
-// 2) importScripts() does not work in SYNC
-// 3) _csg_libraries.push(fn) provides only 1 level include()
+    var workerscript = "//SYNC\n";
+    workerscript += "_includePath = "+JSON.stringify(_includePath)+";\n";
+    workerscript += script;
+    if (debugging) {
+        workerscript += "\n\n\n\n\n\n\n/* -------------------------------------------------------------------------\n";
+        workerscript += "OpenJsCad debugging\n\nAssuming you are running Chrome:\nF10 steps over an instruction\nF11 steps into an instruction\n";
+        workerscript += "F8  continues running\nPress the (||) button at the bottom to enable pausing whenever an error occurs\n";
+        workerscript += "Click on a line number to set or clear a breakpoint\n";
+        workerscript += "For more information see: http://code.google.com/chrome/devtools/docs/overview.html\n\n";
+        workerscript += "------------------------------------------------------------------------- */\n"; 
+        workerscript += "\n\n// Now press F11 twice to enter your main() function:\n\n";
+        workerscript += "debugger;\n";
+    }
+    workerscript += "var me = " + JSON.stringify(me) + ";\n";
+    workerscript += "return main("+JSON.stringify(mainParameters)+");";
+    
+    // trying to get include() somewhere:
+    // 1) XHR works for SYNC <---
+    // 2) importScripts() does not work in SYNC
+    // 3) _csg_libraries.push(fn) provides only 1 level include()
 
-  workerscript += "function include(fn) {\
-  if(0) {\
-    _csg_libraries.push(fn);\
-  } else if(0) {\
-    var url = _includePath!=='undefined'?_includePath:'./';\
-    var index = url.indexOf('index.html');\
-    if(index!=-1) {\
-       url = url.substring(0,index);\
-    }\
-  	 importScripts(url+fn);\
-  } else {\
-   console.log('SYNC checking gMemFs for '+fn);\
-   if(gMemFs[fn]) {\
-      console.log('found locally & eval:',gMemFs[fn].name);\
-      eval(gMemFs[fn].source); return;\
-   }\
-   var xhr = new XMLHttpRequest();\
-   xhr.open('GET',_includePath+fn,false);\
-   console.log('include:'+_includePath+fn);\
-   xhr.onload = function() {\
-      var src = this.responseText;\
-      eval(src);\
-   };\
-   xhr.onerror = function() {\
-   };\
-   xhr.send();\
-  }\
-}\
-";
-  //workerscript += "function includePath(p) { _includePath = p; }\n";
-  
-  if(0) {
-    OpenJsCad.log.prevLogTime = Date.now();    
-    return eval(workerscript);      // old fashion-way
-
-  } else {
-    var f = new Function(workerscript);
-    OpenJsCad.log.prevLogTime = Date.now();    
-    return f();                     // execute the actual code
-  }
+    workerscript += "\
+        function include(fn) {\
+            if(0) {\
+                _csg_libraries.push(fn);\
+            } else if(0) {\
+                var url = _includePath!=='undefined'?_includePath:'./';\
+                var index = url.indexOf('index.html');\
+                if(index!=-1) {\
+                    url = url.substring(0,index);\
+                }\
+                importScripts(url+fn);\
+            } else {\
+                console.log('SYNC checking gMemFs for '+fn);\
+                if(gMemFs[fn]) {\
+                    console.log('found locally & eval:',gMemFs[fn].name);\
+                    eval(gMemFs[fn].source); return;\
+                }\
+                var xhr = new XMLHttpRequest();\
+                xhr.open('GET',_includePath+fn,false);\
+                console.log('include:'+_includePath+fn);\
+                xhr.onload = function() {\
+                    var src = this.responseText;\
+                    eval(src);\
+                };\
+                xhr.onerror = function() {\
+                };\
+                xhr.send();\
+            }\
+        }\
+    ";
+    //workerscript += "function includePath(p) { _includePath = p; }\n";
+    
+    if (0) {
+        OpenJsCad.log.prevLogTime = Date.now();    
+        return eval(workerscript);      // old fashion-way
+        
+    } else {
+        var f = new Function(workerscript);
+        OpenJsCad.log.prevLogTime = Date.now();    
+        return f();                     // execute the actual code
+    }
 };
 
 // callback: should be function(error, csg)
 OpenJsCad.parseJsCadScriptASync = function(script, mainParameters, options, callback) {
-  var baselibraries = [
-    "js/csg.js",
-    "js/openjscad.js",
-    "js/openscad.js"
-    //"js/jquery/jquery-1.9.1.js",
-    //"js/jquery/jquery-ui.js"
-  ];
-
-  var baseurl = document.location.href.replace(/\?.*$/, '');
-  baseurl = baseurl.replace(/#.*$/,'');        // remove remote URL 
-  var openjscadurl = baseurl;
-  if (options['openJsCadPath'] != null) {
-    openjscadurl = OpenJsCad.makeAbsoluteUrl( options['openJsCadPath'], baseurl );
-  }
-        
-  var libraries = [];
-  if (options['libraries'] != null) {
-    libraries = options['libraries'];
-  }
-  for(var i in gMemFs) {            // let's test all files and check syntax before we do anything
-    var src = gMemFs[i].source+"\nfunction include() { }\n";
-    var f;
-    try {
-       f = new Function(src);
-    } catch(e) {
-      this.setError(i+": "+e.message);
+    var baselibraries = [
+        "js/csg.js",
+        "js/openjscad.js",
+        "js/openscad.js"
+        //"js/jquery/jquery-1.9.1.js",
+        //"js/jquery/jquery-ui.js"
+    ];
+    
+    var baseurl = document.location.href.replace(/\?.*$/, '');
+    baseurl = baseurl.replace(/#.*$/,'');        // remove remote URL 
+    var openjscadurl = baseurl;
+    if (options['openJsCadPath'] != null) {
+        openjscadurl = OpenJsCad.makeAbsoluteUrl( options['openJsCadPath'], baseurl );
     }
-  }
-  var workerscript = "//ASYNC\n";
-  workerscript += "var me = " + JSON.stringify(me) + ";\n";
-  workerscript += "var _csg_baseurl=" + JSON.stringify(baseurl)+";\n";        // -- we need it early for include()
-  workerscript += "var _includePath=" + JSON.stringify(_includePath)+";\n";    //        ''            ''
-  workerscript += "var gMemFs = [];\n";
-  var ignoreInclude = false;
-  var mainFile;
-  for(var fn in gMemFs) {
-     workerscript += "// "+gMemFs[fn].name+":\n";
-     //workerscript += gMemFs[i].source+"\n";
-     if(!mainFile) 
-        mainFile = fn;
-     if(fn=='main.jscad'||fn.match(/\/main.jscad$/)) 
-        mainFile = fn;
-     workerscript += "gMemFs[\""+gMemFs[fn].name+"\"] = "+JSON.stringify(gMemFs[fn].source)+";\n";
-     ignoreInclude = true;
-  }
-  if(ignoreInclude) {
-     workerscript += "eval(gMemFs['"+mainFile+"']);\n";
-  } else {
-     workerscript += script;
-  }
-  workerscript += "\n\n\n\n//// The following code is added by OpenJsCad + OpenJSCAD.org:\n";
-
-  workerscript += "var _csg_baselibraries=" + JSON.stringify(baselibraries)+";\n";
-  workerscript += "var _csg_libraries=" + JSON.stringify(libraries)+";\n";
-  workerscript += "var _csg_openjscadurl=" + JSON.stringify(openjscadurl)+";\n";
-  workerscript += "var _csg_makeAbsoluteURL=" + OpenJsCad.makeAbsoluteUrl.toString()+";\n";
-//  workerscript += "if(typeof(libs) == 'function') _csg_libraries = _csg_libraries.concat(libs());\n";
-  workerscript += "_csg_baselibraries = _csg_baselibraries.map(function(l){return _csg_makeAbsoluteURL(l,_csg_openjscadurl);});\n";
-  workerscript += "_csg_libraries = _csg_libraries.map(function(l){return _csg_makeAbsoluteURL(l,_csg_baseurl);});\n";
-  workerscript += "_csg_baselibraries.map(function(l){importScripts(l)});\n";
-  workerscript += "_csg_libraries.map(function(l){importScripts(l)});\n";
-  workerscript += "self.addEventListener('message', function(e) {if(e.data && e.data.cmd == 'render'){";
-  workerscript += "  OpenJsCad.runMainInWorker("+JSON.stringify(mainParameters)+");";
-//  workerscript += "  if(typeof(main) != 'function') throw new Error('Your jscad file should contain a function main() which returns a CSG solid.');\n";
-//  workerscript += "  var csg; try {csg = main("+JSON.stringify(mainParameters)+"); self.postMessage({cmd: 'rendered', csg: csg});}";
-//  workerscript += "  catch(e) {var errtxt = e.stack; self.postMessage({cmd: 'error', err: errtxt});}";
-  workerscript += "}},false);\n";
-
-// trying to get include() somewhere: 
-// 1) XHR fails: not allowed in blobs
-// 2) importScripts() works for ASYNC <----
-// 3) _csg_libraries.push(fn) provides only 1 level include()
-
-  if (!ignoreInclude) {
-     workerscript += "function include(fn) {\
-  if(0) {\
-    _csg_libraries.push(fn);\
-  } else if(1) {\
-   if(gMemFs[fn]) {\
-      eval(gMemFs[fn]); return;\
-   }\
-    var url = _csg_baseurl+_includePath;\
-    var index = url.indexOf('index.html');\
-    if(index!=-1) {\
-       url = url.substring(0,index);\
-    }\
-  	 importScripts(url+fn);\
-  } else {\
-   var xhr = new XMLHttpRequest();\
-   xhr.open('GET', _includePath+fn, true);\
-   xhr.onload = function() {\
-      return eval(this.responseText);\
-   };\
-   xhr.onerror = function() {\
-   };\
-   xhr.send();\
-  }\
-}\
-";
-  } else {
-     //workerscript += "function include() {}\n";
-     workerscript += "function include(fn) { eval(gMemFs[fn]); }\n";
-  }
-  //workerscript += "function includePath(p) { _includePath = p; }\n";
-  var blobURL = OpenJsCad.textToBlobUrl(workerscript);
-  
-  if (!window.Worker) throw new Error("Your browser doesn't support Web Workers. Please try the Chrome or Firefox browser instead.");
-  var worker = new Worker(blobURL);
-  worker.onmessage = function(e) {
-    if (e.data)
-    { 
-      if (e.data.cmd == 'rendered')
-      {
-        var resulttype = e.data.result.class;
-        var result;
-        if(resulttype == "CSG")
-        {
-          result = CSG.fromCompactBinary(e.data.result);
-        }
-        else if(resulttype == "CAG")
-        {
-          result = CAG.fromCompactBinary(e.data.result);
-        }
-        else
-        {
-          throw new Error("Cannot parse result");
-        }
-        callback(null, result);
-      }
-      else if (e.data.cmd == "error")
-      {
-        callback(e.data.err, null);
-      }
-      else if (e.data.cmd == "log")
-      {
-        console.log(e.data.txt);
-      }
+    
+    var libraries = [];
+    if (options['libraries'] != null) {
+        libraries = options['libraries'];
     }
-  };
-  worker.onerror = function(e) {
-    var errtxt = "Error in line "+e.lineno+": "+e.message;
-    callback(errtxt, null);
-  };
-  worker.postMessage({
-    cmd: "render"
-  }); // Start the worker.
-  return worker;
+    for (var i in gMemFs) {            // let's test all files and check syntax before we do anything
+        var src = gMemFs[i].source+"\nfunction include() { }\n";
+        var f;
+        try {
+            f = new Function(src);
+        } catch(e) {
+            this.setError(i+": "+e.message);
+        }
+    }
+    var workerscript = "//ASYNC\n";
+    workerscript += "var me = " + JSON.stringify(me) + ";\n";
+    workerscript += "var _csg_baseurl=" + JSON.stringify(baseurl)+";\n";        // -- we need it early for include()
+    workerscript += "var _includePath=" + JSON.stringify(_includePath)+";\n";    //        ''            ''
+    workerscript += "var gMemFs = [];\n";
+    var ignoreInclude = false;
+    var mainFile;
+    for (var fn in gMemFs) {
+        workerscript += "// "+gMemFs[fn].name+":\n";
+        //workerscript += gMemFs[i].source+"\n";
+        if(!mainFile) 
+            mainFile = fn;
+        if(fn=='main.jscad'||fn.match(/\/main.jscad$/)) 
+            mainFile = fn;
+        workerscript += "gMemFs[\""+gMemFs[fn].name+"\"] = "+JSON.stringify(gMemFs[fn].source)+";\n";
+        ignoreInclude = true;
+    }
+    if (ignoreInclude) {
+        workerscript += "eval(gMemFs['"+mainFile+"']);\n";
+    } else {
+        workerscript += script;
+    }
+    workerscript += "\n\n\n\n//// The following code is added by OpenJsCad + OpenJSCAD.org:\n";
+    
+    workerscript += "var _csg_baselibraries=" + JSON.stringify(baselibraries)+";\n";
+    workerscript += "var _csg_libraries=" + JSON.stringify(libraries)+";\n";
+    workerscript += "var _csg_openjscadurl=" + JSON.stringify(openjscadurl)+";\n";
+    workerscript += "var _csg_makeAbsoluteURL=" + OpenJsCad.makeAbsoluteUrl.toString()+";\n";
+    //  workerscript += "if(typeof(libs) == 'function') _csg_libraries = _csg_libraries.concat(libs());\n";
+    workerscript += "_csg_baselibraries = _csg_baselibraries.map(function(l){return _csg_makeAbsoluteURL(l,_csg_openjscadurl);});\n";
+    workerscript += "_csg_libraries = _csg_libraries.map(function(l){return _csg_makeAbsoluteURL(l,_csg_baseurl);});\n";
+    workerscript += "_csg_baselibraries.map(function(l){importScripts(l)});\n";
+    workerscript += "_csg_libraries.map(function(l){importScripts(l)});\n";
+    workerscript += "self.addEventListener('message', function(e) {if(e.data && e.data.cmd == 'render'){";
+    workerscript += "  OpenJsCad.runMainInWorker("+JSON.stringify(mainParameters)+");";
+    //  workerscript += "  if(typeof(main) != 'function') throw new Error('Your jscad file should contain a function main() which returns a CSG solid.');\n";
+    //  workerscript += "  var csg; try {csg = main("+JSON.stringify(mainParameters)+"); self.postMessage({cmd: 'rendered', csg: csg});}";
+    //  workerscript += "  catch(e) {var errtxt = e.stack; self.postMessage({cmd: 'error', err: errtxt});}";
+    workerscript += "}},false);\n";
+    
+    // trying to get include() somewhere: 
+    // 1) XHR fails: not allowed in blobs
+    // 2) importScripts() works for ASYNC <----
+    // 3) _csg_libraries.push(fn) provides only 1 level include()
+    
+    if (!ignoreInclude) {
+        workerscript += "\
+            function include(fn) {\
+                if(0) {\
+                    _csg_libraries.push(fn);\
+                } else if(1) {\
+                    if(gMemFs[fn]) {\
+                        eval(gMemFs[fn]); return;\
+                    }\
+                    var url = _csg_baseurl+_includePath;\
+                    var index = url.indexOf('index.html');\
+                    if(index!=-1) {\
+                        url = url.substring(0,index);\
+                    }\
+                    importScripts(url+fn);\
+                } else {\
+                    var xhr = new XMLHttpRequest();\
+                    xhr.open('GET', _includePath+fn, true);\
+                    xhr.onload = function() {\
+                        return eval(this.responseText);\
+                    };\
+                    xhr.onerror = function() {\
+                    };\
+                    xhr.send();\
+                }\
+            }\
+        ";
+    } else {
+        //workerscript += "function include() {}\n";
+        workerscript += "function include(fn) { eval(gMemFs[fn]); }\n";
+    }
+    //workerscript += "function includePath(p) { _includePath = p; }\n";
+    var blobURL = OpenJsCad.textToBlobUrl(workerscript);
+    
+    if (!window.Worker) throw new Error("Your browser doesn't support Web Workers. Please try the Chrome or Firefox browser instead.");
+    var worker = new Worker(blobURL);
+    worker.onmessage = function(e) {
+        if (e.data) { 
+            if (e.data.cmd == 'rendered') {
+                var resulttype = e.data.result.class;
+                var result;
+                if(resulttype == "CSG") {
+                    result = CSG.fromCompactBinary(e.data.result);
+                }
+                else if(resulttype == "CAG") {
+                    result = CAG.fromCompactBinary(e.data.result);
+                }
+                else {
+                    throw new Error("Cannot parse result");
+                }
+                callback(null, result);
+            }
+            else if (e.data.cmd == "error") {
+                callback(e.data.err, null);
+            }
+            else if (e.data.cmd == "log") {
+                console.log(e.data.txt);
+            }
+        }
+    };
+    worker.onerror = function(e) {
+        var errtxt = "Error in line "+e.lineno+": "+e.message;
+        callback(errtxt, null);
+    };
+    worker.postMessage({
+        cmd: "render"
+    }); // Start the worker.
+    return worker;
 };
 
 OpenJsCad.getWindowURL = function() {
@@ -948,12 +947,10 @@ OpenJsCad.FileSystemApiErrorHandler = function(fileError, operation) {
         12: 'PATH_EXISTS_ERR',
     };
     var errname;
-    if (fileError.code in errormap)
-    {
+    if (fileError.code in errormap) {
         errname = errormap[fileError.code];
     }
-    else
-    {
+    else {
         errname = "Error #"+fileError.code;
     }
     var errtxt = "FileSystem API error: "+operation+" returned error "+errname;
@@ -961,10 +958,10 @@ OpenJsCad.FileSystemApiErrorHandler = function(fileError, operation) {
 };
 
 OpenJsCad.AlertUserOfUncaughtExceptions = function() {
-  window.onerror = function(message, url, line) {
-    message = message.replace(/^Uncaught /i, "");
-    alert(message+"\n\n("+url+" line "+line+")");
-  };
+    window.onerror = function(message, url, line) {
+        message = message.replace(/^Uncaught /i, "");
+        alert(message+"\n\n("+url+" line "+line+")");
+    };
 };
 
 // parse the jscad script to get the parameter definitions
@@ -1018,299 +1015,257 @@ OpenJsCad.Processor = function(containerdiv, userPrefs, onchange) {
 };
 
 OpenJsCad.Processor.convertToSolid = function(obj) {
-  //echo("typeof="+typeof(obj),obj.length);
-
-  if( (typeof(obj) == "object") && ((obj instanceof CAG)) ) {
-    // convert a 2D shape to a thin solid:
-    obj = obj.extrude({offset: [0,0,0.1]});
-
-  } else if( (typeof(obj) == "object") && ((obj instanceof CSG)) ) {
-    // obj already is a solid, nothing to do
-    ;
+    //echo("typeof="+typeof(obj),obj.length);
     
-  } else if(obj.length) {                   // main() return an array, we consider it a bunch of CSG not intersecting
-    //echo("putting them together");
-    var o = obj[0];
-    for(var i=1; i<obj.length; i++) {
-       o = o.unionForNonIntersecting(obj[i]);
+    if ( (typeof(obj) == "object") && ((obj instanceof CAG)) ) {
+        // convert a 2D shape to a thin solid:
+        obj = obj.extrude({offset: [0,0,0.1]});
+        
+    } else if ( (typeof(obj) == "object") && ((obj instanceof CSG)) ) {
+        // obj already is a solid, nothing to do
+        ;
+        
+    } else if (obj.length) {                   // main() return an array, we consider it a bunch of CSG not intersecting
+        //echo("putting them together");
+        var o = obj[0];
+        for (var i=1; i<obj.length; i++) {
+            o = o.unionForNonIntersecting(obj[i]);
+        }
+        obj = o;
+        //echo("done.");
+        
+    } else {
+        throw new Error("Cannot convert to solid");
     }
-    obj = o;
-    //echo("done.");
-    
-  } else {
-    throw new Error("Cannot convert to solid");
-  }
-  return obj;
+    return obj;
 };
 
 OpenJsCad.Processor.prototype = {
-  createElements: function() {
-    var that = this;   // for event handlers
-
-    while(this.containerdiv.children.length > 0)
-    {
-      this.containerdiv.removeChild(0);
-    }
-/*    
-    if(!OpenJsCad.isChrome() )
-    {
-      var div = document.createElement("div");
-      div.innerHTML = "Please note: OpenJsCad currently only runs reliably on Google Chrome!";
-      this.containerdiv.appendChild(div);
-    }
-*/    
-    var viewerdiv = document.createElement("div");
-    viewerdiv.className = "viewer";
-    viewerdiv.style.width = '100%';
-    viewerdiv.style.height = '100%';
-    this.containerdiv.appendChild(viewerdiv);
-    this.viewerdiv = viewerdiv;
-    try {
-      //this.viewer = new OpenJsCad.Viewer(this.viewerdiv, this.viewerwidth, this.viewerheight, this.initialViewerDistance);
-      //this.viewer = new OpenJsCad.Viewer(this.viewerdiv, viewerdiv.offsetWidth, viewer.offsetHeight, this.initialViewerDistance);
-      this.viewer = new OpenJsCad.Viewer(this.viewerdiv, this.initialViewerDistance, this.userPrefs);
-    } catch(e) {
-      //      this.viewer = null;
-      this.viewerdiv.innerHTML = "<b><br><br>Error: " + e.toString() + "</b><br><br>OpenJsCad currently requires Google Chrome or Firefox with WebGL enabled";
-      //      this.viewerdiv.innerHTML = e.toString();
-    }
-    //Zoom control
-    if(0) {
-       var div = document.createElement("div");
-       this.zoomControl = div.cloneNode(false);
-       this.zoomControl.style.width = this.viewerwidth + 'px';
-       this.zoomControl.style.height = '20px';
-       this.zoomControl.style.backgroundColor = 'transparent';
-       this.zoomControl.style.overflowX = 'scroll';
-       div.style.width = this.viewerwidth * 11 + 'px';
-       div.style.height = '1px';
-       this.zoomControl.appendChild(div);
-       this.zoomChangedBySlider = false;
-       this.zoomControl.onscroll = function(event) {
-         var zoom = that.zoomControl;
-         var newzoom=zoom.scrollLeft / (10 * zoom.offsetWidth);
-         that.zoomChangedBySlider=true; // prevent recursion via onZoomChanged 
-         that.viewer.setZoom(newzoom);
-         that.zoomChangedBySlider=false;
-       };
-       this.viewer.onZoomChanged = function() {
-         if(!that.zoomChangedBySlider)
-         {
-           var newzoom = that.viewer.getZoom();
-           that.zoomControl.scrollLeft = newzoom * (10 * that.zoomControl.offsetWidth);
-         }
-       };
-
-       this.containerdiv.appendChild(this.zoomControl);
-       //this.zoomControl.scrollLeft = this.viewer.viewpointZ / this.viewer.ZOOM_MAX * this.zoomControl.offsetWidth;
-       this.zoomControl.scrollLeft = this.viewer.view.viewpoint.z / this.viewer.ZOOM_MAX * 
-         (this.zoomControl.scrollWidth - this.zoomControl.offsetWidth);
-
-       //end of zoom control
-    }
-    //this.errordiv = document.createElement("div");
-    this.errordiv = document.getElementById("errordiv");
-    this.errorpre = this.errordiv; 
-    //this.errordiv.appendChild(this.errorpre);
-    //this.statusdiv = document.createElement("div");
-    this.statusdiv = document.getElementById("status");
-    this.statusdiv.className = "status";
-    //this.statusdiv.style.width = this.viewerwidth + "px";
-    this.statusspan = document.createElement("span");
-    this.statusspan.id = 'statusspan';
-    this.statusspan.style.marginRight = '2em';
-    //this.statusbuttons = document.createElement("span");
-    //this.statusbuttons.style.float = "right";
-    this.statusdiv.appendChild(this.statusspan);
-    //this.statusdiv.appendChild(this.statusbuttons);
-    this.abortbutton = document.createElement("button");
-    this.abortbutton.innerHTML = "Abort";
-    this.abortbutton.onclick = function(e) {
-      that.abort();
-    };
-    //this.statusbuttons.appendChild(this.abortbutton);
-    this.formatDropdown = document.createElement("select");
-    this.formatDropdown.onchange = function(e) {
-      that.currentFormat = that.formatDropdown.options[that.formatDropdown.selectedIndex].value;
-      that.updateDownloadLink();
-    };
-    //this.statusbuttons.appendChild(this.formatDropdown);
-    this.generateOutputFileButton = document.createElement("button");
-    this.generateOutputFileButton.onclick = function(e) {
-      that.generateOutputFile();
-    };
-    //this.statusbuttons.appendChild(this.generateOutputFileButton);
-    this.downloadOutputFileLink = document.createElement("a");
-    this.downloadOutputFileLink.className = "downloadOutputFileLink"; // so we can css it
-    //this.statusbuttons.appendChild(this.downloadOutputFileLink);
-
-//    //this.parametersdiv = document.createElement("div");            // already created
-//    this.parametersdiv = document.getElementById("parametersdiv");   // get the info
-//    this.parametersdiv.id = "parametersdiv";
-//    // this.parametersdiv.className = "ui-draggable";                   // via jQuery draggable() but it screws up 
-//
-//    var headerdiv = document.createElement("div");
-//    //headerdiv.innerText = "Parameters:";
-//    headerdiv.innerHTML = "Parameters:";
-//    headerdiv.className = "parameterheader";
-//    this.parametersdiv.appendChild(headerdiv);
-//
-//    this.parameterstable = document.createElement("table");
-//    this.parameterstable.className = "parameterstable";
-//    this.parametersdiv.appendChild(this.parameterstable);
-//
-//    var parseParametersButton = document.createElement("button");
-//    parseParametersButton.innerHTML = "Update";
-//    parseParametersButton.onclick = function(e) {
-//      that.rebuildSolid();
-//    };
-//    this.parametersdiv.appendChild(parseParametersButton);
-//
-//    // implementing instantUpdate
-//    var instantUpdateCheckbox = document.createElement("input");
-//    instantUpdateCheckbox.type = "checkbox";
-//    instantUpdateCheckbox.id = "instantUpdate";
-//    this.parametersdiv.appendChild(instantUpdateCheckbox);
-//
-//    var instantUpdateCheckboxText = document.createElement("span");
-//    instantUpdateCheckboxText.innerHTML = "Instant Update";
-//    instantUpdateCheckboxText.id = "instantUpdateLabel";
-//    this.parametersdiv.appendChild(instantUpdateCheckboxText);
-
-    this.enableItems();    
-
-    // they exist already, so no appendChild anymore (remains here)
-    //this.containerdiv.appendChild(this.statusdiv);
-    //this.containerdiv.appendChild(this.errordiv);
-    //this.containerdiv.appendChild(this.parametersdiv); 
-
-    this.clearViewer();
-  },
+    createElements: function() {
+        var that = this;   // for event handlers
+        
+        while (this.containerdiv.children.length > 0) {
+            this.containerdiv.removeChild(0);
+        }
+        /*    
+        if(!OpenJsCad.isChrome() )
+        {
+        var div = document.createElement("div");
+        div.innerHTML = "Please note: OpenJsCad currently only runs reliably on Google Chrome!";
+        this.containerdiv.appendChild(div);
+        }
+        */    
+        var viewerdiv = document.createElement("div");
+        viewerdiv.className = "viewer";
+        viewerdiv.style.width = '100%';
+        viewerdiv.style.height = '100%';
+        this.containerdiv.appendChild(viewerdiv);
+        this.viewerdiv = viewerdiv;
+        try {
+            //this.viewer = new OpenJsCad.Viewer(this.viewerdiv, this.viewerwidth, this.viewerheight, this.initialViewerDistance);
+            //this.viewer = new OpenJsCad.Viewer(this.viewerdiv, viewerdiv.offsetWidth, viewer.offsetHeight, this.initialViewerDistance);
+            this.viewer = new OpenJsCad.Viewer(this.viewerdiv, this.initialViewerDistance, this.userPrefs);
+        } catch(e) {
+            //      this.viewer = null;
+            this.viewerdiv.innerHTML = "<b><br><br>Error: " + e.toString() + "</b><br><br>OpenJsCad currently requires Google Chrome or Firefox with WebGL enabled";
+            //      this.viewerdiv.innerHTML = e.toString();
+        }
+        //Zoom control
+        if (0) {
+            var div = document.createElement("div");
+            this.zoomControl = div.cloneNode(false);
+            this.zoomControl.style.width = this.viewerwidth + 'px';
+            this.zoomControl.style.height = '20px';
+            this.zoomControl.style.backgroundColor = 'transparent';
+            this.zoomControl.style.overflowX = 'scroll';
+            div.style.width = this.viewerwidth * 11 + 'px';
+            div.style.height = '1px';
+            this.zoomControl.appendChild(div);
+            this.zoomChangedBySlider = false;
+            this.zoomControl.onscroll = function(event) {
+                var zoom = that.zoomControl;
+                var newzoom=zoom.scrollLeft / (10 * zoom.offsetWidth);
+                that.zoomChangedBySlider=true; // prevent recursion via onZoomChanged 
+                that.viewer.setZoom(newzoom);
+                that.zoomChangedBySlider=false;
+            };
+            this.viewer.onZoomChanged = function() {
+                if(!that.zoomChangedBySlider)
+                {
+                    var newzoom = that.viewer.getZoom();
+                    that.zoomControl.scrollLeft = newzoom * (10 * that.zoomControl.offsetWidth);
+                }
+            };
+            
+            this.containerdiv.appendChild(this.zoomControl);
+            //this.zoomControl.scrollLeft = this.viewer.viewpointZ / this.viewer.ZOOM_MAX * this.zoomControl.offsetWidth;
+            this.zoomControl.scrollLeft = this.viewer.view.viewpoint.z / this.viewer.ZOOM_MAX * 
+                (this.zoomControl.scrollWidth - this.zoomControl.offsetWidth);
+            
+            //end of zoom control
+        }
+        //this.errordiv = document.createElement("div");
+        this.errordiv = document.getElementById("errordiv");
+        this.errorpre = this.errordiv; 
+        //this.errordiv.appendChild(this.errorpre);
+        //this.statusdiv = document.createElement("div");
+        this.statusdiv = document.getElementById("status");
+        this.statusdiv.className = "status";
+        //this.statusdiv.style.width = this.viewerwidth + "px";
+        this.statusspan = document.createElement("span");
+        this.statusspan.id = 'statusspan';
+        this.statusspan.style.marginRight = '2em';
+        //this.statusbuttons = document.createElement("span");
+        //this.statusbuttons.style.float = "right";
+        this.statusdiv.appendChild(this.statusspan);
+        //this.statusdiv.appendChild(this.statusbuttons);
+        this.abortbutton = document.createElement("button");
+        this.abortbutton.innerHTML = "Abort";
+        this.abortbutton.onclick = function(e) {
+            that.abort();
+        };
+        //this.statusbuttons.appendChild(this.abortbutton);
+        this.formatDropdown = document.createElement("select");
+        this.formatDropdown.onchange = function(e) {
+            that.currentFormat = that.formatDropdown.options[that.formatDropdown.selectedIndex].value;
+            that.updateDownloadLink();
+        };
+        //this.statusbuttons.appendChild(this.formatDropdown);
+        this.generateOutputFileButton = document.createElement("button");
+        this.generateOutputFileButton.onclick = function(e) {
+            that.generateOutputFile();
+        };
+        //this.statusbuttons.appendChild(this.generateOutputFileButton);
+        this.downloadOutputFileLink = document.createElement("a");
+        this.downloadOutputFileLink.className = "downloadOutputFileLink"; // so we can css it
+        //this.statusbuttons.appendChild(this.downloadOutputFileLink);
+        
+        this.enableItems();
+        this.clearViewer();
+    },
   
-  setCurrentObject: function(obj) {
-    this.currentObject = obj;                                  // CAG or CSG
-    if(this.viewer) {
-      var csg = OpenJsCad.Processor.convertToSolid(obj);       // enfore CSG to display
-      this.viewer.setCsg(csg);
-      if(obj.length)             // if it was an array (multiple CSG is now one CSG), we have to reassign currentObject
-         this.currentObject = csg;
-    }
-    this.hasValidCurrentObject = true;
+    setCurrentObject: function(obj) {
+        this.currentObject = obj;                                  // CAG or CSG
+        if (this.viewer) {
+            var csg = OpenJsCad.Processor.convertToSolid(obj);       // enfore CSG to display
+            this.viewer.setCsg(csg);
+            if (obj.length)             // if it was an array (multiple CSG is now one CSG), we have to reassign currentObject
+                this.currentObject = csg;
+        }
+        this.hasValidCurrentObject = true;
+        
+        while (this.formatDropdown.options.length > 0)
+            this.formatDropdown.options.remove(0);
+        
+        var that = this;
+        this.supportedFormatsForCurrentObject().forEach(function(format) {
+            var option = document.createElement("option");
+            option.setAttribute("value", format);
+            option.appendChild(document.createTextNode(that.formatInfo(format).displayName));
+            that.formatDropdown.options.add(option);
+        });
+        
+        this.updateDownloadLink();
+    },
+  
+    selectedFormat: function() {
+        return this.formatDropdown.options[this.formatDropdown.selectedIndex].value;
+    },
     
-    while(this.formatDropdown.options.length > 0)
-      this.formatDropdown.options.remove(0);
+    selectedFormatInfo: function() {
+        return this.formatInfo(this.selectedFormat());
+    },
     
-    var that = this;
-    this.supportedFormatsForCurrentObject().forEach(function(format) {
-      var option = document.createElement("option");
-      option.setAttribute("value", format);
-      option.appendChild(document.createTextNode(that.formatInfo(format).displayName));
-      that.formatDropdown.options.add(option);
-    });
+    updateDownloadLink: function() {
+        var ext = this.selectedFormatInfo().extension;
+        this.generateOutputFileButton.innerHTML = "Generate "+ext.toUpperCase();
+    },
     
-    this.updateDownloadLink();
-  },
+    clearViewer: function() {
+        this.clearOutputFile();
+        this.setCurrentObject(new CSG());
+        this.hasValidCurrentObject = false;
+        this.enableItems();
+    },
+    
+    abort: function() {
+        if(this.processing)
+        {
+            //todo: abort
+            this.processing=false;
+            this.statusspan.innerHTML = "Aborted.";
+            this.worker.terminate();
+            this.enableItems();
+            if(this.onchange) this.onchange();
+        }
+    },
   
-  selectedFormat: function() {
-    return this.formatDropdown.options[this.formatDropdown.selectedIndex].value;
-  },
-
-  selectedFormatInfo: function() {
-    return this.formatInfo(this.selectedFormat());
-  },
-  
-  updateDownloadLink: function() {
-    var ext = this.selectedFormatInfo().extension;
-    this.generateOutputFileButton.innerHTML = "Generate "+ext.toUpperCase();
-  },
-  
-  clearViewer: function() {
-    this.clearOutputFile();
-    this.setCurrentObject(new CSG());
-    this.hasValidCurrentObject = false;
-    this.enableItems();
-  },
-  
-  abort: function() {
-    if(this.processing)
-    {
-      //todo: abort
-      this.processing=false;
-      this.statusspan.innerHTML = "Aborted.";
-      this.worker.terminate();
-      this.enableItems();
-      if(this.onchange) this.onchange();
-    }
-  },
-  
-  enableItems: function() {
-    this.abortbutton.style.display = this.processing? "inline":"none";
-    this.formatDropdown.style.display = ((!this.hasOutputFile)&&(this.hasValidCurrentObject))? "inline":"none";
-    this.generateOutputFileButton.style.display = ((!this.hasOutputFile)&&(this.hasValidCurrentObject))? "inline":"none";
-    this.downloadOutputFileLink.style.display = this.hasOutputFile? "inline":"none";
-      // ANDY TODO
-      //    this.parametersdiv.style.display = (this.paramControls.length > 0)? "inline-block":"none";     // was 'block'
-    this.errordiv.style.display = this.hasError? "block":"none";
-    this.statusdiv.style.display = this.hasError? "none":"block";    
-  },
-
-  setOpenJsCadPath: function(path) {
-    this.options[ 'openJsCadPath' ] = path;
-  },
-
-  addLibrary: function(lib) {
-    if( this.options[ 'libraries' ] == null ) {
-      this.options[ 'libraries' ] = [];
-    }
-    this.options[ 'libraries' ].push( lib );
-  },
-  
-  setError: function(txt) {
-    this.hasError = (txt != "");
-    this.errorpre.textContent = txt;
-    this.enableItems();
-  },
-  
-  setDebugging: function(debugging) {
-    this.debugging = debugging;
-  },
-  
-  // script: javascript code
-  // filename: optional, the name of the .jscad file
-  setJsCad: function(script, filename) {
-    if(!filename) filename = "openjscad.jscad";
-    filename = filename.replace(/\.jscad$/i, "");
-    this.abort();
-    this.clearViewer();
-    this.paramDefinitions = [];
-    this.paramControls = [];
-    this.script = null;
-    this.setError("");
-    var scripthaserrors = false;
-    try
-    {
-      this.paramDefinitions = OpenJsCad.getParamDefinitions(script);
-      //this.createParamControls();
-    }
-    catch(e)
-    {
-      this.setError(e.toString());
-      this.statusspan.innerHTML = "Error.";
-      scripthaserrors = true;
-    }
-    if(!scripthaserrors)
-    {
-      this.script = script;
-      this.filename = filename;
-      this.rebuildSolid();
-    }
-    else
-    {
-      this.enableItems();
-      if(this.onchange) this.onchange();
-    }
-  },
-  
+    enableItems: function() {
+        this.abortbutton.style.display = this.processing? "inline":"none";
+        this.formatDropdown.style.display = ((!this.hasOutputFile)&&(this.hasValidCurrentObject))? "inline":"none";
+        this.generateOutputFileButton.style.display = ((!this.hasOutputFile)&&(this.hasValidCurrentObject))? "inline":"none";
+        this.downloadOutputFileLink.style.display = this.hasOutputFile? "inline":"none";
+        this.errordiv.style.display = this.hasError? "block":"none";
+        this.statusdiv.style.display = this.hasError? "none":"block";    
+    },
+    
+    setOpenJsCadPath: function(path) {
+        this.options[ 'openJsCadPath' ] = path;
+    },
+    
+    addLibrary: function(lib) {
+        if( this.options[ 'libraries' ] == null ) {
+            this.options[ 'libraries' ] = [];
+        }
+        this.options[ 'libraries' ].push( lib );
+    },
+    
+    setError: function(txt) {
+        this.hasError = (txt != "");
+        this.errorpre.textContent = txt;
+        this.enableItems();
+    },
+    
+    setDebugging: function(debugging) {
+        this.debugging = debugging;
+    },
+    
+    // script: javascript code
+    // filename: optional, the name of the .jscad file
+    setJsCad: function(script, filename) {
+        if (!filename) filename = "openjscad.jscad";
+        filename = filename.replace(/\.jscad$/i, "");
+        this.abort();
+        this.clearViewer();
+        this.paramDefinitions = [];
+        this.paramControls = [];
+        this.script = null;
+        this.setError("");
+        var scripthaserrors = false;
+        try
+        {
+            this.paramDefinitions = OpenJsCad.getParamDefinitions(script);
+            //this.createParamControls();
+        }
+        catch(e)
+        {
+            this.setError(e.toString());
+            this.statusspan.innerHTML = "Error.";
+            scripthaserrors = true;
+        }
+        if(!scripthaserrors)
+        {
+            this.script = script;
+            this.filename = filename;
+            this.rebuildSolid();
+        }
+        else
+        {
+            this.enableItems();
+            if(this.onchange) this.onchange();
+        }
+    },
+    
     getParamValues: function() {
         var paramValues = {};
         
