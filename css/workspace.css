@@ -45,7 +45,7 @@
     left: -6px;
     width: 12px;
 /*    background: rgba(255, 0, 0, 0.36);*/
-    z-index: 10;
+    z-index: 101;
 }
 
 #workspace .pin {
@@ -69,9 +69,18 @@
 #workspace > .blocks > .block {
     position: absolute;
     left: 0; right: 0;
-    overflow: hidden;
+/*    overflow: hidden;*/
     
     transition: all 0.5s;
+}
+
+#workspace > .blocks > .block > .size-handle {
+    cursor: ns-resize;
+    position: absolute;
+/*    background: red;*/
+    top: -6px; left: 0; right: 0;
+    height: 12px;
+    z-index: 100;
 }
 
 /* -- Header --------------------------------------------------------------- */

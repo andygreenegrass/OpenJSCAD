@@ -1242,43 +1242,39 @@ OpenJsCad.Processor.prototype = {
         this.script = null;
         this.setError("");
         var scripthaserrors = false;
-        try
-        {
+        try {
             this.paramDefinitions = OpenJsCad.getParamDefinitions(script);
-            //this.createParamControls();
         }
-        catch(e)
-        {
+        catch(e) {
             this.setError(e.toString());
             this.statusspan.innerHTML = "Error.";
             scripthaserrors = true;
         }
-        if(!scripthaserrors)
-        {
+        if (!scripthaserrors) {
             this.script = script;
             this.filename = filename;
-            this.rebuildSolid();
+            this.rebuildSolid(this.paramDefinitions);
         }
-        else
-        {
+        else {
             this.enableItems();
             if(this.onchange) this.onchange();
         }
     },
     
-    getParamValues: function() {
+    getInputParamObject: function(params) {
         var paramValues = {};
         
         // TODO
-        for (i in this.paramDefinitions) {
-            var param = this.paramDefinitions[i];
+        for (i in params) {
+            var param = params[i];
             paramValues[param.name] = param.initial;
         }
         
+        //alert(JSON.stringify(paramValues));
         return paramValues;
     },
     
-    rebuildSolid: function() {
+    rebuildSolid: function(paramDefs) {
         this.abort();
         this.setError("");
         this.clearViewer();
@@ -1286,8 +1282,8 @@ OpenJsCad.Processor.prototype = {
         this.statusspan.innerHTML = "Rendering code, please wait <img id=busy src='imgs/busy.gif'>";
         this.enableItems();
         var that = this;
-        var paramValues = this.getParamValues();
         var useSync = this.debugging;
+        var paramValues = this.getInputParamObject(paramDefs);
         
         //useSync = true;
         if (!useSync) {

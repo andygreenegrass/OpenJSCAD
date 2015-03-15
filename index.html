@@ -237,6 +237,11 @@ Todo:
             
             // TODO - get from gProcessor
             $scope.formatInfo = gProcessor.formatInfo();
+            
+            $scope.render = function() {
+                //alert(JSON.stringify($scope.paramDefinitions));
+                gProcessor.rebuildSolid($scope.paramDefinitions);
+            }
         }]);
     
     angular.module('mc.resizer', []).directive('resizer', function($document) {
@@ -453,11 +458,12 @@ Todo:
         </div>
         <!-- Parameters block -->
         <div class='block parameters'>
+            <div class='size-handle'></div>
             <div class=header>
                 <img src="imgs/gear.svg"/>Parameters
                 <div class=right
                     ><div class=button ng-click='refreshParams();'>Defaults</div
-                    ><div class=button ng-click=''>Render</div
+                    ><div class=button ng-click='render();'>Render</div
                 ></div>
             </div>
             <div class=body id=parameters>
@@ -475,8 +481,8 @@ Todo:
         <!--                Choice: {{p.initial}}-->
                         <select><option ng-repeat='c in p.captions'>{{c}}</option></select>
                     </div>
-                    <div ng-if="p.type == 'float' || p.type == 'int'"><input type='text' ng-value='p.initial'/></div>
-                    <div ng-if="p.type == 'text'"><input type='text' ng-value='p.initial'/></div>
+                    <div ng-if="p.type == 'float' || p.type == 'int'"><input type='number' ng-model='p.initial'/></div>
+                    <div ng-if="p.type == 'text'"><input type='text' ng-model='p.initial'/></div>
                 </div>
             </div>
         </div>
@@ -1068,7 +1074,7 @@ function parseFile(f, debugging, onlyifchanged) {     // here we convert the fil
       } else {
          throw new Error("Please drop a file with .jscad, .scad or .stl extension");
       }
-      if(!asyncComputation) {                   // end of synchronous conversion
+      if (!asyncComputation) {                   // end of synchronous conversion
          putSourceInEditor(editorSource,fn);
          gMemFs[fn].source = source;
          gProcessor.setJsCad(source,fn);
