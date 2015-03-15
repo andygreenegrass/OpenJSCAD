@@ -244,12 +244,12 @@ Todo:
             
             $scope.setViewerContextSize = function() {
                 if ($scope.userPrefs.toolbar.pinned) {
-                    $('#viewerContext').css('left', '90px');
+                    $('#viewerContext').css('left', '70px'); // subtract 20px to keep it centered
                 } else {
                     $('#viewerContext').css('left', '0px');
                 }
                 if ($scope.userPrefs.workspace.pinned) {
-                    $('#viewerContext').css('right', '35%');
+                    $('#viewerContext').css('right', 'calc(35% - 20px)');
                 } else {
                     $('#viewerContext').css('right', '0px');
                 }
@@ -417,7 +417,7 @@ Todo:
             $(this).addClass('shown');
         });
         $('.pinnable').mouseleave(function() {
-            var pinned = $(this).find('.pin').hasClass('pinned');
+            var pinned = $(this).hasClass('pinned');
             if (!pinned) {
                 $(this).removeClass('shown');
             }
@@ -449,8 +449,8 @@ Todo:
 <!-- Toolbar ----------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
     
-<div id=toolbar class='pinnable' ng-class="{shown: userPrefs.toolbar.pinned}">
-    <div class='pin' ng-class="{pinned: userPrefs.toolbar.pinned}"  ng-click="userPrefs.toolbar.pinned = !userPrefs.toolbar.pinned; setViewerContextSize();"><div><img src="imgs/pin.svg"/></div></div>
+<div id=toolbar class='pinnable' ng-class="{pinned: userPrefs.toolbar.pinned, shown: userPrefs.toolbar.pinned}">
+    <div class='pin' ng-click="userPrefs.toolbar.pinned = !userPrefs.toolbar.pinned; setViewerContextSize();"><div><img src="imgs/pin.svg"/></div></div>
     <!--    TODO - Use angular to duplicate-->
     <div ng-click='menu.view.front()'><script>document.write(viewIcon("view front"));</script></div
     ><div ng-click='menu.view.back()'><script>document.write(viewIcon("view back"));</script></div
@@ -464,8 +464,8 @@ Todo:
 <!-- Workspace --------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
     
-<div id=workspace class='pinnable' ng-class="{shown: userPrefs.workspace.pinned, params: paramDefinitions.length > 0}">
-    <div class='pin' ng-class="{pinned: userPrefs.workspace.pinned}" ng-click="userPrefs.workspace.pinned = !userPrefs.workspace.pinned; setViewerContextSize();"><div><img src="imgs/pin.svg"/></div></div>
+<div id=workspace class='pinnable' ng-class="{pinned: userPrefs.workspace.pinned, shown: userPrefs.workspace.pinned, params: paramDefinitions.length > 0}">
+    <div class='pin' ng-click="userPrefs.workspace.pinned = !userPrefs.workspace.pinned; setViewerContextSize();"><div><img src="imgs/pin.svg"/></div></div>
     <div class='size-handle'></div>
     <div class=blocks>
         <!-- Editor block -->

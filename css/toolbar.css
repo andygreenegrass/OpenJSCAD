@@ -2,11 +2,11 @@
  * toolbar.css for index.html
  */
 
-#toolbar, #toolbar .pin {
-   transition: all 0.25s;
-   -o-transition: all 0.25s;
-   -moz-transition: all 0.25s;
-   -webkit-transition: all 0.25s;
+#toolbar .pin {
+    transition: all 0.25s;
+    -o-transition: all 0.25s;
+    -moz-transition: all 0.25s;
+    -webkit-transition: all 0.25s;
 }
 
 #toolbar {
@@ -16,7 +16,7 @@
     left: -70px;
     width: 90px;
 
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(251, 251, 251, 0.93);
     box-sizing: border-box;
     padding: 20px;
     font-size: 0.9em;
@@ -31,7 +31,16 @@
     -ms-user-select: none;
     user-select: none;
     
+    transition: left 0.25s;
+    -o-transition: left 0.25s;
+    -moz-transition: left 0.25s;
+    -webkit-transition: left 0.25s;
+    
     z-index: 998;
+}
+
+#toolbar.pinned {
+    background: rgba(248, 248, 248, 1);
 }
 
 #toolbar.shown {

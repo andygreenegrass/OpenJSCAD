@@ -20,13 +20,19 @@
     user-select: none;
     
     z-index: 998;
+    
+    transition: right 0.3s;
+}
+
+#workspace.pinned {
+    background: rgba(253, 253, 253, 1);
 }
 
 #workspace.shown {
     right: 0;
 }
 
-#workspace, #workspace .pin {
+#workspace .pin {
     transition: all 0.3s;
     -o-transition: all 0.3s;
     -moz-transition: all 0.3s;

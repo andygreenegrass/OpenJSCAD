@@ -38,7 +38,7 @@
     opacity: 0.8 !important;
 }
 
-.pin.pinned img {
+*.pinned .pin img {
 /*    opacity: 0.7 !important;*/
 /*    transform: rotate(45deg);*/
     margin-top: 3px;
