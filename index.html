@@ -103,6 +103,15 @@ Todo:
             
             // ----------------------------------------------
             
+            $scope.state = {
+                toolbar: {
+                    shown: false
+                },
+                workspace: {
+                    shown: false
+                }
+            };
+            
             $scope.menu = new Menu();
             
             $scope.examples = [
@@ -490,18 +499,6 @@ Todo:
 </div>
 
 <script>    
-    $(document).ready(function() {
-        $('.pinnable').mouseenter(function() {
-            $(this).addClass('shown');
-        });
-        $('.pinnable').mouseleave(function() {
-            var pinned = $(this).hasClass('pinned');
-            if (!pinned) {
-                $(this).removeClass('shown');
-            }
-        });
-    });
-    
     var autoReloadTimer = null;
 
     function setAutoReload(value) {
@@ -527,7 +524,7 @@ Todo:
 <!-- Toolbar ----------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
     
-<div id=toolbar class='pinnable' ng-class="{pinned: userPrefs.toolbar.pinned, shown: userPrefs.toolbar.pinned}">
+<div id=toolbar class='pinnable' ng-class="{pinned: userPrefs.toolbar.pinned, shown: state.toolbar.shown}" ng-mouseenter='state.toolbar.shown = true;' ng-mouseleave='state.toolbar.shown = false;'>
     <div class='pin' ng-click="userPrefs.toolbar.pinned = !userPrefs.toolbar.pinned; setViewerContextSize();"><div><img src="imgs/pin.svg"/></div></div>
     <!--    TODO - Use angular to duplicate-->
     <div ng-click='menu.view.front()'><script>document.write(viewIcon("view front"));</script></div
@@ -542,7 +539,7 @@ Todo:
 <!-- Workspace --------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
     
-<div id=workspace class='pinnable' ng-class="{pinned: userPrefs.workspace.pinned, shown: userPrefs.workspace.pinned, params: paramDefinitions.length > 0}">
+<div id=workspace class='pinnable' ng-class="{pinned: userPrefs.workspace.pinned, shown: state.workspace.shown, params: paramDefinitions.length > 0}"  ng-mouseenter='state.workspace.shown = true;' ng-mouseleave='state.workspace.shown = false;'>
     <div class='pin' ng-click="userPrefs.workspace.pinned = !userPrefs.workspace.pinned; setViewerContextSize();"><div><img src="imgs/pin.svg"/></div></div>
     <div class='size-handle'></div>
     <div class=blocks>

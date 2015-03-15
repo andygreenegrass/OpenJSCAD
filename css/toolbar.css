@@ -43,7 +43,7 @@
     background: rgba(248, 248, 248, 1);
 }
 
-#toolbar.shown {
+#toolbar.shown, #toolbar.pinned {
    left: 0 !important;  /* slide out */
 }
 

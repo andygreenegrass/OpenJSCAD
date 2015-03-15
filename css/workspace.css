@@ -28,7 +28,7 @@
     background: rgba(253, 253, 253, 1);
 }
 
-#workspace.shown {
+#workspace.shown, #workspace.pinned {
     right: 0;
 }
 
