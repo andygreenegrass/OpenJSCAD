@@ -7,6 +7,7 @@ html, body {
    border: 0px none black;  /* not inherited */
    padding: 0px;            /* not inherited */
    font-family: Helvetica, Arial, Sans;
+    background-color: #eee;
 
    /* ensure that the document uses the whole width and height of the browser */
    min-height: 100%;
@@ -29,25 +30,13 @@ a:visited {
    color: #5ab9ff;
 }
 
-#header {
-   position: absolute;
-   top: 1em;
-   left: 1em;
-   z-index: 20;
-}
-
 #viewerContext {
-   margin: 0px;             /* not inherited */
-   border: 0px none black;  /* not inherited */
-   padding: 0px;            /* not inherited */
-
-   /* ensure that the canvas uses the whole width and height of the document */
-   background: white;
-   height: 100%;
-   width: 100%;
-
-   top: 0px;
-   bottom: 0px;
+    position: absolute;
+/*    top: 0; left: 90px; right: 30%; bottom: 0;*/
+    top: 0; left: 0; right: 0; bottom: 0;
+    margin: 0px;             /* not inherited */
+    border: 0px none black;  /* not inherited */
+    padding: 0px;            /* not inherited */
 }
 
 canvas { 
@@ -61,29 +50,6 @@ canvas {
 
    cursor: move;        /* show that we can change orientation of view */
 }
-
-/*
-#footer {
-   font-size: 0.7em;
-   text-align: left;
-   position: absolute; 
-
-   margin-left: 1.5em;
-   bottom: 0.5em; 
-   
-   opacity: 0.5;    
-   -moz-opacity: 0.5;       css mess (why do it simple, when we can do it complicate!) 
-}
-*/
-
-/*
-#tail { 
-   z-index: 4;
-   position: absolute;
-   bottom: 1em; 
-   margin: 1em;
-}
-*/
 
 #busy {
    vertical-align: middle;

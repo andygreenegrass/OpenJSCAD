@@ -7,9 +7,10 @@
     width: 20px;
     top: 27px;       /* don't invade the menu */
     bottom: 22px;    /* don't invade the status bar */
-    width: 30%;
-    right: calc(-30% + 20px);
+    width: 35%;
+    right: calc(-35% + 20px);
     background: rgba(255, 255, 255, 0.9);
+    box-shadow: -2px 0 6px rgba(0,0,0,0.1);
     
     -webkit-touch-callout: none;
     -webkit-user-select: none;

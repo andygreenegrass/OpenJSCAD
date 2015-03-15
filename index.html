@@ -29,7 +29,6 @@ Todo:
     <link rel="stylesheet" href="css/parameters.css" type="text/css"/>
     <link rel="stylesheet" href="css/status.css" type="text/css"/>
     <link rel="stylesheet" href="css/error.css" type="text/css"/>
-    <link rel="stylesheet" href="css/drop-zone.css" type="text/css"/>
     <link rel="stylesheet" href="css/drop-view.css" type="text/css"/>
     <link rel="stylesheet" href="css/svg.css" type="text/css"/>
 </head>
@@ -242,6 +241,24 @@ Todo:
                 //alert(JSON.stringify($scope.paramDefinitions));
                 gProcessor.rebuildSolid($scope.paramDefinitions);
             }
+            
+            $scope.setViewerContextSize = function() {
+                if ($scope.userPrefs.toolbar.pinned) {
+                    $('#viewerContext').css('left', '90px');
+                } else {
+                    $('#viewerContext').css('left', '0px');
+                }
+                if ($scope.userPrefs.workspace.pinned) {
+                    $('#viewerContext').css('right', '35%');
+                } else {
+                    $('#viewerContext').css('right', '0px');
+                }
+                gProcessor.viewer.gl.resizeCanvas();
+            }
+            
+            setTimeout(function() {
+                $scope.setViewerContextSize()
+            }, 0);
         }]);
     
     angular.module('mc.resizer', []).directive('resizer', function($document) {
@@ -427,13 +444,13 @@ Todo:
 <!-- 3D View ----------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
     
-<div id="viewerContext"></div>
+<div id="viewerContext" style='visibility: {{viewerContextVisibility}}; left: {{viewerContext.left}}; right: {{viewerContext.right}}'></div>
 
 <!-- Toolbar ----------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
     
 <div id=toolbar class='pinnable' ng-class="{shown: userPrefs.toolbar.pinned}">
-    <div class='pin' ng-class="{pinned: userPrefs.toolbar.pinned}"  ng-click="userPrefs.toolbar.pinned = !userPrefs.toolbar.pinned"><div><img src="imgs/pin.svg"/></div></div>
+    <div class='pin' ng-class="{pinned: userPrefs.toolbar.pinned}"  ng-click="userPrefs.toolbar.pinned = !userPrefs.toolbar.pinned; setViewerContextSize();"><div><img src="imgs/pin.svg"/></div></div>
     <!--    TODO - Use angular to duplicate-->
     <div ng-click='menu.view.front()'><script>document.write(viewIcon("view front"));</script></div
     ><div ng-click='menu.view.back()'><script>document.write(viewIcon("view back"));</script></div
@@ -448,7 +465,7 @@ Todo:
 <!---------------------------------------------------------------------------->
     
 <div id=workspace class='pinnable' ng-class="{shown: userPrefs.workspace.pinned, params: paramDefinitions.length > 0}">
-    <div class='pin' ng-class="{pinned: userPrefs.workspace.pinned}" ng-click="userPrefs.workspace.pinned = !userPrefs.workspace.pinned"><div><img src="imgs/pin.svg"/></div></div>
+    <div class='pin' ng-class="{pinned: userPrefs.workspace.pinned}" ng-click="userPrefs.workspace.pinned = !userPrefs.workspace.pinned; setViewerContextSize();"><div><img src="imgs/pin.svg"/></div></div>
     <div class='size-handle'></div>
     <div class=blocks>
         <!-- Editor block -->
@@ -962,12 +979,12 @@ function fileChanged(f) {               // update the dropzone visual & call the
         } else {
             txt = "Current file: "+gCurrentFile.name;
         }
-        document.getElementById("currentfile").innerHTML = txt;
-        document.getElementById("filedropzone_filled").style.display = "block";
-        document.getElementById("filedropzone_empty").style.display = "none";
+        //document.getElementById("currentfile").innerHTML = txt;
+        //document.getElementById("filedropzone_filled").style.display = "block";
+        //document.getElementById("filedropzone_empty").style.display = "none";
     } else {
-        document.getElementById("filedropzone_filled").style.display = "none";
-        document.getElementById("filedropzone_empty").style.display = "block";
+        //document.getElementById("filedropzone_filled").style.display = "none";
+        //document.getElementById("filedropzone_empty").style.display = "block";
     }
     parseFile(f,false,false);
 }
