@@ -28,7 +28,7 @@
     background: rgba(253, 253, 253, 1);
 }
 
-#workspace.shown, #workspace.pinned {
+#workspace.hover, #workspace.pinned {
     right: 0;
 }
 
@@ -43,7 +43,8 @@
     display: none;
 }
 
-#workspace.shown > .size-handle {
+#workspace.hover > .size-handle,
+#workspace.pinned > .size-handle {
     display: block;
     cursor: ew-resize;
     position: absolute;
@@ -68,7 +69,7 @@
 /*    background-color: red;*/
 }
 
-#workspace.shown .pin {
+#workspace.hover .pin {
     opacity: 1;
     pointer-events: all;
 }

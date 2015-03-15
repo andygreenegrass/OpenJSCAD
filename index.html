@@ -105,10 +105,10 @@ Todo:
             
             $scope.state = {
                 toolbar: {
-                    shown: false
+                    hover: false
                 },
                 workspace: {
-                    shown: false
+                    hover: false
                 }
             };
             
@@ -524,7 +524,7 @@ Todo:
 <!-- Toolbar ----------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
     
-<div id=toolbar class='pinnable' ng-class="{pinned: userPrefs.toolbar.pinned, shown: state.toolbar.shown}" ng-mouseenter='state.toolbar.shown = true;' ng-mouseleave='state.toolbar.shown = false;'>
+<div id=toolbar class='pinnable' ng-class="{pinned: userPrefs.toolbar.pinned, hover: state.toolbar.hover}" ng-mouseenter='state.toolbar.hover = true;' ng-mouseleave='state.toolbar.hover = false;'>
     <div class='pin' ng-click="userPrefs.toolbar.pinned = !userPrefs.toolbar.pinned; setViewerContextSize();"><div><img src="imgs/pin.svg"/></div></div>
     <!--    TODO - Use angular to duplicate-->
     <div ng-click='menu.view.front()'><script>document.write(viewIcon("view front"));</script></div
@@ -539,7 +539,7 @@ Todo:
 <!-- Workspace --------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
     
-<div id=workspace class='pinnable' ng-class="{pinned: userPrefs.workspace.pinned, shown: state.workspace.shown, params: paramDefinitions.length > 0}"  ng-mouseenter='state.workspace.shown = true;' ng-mouseleave='state.workspace.shown = false;'>
+<div id=workspace class='pinnable' ng-class="{pinned: userPrefs.workspace.pinned, hover: state.workspace.hover, params: paramDefinitions.length > 0}"  ng-mouseenter='state.workspace.hover = true;' ng-mouseleave='state.workspace.hover = false;'>
     <div class='pin' ng-click="userPrefs.workspace.pinned = !userPrefs.workspace.pinned; setViewerContextSize();"><div><img src="imgs/pin.svg"/></div></div>
     <div class='size-handle'></div>
     <div class=blocks>

@@ -10,5 +10,8 @@ function getParameterDefinitions() {
 }
 
 function main(params) {
-	return cube({size: params.size, center: true});
+	return cube({
+        size: params.size,
+        center: true
+    });
 }

@@ -43,7 +43,7 @@
     background: rgba(248, 248, 248, 1);
 }
 
-#toolbar.shown, #toolbar.pinned {
+#toolbar.hover, #toolbar.pinned {
    left: 0 !important;  /* slide out */
 }
 
@@ -72,7 +72,7 @@
 /*    background-color: red;*/
 }
 
-#toolbar.shown .pin {
+#toolbar.hover .pin {
     opacity: 1;
     pointer-events: all;
 }
