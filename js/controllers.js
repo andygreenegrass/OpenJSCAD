@@ -1,6 +1,6 @@
 var mainApp = angular.module('mainApp', []);
 
-mainApp.controller('mainController', function($scope) {
+mainApp.controller('mainController', ['$scope', function($scope) {
     // User Preferences Stuff
     // ----------------------------------------------
 
@@ -261,8 +261,7 @@ mainApp.controller('mainController', function($scope) {
     setTimeout(function() {
         $scope.setViewerContextSize()
     }, 0);
-});
-
+}]);
 
 //    angular.module('mc.resizer', []).directive('resizer', function($document) {
 //        return function($scope, $element, $attrs) {
