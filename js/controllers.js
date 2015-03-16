@@ -21,9 +21,11 @@ viewIcon = function (classes) {
 var mainApp = angular.module('mainApp', []);
 mainApp.controller('mainController', ['$scope', function($scope) {
 
+    $scope.version = version;
+    
     $scope.state = {
         editor: {
-            show: true
+            show: false
         },
         toolbar: {
             hover: false
@@ -33,11 +35,26 @@ mainApp.controller('mainController', ['$scope', function($scope) {
         }
     };
 
+    $scope.currentFile = null;
     $scope.paramDefinitions = [];
-    $scope.currentFile = "[Untitled]";
+    
+    // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    
+    $scope.$watch("currentFile.lang", function(newValue, oldValue) {
+        //alert(newValue);
+        if (newValue === 'jscad' || newValue === 'scad') {
+            $scope.state.editor.show = true;
+        } else {
+            $scope.state.editor.show = false;
+        }
+    }, true);
+    
+    // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
 
     $scope.fetchExample = function(f) {
-        fetchFile("examples/" + f.file, f.file);
+        fetchFile("examples/" + f.file);
     };
 
     $scope.refreshParams = function() {
@@ -67,10 +84,20 @@ mainApp.controller('mainController', ['$scope', function($scope) {
         fetchFile("new.jscad", "[Untitled]");
     }
     
-    var fetchFile = function(filePath, fn) {
+    var fetchFile = function(filePath, fnOverride) {
+        // get filename from path
+        // TODO - make this a function
+        var fn = filePath.replace(/^.*(\\|\/|\:)/, '');
+        if (typeof(fnOverride) === 'undefined') {
+            fnOverride = fn;
+        }
+        // get extension from filename
+        // TODO - make this a function
+        var lang = fn.replace(/.*\./, '');
+        
         $scope.paramDefinitions = [];
         misc.fetchExample(filePath);
-        $scope.currentFile = fn;
+        $scope.currentFile = {name: fnOverride, lang: lang};
     };
     
     var setParamDefinitions = function(paramDefs) {
@@ -121,6 +148,7 @@ mainApp.controller('mainController', ['$scope', function($scope) {
         this.design = {};
         this.design.toggleAutoReload = function() {
             $scope.userPrefs.autoReload = !$scope.userPrefs.autoReload;
+            misc.setAutoReload();
         };
 
         // View
@@ -136,67 +164,48 @@ mainApp.controller('mainController', ['$scope', function($scope) {
         };
         this.view.top = function() {
             var view = misc.gProcessor.viewer.getView();
-            view.angle.x = 0;
-            view.angle.y = 0;
-            view.angle.z = 0;
+            view.angle = {x: 0, y: 0, z: 0};
             misc.gProcessor.viewer.setView(view);
         };
         this.view.bottom = function() {
             var view = misc.gProcessor.viewer.getView();
-            view.angle.x = 180;
-            view.angle.y = 0;
-            view.angle.z = 0;
+            view.angle = {x: 180, y: 0, z: 0};
             misc.gProcessor.viewer.setView(view);
         };
         this.view.front = function() {
             var view = misc.gProcessor.viewer.getView();
-            view.angle.x = 270;
-            view.angle.y = 0;
-            view.angle.z = 0;
+            view.angle = {x: 270, y: 0, z: 0};
             misc.gProcessor.viewer.setView(view);
         };
         this.view.back = function() {
             var view = misc.gProcessor.viewer.getView();
-            view.angle.x = 270;
-            view.angle.y = 0;
-            view.angle.z = 180;
+            view.angle = {x: 270, y: 0, z: 180};
             misc.gProcessor.viewer.setView(view);
         };
         this.view.right = function() {
             var view = misc.gProcessor.viewer.getView();
-            view.angle.x = 270;
-            view.angle.y = 0;
-            view.angle.z = 270;
+            view.angle = {x: 270, y: 0, z: 270};
             misc.gProcessor.viewer.setView(view);
         };
         this.view.left = function() {
             var view = misc.gProcessor.viewer.getView();
-            view.angle.x = 270;
-            view.angle.y = 0;
-            view.angle.z = 90;
+            view.angle = {x: 270, y: 0, z: 90};
             misc.gProcessor.viewer.setView(view);
         };
         this.view.diagonal = function() {
             var view = misc.gProcessor.viewer.getView();
-            view.angle.x = 300;
-            view.angle.y = 0;
-            view.angle.z = 315;
+            view.angle = {x: 300, y: 0, z: 315};
             misc.gProcessor.viewer.setView(view);
         };
         this.view.center = function() {
             var view = misc.gProcessor.viewer.getView();
-            view.viewpoint.x = 0;
-            view.viewpoint.y = 0;
+            view.viewpoint = {x: 0, y: 0, z: view.viewpoint.z};
             misc.gProcessor.viewer.setView(view);
         };
         this.view.resetView = function() {
             var view = misc.gProcessor.viewer.getView();
-            view.angle.x = 300;
-            view.angle.y = 0;
-            view.angle.z = 315;
-            view.viewpoint.x = 0;
-            view.viewpoint.y = -5;
-            view.viewpoint.z = misc.gProcessor.initialViewerDistance;
+            view.angle = {x: 300, y: 0, z: 315};
+            view.viewpoint = {x: 0, y: -5, z: misc.gProcessor.initialViewerDistance};
             misc.gProcessor.viewer.setView(view);
         };
 
@@ -317,12 +326,10 @@ mainApp.controller('mainController', ['$scope', function($scope) {
     
     var misc = {};
     
-    misc.version = version;
     misc.browser = 'unknown';
     if (navigator.userAgent.match(/(opera|chrome|safari|firefox|msie)/i))
         misc.browser = RegExp.$1.toLowerCase();
     misc.autoReloadTimer = null;
-    misc.gCurrentFile = null;
     misc.gProcessor = null;
     misc.editor = null;
     var gCurrentFiles = [];       // linear array, contains files (to read)
@@ -530,7 +537,7 @@ mainApp.controller('mainController', ['$scope', function($scope) {
     
     // ------------------------------------------------------------------------
     
-    misc.putSourceInEditor = function(src,fn) {
+    misc.putSourceInEditor = function(src, fn) {
         misc.editor.setValue(src); 
         misc.editor.clearSelection();
         misc.editor.navigateFileStart();
@@ -574,16 +581,14 @@ mainApp.controller('mainController', ['$scope', function($scope) {
         if (!evt.dataTransfer) throw new Error("Not a datatransfer (1)");
         if (!evt.dataTransfer.files) throw new Error("Not a datatransfer (2)");
 
-        if (evt.dataTransfer.items&&evt.dataTransfer.items.length) {     // full directories, let's try
+        if (evt.dataTransfer.items && evt.dataTransfer.items.length) {     // full directories, let's try
             var items = evt.dataTransfer.items;
             gCurrentFiles = [];
             gMemFsCount = 0;
             gMemFsTotal = 0;
             gMemFsChanged = 0;
             gRootFs = [];
-            for(var i=0; i<items.length; i++) {
-                //var item = items[i];//.webkitGetAsEntry();
-                //walkFileTree({file:items[i]});
+            for (var i=0; i<items.length; i++) {
                 misc.walkFileTree(items[i].webkitGetAsEntry());
                 gRootFs.push(items[i].webkitGetAsEntry());
             }
@@ -609,18 +614,17 @@ mainApp.controller('mainController', ['$scope', function($scope) {
         //    2) read the files (readFileAsync)
         //    3) re-render if there was a change (via readFileAsync)
 
-        path = path||"";
+        path = path || "";
         //console.log("item=",item);
         if (item.isFile) {
             item.file(function(file) {                // this is also asynchronous ... (making everything complicate)
                 if (file.name.match(/\.(jscad|js|scad|obj|stl|amf|gcode)$/)) {   // for now all files OpenJSCAD can handle
-                    console.log("walkFileTree File: "+path+item.name);
+                    console.log("walkFileTree File: " + path + item.name);
                     gMemFsTotal++;
                     gCurrentFiles.push(file);
                     misc.readFileAsync(file);
                 }
             });
-
         } else if (item.isDirectory) {
             var dirReader = item.createReader();
             console.log("walkFileTree Folder: "+item.name);
@@ -655,12 +659,12 @@ mainApp.controller('mainController', ['$scope', function($scope) {
     // ------------------------------------------------------------------------
     
     misc.setCurrentFile = function(file) {              // set one file (the one dragged) or main.jscad
-        misc.gCurrentFile = file;
+        $scope.currentFile = file;
         gPreviousModificationTime = "";
 
         console.log("execute: "+file.name);
         if (file.name.match(/\.(jscad|js|scad|stl|obj|amf|gcode)$/i)) {
-            misc.gCurrentFile.lang = RegExp.$1;
+            $scope.currentFile.lang = RegExp.$1;
         } else {
             throw new Error("Please drop a file with .jscad, .scad or .stl extension");
         }
@@ -675,30 +679,30 @@ mainApp.controller('mainController', ['$scope', function($scope) {
     misc.readFileAsync = function(f) {                // RANT: JavaScript at its finest: 50 lines code to read a SINGLE file 
         var reader = new FileReader();           //       this code looks complicate and it is complicate.
 
-        console.log("request: "+f.name+" ("+f.fullPath+")");
+        console.log("request: " + f.name + " (" + f.fullPath + ")");
         reader.onloadend = function(evt) {
             if (evt.target.readyState == FileReader.DONE) {
                 var source = evt.target.result;
 
-                console.log("done reading: "+f.name,source?source.length:0);   // it could have been vanished while fetching (race condition)
+                console.log("done reading: " + f.name,source?source.length:0);   // it could have been vanished while fetching (race condition)
                 gMemFsCount++;
 
-                if(!gMemFs[f.name]||gMemFs[f.name].source!=source)     // note: assigning f.source = source too make gMemFs[].source the same, therefore as next
+                if (!gMemFs[f.name] || gMemFs[f.name].source != source)     // note: assigning f.source = source too make gMemFs[].source the same, therefore as next
                     gMemFsChanged++;
 
                 f.source = source;                 // -- do it after comparing
 
                 gMemFs[f.name] = f;                // -- we cache the file (and its actual content)
 
-                if (gMemFsCount==gMemFsTotal) {                // -- are we done reading all?
+                if (gMemFsCount == gMemFsTotal) {                // -- are we done reading all?
                     console.log("all "+gMemFsTotal+" files read.");
-                    if (gMemFsTotal>1||gMemFsCount>1) {         // we deal with multiple files, so we hide the editor to avoid confusion
-                        $('#editor').hide();
+                    if (gMemFsTotal > 1 || gMemFsCount > 1) {         // we deal with multiple files, so we hide the editor to avoid confusion
+                        //$('#editor').hide();
                     } else {
-                        $('#editor').show();
+                        //$('#editor').show();
                     }
 
-                    if (gMemFsTotal>1) {
+                    if (gMemFsTotal > 1) {
                         if (gMemFs['main.jscad']) {
                             gMainFile = gMemFs['main.jscad'];
                         } else if (gMemFs['main.js']) {
@@ -713,14 +717,13 @@ mainApp.controller('mainController', ['$scope', function($scope) {
                     } else {
                         gMainFile = f;
                     }
-                    if (gMemFsChanged>0) {
+                    if (gMemFsChanged > 0) {
                         if (!gMainFile)
                             throw("No main.jscad found");
-                        console.log("update & redraw "+gMainFile.name);
+                        console.log("update & redraw " + gMainFile.name);
                         misc.setCurrentFile(gMainFile);
                     }
                 }
-
             } else {
                 throw new Error("Failed to read file");
                 if (misc.gProcessor) misc.gProcessor.clearViewer();
@@ -737,7 +740,7 @@ mainApp.controller('mainController', ['$scope', function($scope) {
     // ------------------------------------------------------------------------
     
     misc.fileChanged = function(f) {               // update the dropzone visual & call the main parser
-        misc.gCurrentFile = f;
+        $scope.currentFile = f;
 //        if (gCurrentFile) {
 //            var txt;
 //            if (gMemFsTotal>1) {
@@ -777,45 +780,44 @@ mainApp.controller('mainController', ['$scope', function($scope) {
     // ------------------------------------------------------------------------
     
     misc.parseFile = function(f, debugging, onlyifchanged) {     // here we convert the file to a renderable source (jscad)
-        if(arguments.length==2) {
+        if (arguments.length == 2) {
             debugging = arguments[1];
             onlyifchanged = arguments[2];
-            f = misc.gCurrentFile;
+            f = $scope.currentFile;
         }
         //gCurrentFile = f;
         var source = f.source;
         var editorSource = source;
-        if(source == "") {
-            if(document.location.toString().match(/^file\:\//i)) {
+        if (source == "") {
+            if (document.location.toString().match(/^file\:\//i)) {
                 throw new Error("Could not read file. You are using a local copy of OpenJSCAD.org; if you are using Chrome, you need to launch it with the following command line option:\n\n--allow-file-access-from-files\n\notherwise the browser will not have access to uploaded files due to security restrictions.");
             } else {
                 throw new Error("Could not read file.");
-            }            
-        } else {         
+            }
+        } else {
             if (misc.gProcessor && ((!onlyifchanged) || (previousScript !== source))) {
-                var fn = misc.gCurrentFile.name;
+                var fn = $scope.currentFile.name;
                 fn = fn.replace(/^.*\/([^\/]*)$/,"$1");     // remove path, leave filename itself
                 misc.gProcessor.setDebugging(debugging); 
                 //echo(gCurrentFile.lang);
                 misc.editor.getSession().setMode("ace/mode/javascript");
                 var asyncComputation = false;
                 
-                if(misc.gCurrentFile.lang=='jscad' || misc.gCurrentFile.lang=='js') {
+                if ($scope.currentFile.lang=='jscad' || $scope.currentFile.lang=='js') {
                     ; // default
-                } else if(misc.gCurrentFile.lang=='scad') {
+                } else if ($scope.currentFile.lang=='scad') {
                     editorSource = source;
-                    if(!editorSource.match(/^\/\/!OpenSCAD/i)) {
+                    if (!editorSource.match(/^\/\/!OpenSCAD/i)) {
                         editorSource = "//!OpenSCAD\n"+editorSource;
                     }
                     source = openscadOpenJscadParser.parse(editorSource);
-                    if(0) {
+                    if (0) {
                         source = "// OpenJSCAD.org: scad importer (openscad-openjscad-translator) '"+fn+"'\n\n"+source;
                     }
                     misc.editor.getSession().setMode("ace/mode/scad");  
-                    
-                } else if (misc.gCurrentFile.lang.match(/(stl|obj|amf|gcode)/i)) {
-                    status("Converting "+fn+" <img id=busy src='imgs/busy.gif'>");
-                    if(!fn.match(/amf/i)) {     // -- if you debug the STL parsing, change it to 'if(0&&...' so echo() works, otherwise in workers
+                } else if ($scope.currentFile.lang.match(/(stl|obj|amf|gcode)/i)) {
+                    status("Converting " + fn + " <img id=busy src='imgs/busy.gif'>");
+                    if (!fn.match(/amf/i)) {     // -- if you debug the STL parsing, change it to 'if(0&&...' so echo() works, otherwise in workers
                         //    echo() is not working.., and parseAMF requires jquery, which seem not working in workers
                         var blobURL = new Blob([document.querySelector('#conversionWorker').textContent]);
                         // -- the messy part coming here:
@@ -823,8 +825,8 @@ mainApp.controller('mainController', ['$scope', function($scope) {
                         worker.onmessage = function(e) {
                             var data = e.data;
                             //echo("finished converting, source:",data.source);
-                            if(data&&data.source&&data.source.length) {              // end of async conversion
-                                misc.putSourceInEditor(data.source,data.filename);
+                            if (data && data.source && data.source.length) {              // end of async conversion
+                                misc.putSourceInEditor(data.source, data.filename);
                                 gMemFs[data.filename].source = data.source;
                                 setJsCad(data.source,data.filename);
                             } else {
@@ -840,7 +842,7 @@ mainApp.controller('mainController', ['$scope', function($scope) {
                     } else {
                         fn.match(/\.(stl|obj|amf|gcode)$/i);
                         var type = RegExp.$1;
-                        if(type=='obj') {
+                        if (type=='obj') {
                             editorSource = source = parseOBJ(source,fn);   
                         } else if(type=='amf') {
                             editorSource = source = parseAMF(source,fn);   
@@ -854,7 +856,7 @@ mainApp.controller('mainController', ['$scope', function($scope) {
                     throw new Error("Please drop a file with .jscad, .scad or .stl extension");
                 }
                 if (!asyncComputation) {                   // end of synchronous conversion
-                    //putSourceInEditor(editorSource,fn);
+                    misc.putSourceInEditor(editorSource,fn);
                     gMemFs[fn].source = source;
                     setJsCad(source,fn);
                 }

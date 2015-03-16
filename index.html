@@ -183,7 +183,7 @@ Todo:
     <div class=blocks>
         <!-- Editor block -->
         <div class='block editor'>
-            <div class=header><img src="imgs/file.svg"/>{{currentFile}}<div class=right></div></div>
+            <div class=header><img src="imgs/file.svg"/>{{currentFile.name}}<div class=right></div></div>
             <div id=editor class=body ng-class='{show: state.editor.show}'></div>
         </div>
         <!-- Parameters block -->
@@ -219,7 +219,7 @@ Todo:
 <!---------------------------------------------------------------------------->
     
 <div id=about>
-    <div><img src="imgs/title.svg" style='width: 75%'><div>Version {{misc.version}}</div></div>
+    <div><img src="imgs/title.svg" style='width: 75%'><div>Version {{version}}</div></div>
     <div>
         <table>
             <tr><th>Render Code</th><td>SHIFT + RETURN</td></tr>
