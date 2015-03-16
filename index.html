@@ -21,7 +21,6 @@ Todo:
     <script src="js/lightgl.js"></script>
     <script src="js/csg.js"></script>
     <script src="js/user-prefs.js"></script>
-    <script src="js/main.js"></script>
     <script src="js/openjscad.js"></script>
     <script src="js/openscad.js"></script>
     <script src="js/menu.js"></script>
@@ -82,7 +81,7 @@ Todo:
     ><span class=parent>
         <div class=title>File</div>
         <div class=sub-menu>
-            <div class=button enabled=true ng-click="newFile()">New</div>
+            <div class=button enabled=true ng-click="menu.file.new()">New</div>
             <div class=button ng-click="menu.file.open()" enabled=false>Open...</div>
             <div class='additional parent'>
                 <div>Examples</div>
@@ -111,15 +110,15 @@ Todo:
     ><span class=parent>
         <div class=title>Design</div>
         <div class=sub-menu>
-            <div class='checkbox' ng-class='{checked: userPrefs.autoReload}' ng-click="toggleAutoReload()"><img class=icon src="imgs/check.svg"/>Automatic Compile &amp; Render</div>
+            <div class='checkbox' ng-class='{checked: userPrefs.autoReload}' ng-click="menu.design.toggleAutoReload()"><img class=icon src="imgs/check.svg"/>Automatic Compile &amp; Render</div>
             <div class=button enabled=false>Compile &amp; Render</div>
         </div>
     </span
     ><span class=parent>
         <div class=title>View</div>
         <div class=sub-menu>
-            <div class='checkbox' ng-class='{checked: userPrefs.view.axes.show}' ng-click="toggleAxes()"><img class=icon src="imgs/check.svg"/>Show Axes</div>
-            <div class='checkbox' ng-class='{checked: userPrefs.view.grid.show}' ng-click="toggleGrid()"><img class=icon src="imgs/check.svg"/>Show Grid</div>
+            <div class='checkbox' ng-class='{checked: userPrefs.view.axes.show}' ng-click="menu.view.toggleAxes()"><img class=icon src="imgs/check.svg"/>Show Axes</div>
+            <div class='checkbox' ng-class='{checked: userPrefs.view.grid.show}' ng-click="menu.view.toggleGrid()"><img class=icon src="imgs/check.svg"/>Show Grid</div>
             <div class=button enabled=false>Grid Options...</div>
             <div class=divider></div>
             <div class=radio enabled=false><img class='icon' src="imgs/check.svg"/>Perspective</div>
@@ -220,7 +219,7 @@ Todo:
 <!---------------------------------------------------------------------------->
     
 <div id=about>
-    <div><img src="imgs/title.svg" style='width: 75%'><div>Version <script>document.write(version);</script></div></div>
+    <div><img src="imgs/title.svg" style='width: 75%'><div>Version {{misc.version}}</div></div>
     <div>
         <table>
             <tr><th>Render Code</th><td>SHIFT + RETURN</td></tr>

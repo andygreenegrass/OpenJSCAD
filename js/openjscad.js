@@ -715,7 +715,7 @@ OpenJsCad.parseJsCadScriptSync = function(script, mainParameters, debugging) {
         workerscript += "\n\n// Now press F11 twice to enter your main() function:\n\n";
         workerscript += "debugger;\n";
     }
-    workerscript += "var me = " + JSON.stringify(me) + ";\n";
+    workerscript += "var me = " + JSON.stringify(appContext) + ";\n";
     workerscript += "return main("+JSON.stringify(mainParameters)+");";
     
     // trying to get include() somewhere:
@@ -797,7 +797,7 @@ OpenJsCad.parseJsCadScriptASync = function(script, mainParameters, options, call
         }
     }
     var workerscript = "//ASYNC\n";
-    workerscript += "var me = " + JSON.stringify(me) + ";\n";
+    workerscript += "var me = " + JSON.stringify(appContext) + ";\n";
     workerscript += "var _csg_baseurl=" + JSON.stringify(baseurl)+";\n";        // -- we need it early for include()
     workerscript += "var _includePath=" + JSON.stringify(_includePath)+";\n";    //        ''            ''
     workerscript += "var gMemFs = [];\n";

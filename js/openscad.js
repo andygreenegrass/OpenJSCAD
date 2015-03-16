@@ -1979,7 +1979,7 @@ function parseAMF(amf,fn) {      // http://en.wikipedia.org/wiki/Additive_Manufa
    for(var k in meta) {
       src += "// AMF."+k+": "+meta[k]+"\n";
    }
-   src += "// producer: OpenJSCAD "+me.toUpperCase()+" "+version+" AMF Importer\n";
+   src += "// producer: OpenJSCAD " + appContext.toUpperCase() + " " + version + " AMF Importer\n";
    src += "// date: "+(new Date())+"\n";
    src += "// source: "+fn+"\n";
    src += "\n";
@@ -2726,7 +2726,7 @@ if(typeof module !== 'undefined') {    // we are used as module in nodejs requir
       parseSTL: function(stl,fn) { return parseSTL(stl,fn); },
       parseAMF: function(amf,fn) { return parseAMF(amf,fn); } 
    };
-   me = 'cli';
+   appContext = 'cli';
 }
 
 
