@@ -1,24 +1,24 @@
-<img src="doc/logo.png" width=256 align=right>
+<img src="doc/logo.png" width=256 align=right style='padding: 20px; box-sizing: border-box;'>
 <h1>OpenJSCAD</h1>
 
 <b>Version 0.018</b> (ALPHA)
 
-<b>OpenJSCAD.org</b> is a more up-to-date <a href="http://joostn.github.com/OpenJsCad/">OpenJsCAD</a> frontend where you can edit .jscad files either locally or online via JS editor (built-in).
+<b>OpenJSCAD</b> is a more up-to-date <a href="http://joostn.github.com/OpenJsCad/">OpenJsCAD</a> frontend where you can edit .jscad files either locally or online via JS editor (built-in).
 A few functions are available to make the transition from <a href="http://openscad.org/">OpenSCAD</a> to OpenJSCAD easier (<a href="https://github.com/Spiritdude/OpenSCAD.jscad">OpenSCAD.jscad</a> built-in),
 as well CLI (command-line interface) for server-side computations with NodeJS.
 
 <h2>Installation</h2>
 
-<b>Immediate Use</b>: No installation, go to <b><a href="http://openjscad.org">OpenJSCAD.org</a></b> (Google Chrome, Firefox)
+<b>Immediate Use</b>: No installation, go to <b><a href="http://greeters.co/jscad">greeters.co/jscad</a></b> (Google Chrome, Firefox)
 
 <b>Local Web Use:</b>
 <pre>
-% git clone https://github.com/Spiritdude/OpenJSCAD.org
-% cd OpenJSCAD.org
+% git clone https://github.com/andygreenegrass/open-jscad
+% cd open-jscad
 % make install
 </pre>
 
-and then access the files via local web-site and your web-browser. 
+and then access the files via local web-site and your web-browser.
 
 <b>Local CLI Use:</b>
 
@@ -104,9 +104,3 @@ Drag & drop multiple files (Chrome & Firefox) or a folder (Chrome):
 <li><a href="http://rsmith.home.xs4all.nl/software/py-stl-stl2pov.html">stl2pov</a> tool to convert .stl to .pov, and then render via <a href="http://povray.org">PovRay.org</a>
 <li><a href="https://github.com/D1plo1d/p3d">P3D</a> STL/AMF/OBJ viewer
 </ul>
-
-
-That's all for now,
-
-Rene K. Mueller<br>
-initial version 2013/03/10, updated 2013/04/04
