@@ -96,6 +96,9 @@ Drag & drop a local file:
 Drag & drop multiple files (Chrome & Firefox) or a folder (Chrome):
 <img src="doc/sshot-05.png">
 
+Unpin toolbar and/or workspace to increase the viewing area:
+<img src="doc/sshot-06.png">
+
 <h2>See Also</h2>
 <ul>
 <li><a href="http://joostn.github.com/OpenJsCad/">OpenJsCAD</a>, starting point of OpenJSCAD.org
