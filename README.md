@@ -85,16 +85,16 @@ Simple JSCAD example (example000.jscad):
 <img src="doc/sshot-01.png">
 
 More sophisticated JSCAD example, fully object-oriented (OO) programmed with interactive parameters (example031.jscad):
-<img src="doc/sshot-03-illu.png">
+<img src="doc/sshot-02.png">
 
 Import of STL models:
-<img src="doc/sshot-04.png">
+<img src="doc/sshot-03.png">
 
 Drag & drop a local file:
-<img src="doc/sshot-05-illu.png">
+<img src="doc/sshot-04.png">
 
 Drag & drop multiple files (Chrome & Firefox) or a folder (Chrome):
-<img src="doc/sshot-06-illu.png">
+<img src="doc/sshot-05.png">
 
 <h2>See Also</h2>
 <ul>
