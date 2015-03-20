@@ -16,7 +16,9 @@ Todo:
     <script src="js/jquery/jquery-1.9.1.js"></script>
     <script src="js/jquery/jquery.hammer.js"></script>
     <script src="js/angular/angular.min.js"></script>
+    <script src="js/module.js"></script>
     <script src="js/controllers.js"></script>
+    <script src="js/directives.js"></script>
     
     <script src="js/lightgl.js"></script>
     <script src="js/csg.js"></script>
@@ -63,11 +65,65 @@ Todo:
     <div>Thanks for all the files.</div>
 </div>
     
-<img id=loader src='imgs/loader.gif'/>
+<!--<img id=loader src='imgs/loader.gif'/>-->
     
 <!-- Menu -------------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
 
+<script>
+var menu = [
+    {
+        type: 'parent',
+        title: 'OpenJSCAD',
+        children: [
+            {type: 'button', title: 'About OpenJSCAD...', action: menu.openjscad.about},
+            {type: 'button', title: 'Recent Updates', icon: 'imgs/link.svg', action: menu.openjscad.recentUpdates},
+            {type: 'divider'},
+            {type: 'button', title: 'Preferences...', enabled: false}
+        ]
+    },
+    {
+        type: 'parent',
+        title: 'File',
+        children: [
+            {type: 'button', title: 'New', action: menu.file.new},
+            {type: 'button', title: 'Open...', action: menu.file.open},
+            {
+                type: 'parent',
+                title: 'Examples',
+                children: []
+            },
+            {type: 'button', title: 'Reload', enabled: false},
+            {type: 'divider'},
+            {
+                type: 'parent',
+                title: 'Export',
+                children: []
+            }
+        ]
+    },
+    {
+        type: 'parent',
+        title: 'Design',
+        children: [
+            {type: 'checkbox', title: 'Automatic Compile & Render'},
+            {type: 'button', title: 'Compile & Render', enabled: false}
+        ]
+    },
+    {
+        type: 'parent',
+        title: 'View',
+        children: [
+            {type: 'checkbox', title: 'Show Axis'},
+            {type: 'checkbox', title: 'Show Grid'},
+            {type: 'button', title: 'Grid Options...', enabled: false},
+            {type: 'divider'},
+            
+        ]
+    }
+];    
+</script>
+    
 <div id=menu>
     <span class=parent>
         <div class=title>OpenJSCAD</div>
@@ -157,8 +213,9 @@ Todo:
 
 <!-- 3D View ----------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
-    
+
 <div id="viewerContext" style='visibility: {{viewerContextVisibility}}; left: {{viewerContext.left}}; right: {{viewerContext.right}}'></div>
+<!--<openjscad></openjscad>-->
 
 <!-- Toolbar ----------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
