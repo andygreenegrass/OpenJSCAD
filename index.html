@@ -25,7 +25,6 @@ Todo:
     <script src="js/user-prefs.js"></script>
     <script src="js/openjscad.js"></script>
     <script src="js/openscad.js"></script>
-    <script src="js/menu.js"></script>
     <script src="js/underscore.js"></script>
     <script src="js/openscad-openjscad-translator.js"></script>
     
@@ -35,7 +34,7 @@ Todo:
     <link rel="stylesheet" href="css/pin.css" type="text/css"/>
     <link rel="stylesheet" href="css/about.css" type="text/css"/>
     <link rel="stylesheet" href="css/openjscad.css" type="text/css"/>
-    <link rel="stylesheet" href="css/menu.css" type="text/css"/>
+    <link rel="stylesheet" href="css/menubar.css" type="text/css"/>
     <link rel="stylesheet" href="css/toolbar.css" type="text/css"/>
     <link rel="stylesheet" href="css/workspace.css" type="text/css"/>
     <link rel="stylesheet" href="css/editor.css" type="text/css"/>
@@ -69,120 +68,64 @@ Todo:
     
 <!-- Menu -------------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
-
-<script>
-var menu = [
-    {
-        type: 'parent',
-        title: 'OpenJSCAD',
-        children: [
-            {type: 'button', title: 'About OpenJSCAD...', action: menu.openjscad.about},
-            {type: 'button', title: 'Recent Updates', icon: 'imgs/link.svg', action: menu.openjscad.recentUpdates},
-            {type: 'divider'},
-            {type: 'button', title: 'Preferences...', enabled: false}
-        ]
-    },
-    {
-        type: 'parent',
-        title: 'File',
-        children: [
-            {type: 'button', title: 'New', action: menu.file.new},
-            {type: 'button', title: 'Open...', action: menu.file.open},
-            {
-                type: 'parent',
-                title: 'Examples',
-                children: []
-            },
-            {type: 'button', title: 'Reload', enabled: false},
-            {type: 'divider'},
-            {
-                type: 'parent',
-                title: 'Export',
-                children: []
-            }
-        ]
-    },
-    {
-        type: 'parent',
-        title: 'Design',
-        children: [
-            {type: 'checkbox', title: 'Automatic Compile & Render'},
-            {type: 'button', title: 'Compile & Render', enabled: false}
-        ]
-    },
-    {
-        type: 'parent',
-        title: 'View',
-        children: [
-            {type: 'checkbox', title: 'Show Axis'},
-            {type: 'checkbox', title: 'Show Grid'},
-            {type: 'button', title: 'Grid Options...', enabled: false},
-            {type: 'divider'},
-            
-        ]
-    }
-];    
-</script>
     
-<div id=menu>
-    <span class=parent>
-        <div class=title>OpenJSCAD</div>
-        <div class=sub-menu>
+<menubar>
+    <parent>
+        <title>OpenJSCAD</title>
+        <children>
             <div class=button ng-click="menu.openjscad.about()">About OpenJSCAD...</div>
             <div class=button ng-click="menu.openjscad.recentUpdates()"><img class=icon src="imgs/link.svg"/>Recent Updates</div>
-            <div class=divider></div>
+            <divider></divider>
             <div class=button enabled=false>Preferences...</div>
-        </div>
-    </span
-    ><span class=parent>
-        <div class=title>File</div>
-        <div class=sub-menu>
+        </children>
+    </parent
+    ><parent>
+        <title>File</title>
+        <children>
             <div class=button enabled=true ng-click="menu.file.new()">New</div>
             <div class=button ng-click="menu.file.open()" enabled=false>Open...</div>
-            <div class='additional parent'>
-                <div>Examples</div>
-                <img class=arrow src="imgs/arrow.svg"/>
-                <div class=sub-menu>
-                    <div class='additional parent' ng-repeat='e in examples'>
-                        <div>{{e.title}}</div>
-                        <img class=arrow src='imgs/arrow.svg'/>
-                        <div class=sub-menu>
+            <parent>
+                <title>Examples</title>
+                <children>
+                    <parent ng-repeat='e in examples'>
+                        <title>{{e.title}}</title>
+                        <children>
                             <div class=button ng-repeat='f in e.files' ng-click='fetchExample(f)'>{{f.title}}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        </children>
+                    </parent>
+                </children>
+            </parent>
             <div class=button enabled=false>Reload</div>
-            <div class=divider></div>
-            <div  class='additional parent'>
-                <div>Export</div>
+            <divider></divider>
+            <parent>
+                <title>Export</title>
                 <img class=arrow src="imgs/arrow.svg"/>
-                <div class=sub-menu>
+                <children>
                     <div class=button enabled=false ng-repeat='fi in formatInfo'>{{fi.displayName}}</div>
-                </div>
-            </div>
-        </div>
-    </span
-    ><span class=parent>
-        <div class=title>Design</div>
-        <div class=sub-menu>
+                </children>
+            </parent>
+        </children>
+    </parent
+    ><parent>
+        <title>Design</title>
+        <children>
             <div class='checkbox' ng-class='{checked: userPrefs.autoReload}' ng-click="menu.design.toggleAutoReload()"><img class=icon src="imgs/check.svg"/>Automatic Compile &amp; Render</div>
             <div class=button enabled=false>Compile &amp; Render</div>
-        </div>
-    </span
-    ><span class=parent>
-        <div class=title>View</div>
-        <div class=sub-menu>
+        </children>
+    </parent
+    ><parent>
+        <title>View</title>
+        <children>
             <div class='checkbox' ng-class='{checked: userPrefs.view.axes.show}' ng-click="menu.view.toggleAxes()"><img class=icon src="imgs/check.svg"/>Show Axes</div>
             <div class='checkbox' ng-class='{checked: userPrefs.view.grid.show}' ng-click="menu.view.toggleGrid()"><img class=icon src="imgs/check.svg"/>Show Grid</div>
             <div class=button enabled=false>Grid Options...</div>
-            <div class=divider></div>
+            <divider></divider>
             <div class=radio enabled=false><img class='icon' src="imgs/check.svg"/>Perspective</div>
             <div class=radio enabled=false>Orthogonal</div>
-            <div class=divider></div>
+            <divider></divider>
             <div class=radio enabled=false><img class='icon' src="imgs/check.svg"/>Solid</div>
             <div class=radio enabled=false>Wireframe</div>
-            <div class=divider></div>
+            <divider></divider>
             <div class=button ng-click='menu.view.top()'><script>document.write(viewIcon("view top"));</script>Top</div>
             <div class=button ng-click='menu.view.bottom()'><script>document.write(viewIcon("view bottom"));</script>Bottom</div>
             <div class=button ng-click='menu.view.left()'><script>document.write(viewIcon("view left"));</script>Left</div>
@@ -191,25 +134,25 @@ var menu = [
             <div class=button ng-click='menu.view.back()'><script>document.write(viewIcon("view back"));</script>Back</div>
             <div class=button ng-click='menu.view.diagonal()'>Diagonal</div>
             <div class=button ng-click='menu.view.center()'>Center</div>
-            <div class=divider></div>
+            <divider></divider>
             <div class=button  ng-click='menu.view.resetView()'>Reset View</div>
-        </div>
-    </span
-    ><span class=parent>
-        <div class=title>Help</div>
-        <div class=sub-menu>
+        </children>
+    </parent
+    ><parent>
+        <title>Help</title>
+        <children>
             <div ng-click="menu.help.documentation()"><img class='icon' src="imgs/link.svg"/>Documentation</div>
             <div ng-click="menu.help.community()"><img class='icon' src="imgs/link.svg"/>Google+ Community</div>
-        </div>
-    </span
-    ><span class=parent>
-        <div class=title style='display: none;'>Developer</div>
-        <div class=sub-menu>
+        </children>
+    </parent
+    ><parent style='display: none;'>
+        <title>Developer</title>
+        <children>
             <div ng-click="">Reset UserPrefs</div>
             <div ng-click="">Delete all cookies</div>
-        </div>
-    </span>
-</div>
+        </children>
+    </parent>
+</menubar>
 
 <!-- 3D View ----------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
