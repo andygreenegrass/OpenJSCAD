@@ -176,7 +176,7 @@ Todo:
 <!-- Workspace --------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
     
-<div id=workspace class='pinnable' ng-class="{pinned: userPrefs.workspace.pinned, hover: state.workspace.hover, params: paramDefinitions.length > 0}"  ng-mouseenter='state.workspace.hover = true;' ng-mouseleave='state.workspace.hover = false;'>
+<workspace class='pinnable' ng-class="{pinned: userPrefs.workspace.pinned, hover: state.workspace.hover, params: paramDefinitions.length > 0}"  ng-mouseenter='state.workspace.hover = true;' ng-mouseleave='state.workspace.hover = false;'>
     <div class='pin' ng-click="userPrefs.workspace.pinned = !userPrefs.workspace.pinned; setViewerContextSize();"><div><img src="imgs/pin.svg"/></div></div>
     <div class='size-handle'></div>
     <div class=blocks>

@@ -72,7 +72,7 @@ angular.module('mainApp').controller('mainController', ['$scope', function($scop
             $('#viewerContext').css('left', '0px');
         }
         if ($scope.userPrefs.workspace.pinned) {
-            $('#viewerContext').css('right', 'calc(35% - 20px)');
+            $('#viewerContext').css('right', 'calc(' + $('workspace').css('width') + ' - 20px)');
         } else {
             $('#viewerContext').css('right', '0px');
         }
